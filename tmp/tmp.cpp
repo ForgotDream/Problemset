@@ -26,5 +26,12 @@ signed main() {
 
   std::vector v(std::vector<int>(100, 0));
 
+  int n;
+  std::cin >> n;
+
+  for (int i = 0; i < n; i++) {
+    
+  }
+
   return 0;
 }
