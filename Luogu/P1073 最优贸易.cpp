@@ -1,7 +1,7 @@
 /**
- * @file    
+ * @file    P1073 最优贸易.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   分层图 + SSSP
  * @date    2023-04-24
  */
 #include <bits/stdc++.h>
@@ -72,6 +72,32 @@ struct Graph {
 signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
-  
+
+  int n, m;
+  std::cin >> n >> m;
+
+  Graph g(3 * n);
+  std::vector<int> a(n + 1);
+  for (int i = 1; i <= n; i++) {
+    std::cin >> a[i];
+    g.add(i, i + n, -1 * a[i]);
+    g.add(i + n, i + 2 * n, a[i]);
+  }
+
+  for (int i = 0; i < m; i++) {
+    int u, v, w;
+    std::cin >> u >> v >> w;
+    g.add(u, v, 0);
+    g.add(u + n, v + n, 0);
+    g.add(u + 2 * n, v + 2 * n, 0);
+    if (w == 2) {
+      g.add(v, u, 0);
+      g.add(v + n, u + n, 0);
+      g.add(v + 2 * n, u + 2 * n, 0);
+    }
+  }
+
+  std::cout << g.spfa(1)[3 * n] << "\n";
+
   return 0;
 }
