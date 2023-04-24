@@ -29,7 +29,15 @@ signed main() {
   int n;
   std::cin >> n;
 
-  for (int i = 0; i < n; i++) {
+  std::vector<int> fa(n + 1), num(n), dep(n + 1);
+  for (int i = 2; i <= n; i++) {
+    std::cin >> fa[i];
+    num[dep[i] = dep[fa[i]] + 1]++;
+  }
+
+  int block = std::sqrt(n);
+
+  for (int i = 1; i <= block; i++) {
     
   }
 
