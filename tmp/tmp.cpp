@@ -54,15 +54,19 @@ signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  int n, m;
-  std::cin >> n >> m;
+  int a, b;
+  std::cin >> a >> b;
+  std::cout << a + b << "\n";
 
-  Graph g(n + 1);
-  for (int i = 0; i < m; i++) {
-    int u, v, w;
-    std::cin >> u >> v >> w;
-    g.add(u, v, w);
-  }
+  // int n, m;
+  // std::cin >> n >> m;
+
+  // Graph g(n + 1);
+  // for (int i = 0; i < m; i++) {
+  //   int u, v, w;
+  //   std::cin >> u >> v >> w;
+  //   g.add(u, v, w);
+  // }
 
   return 0;
 }
