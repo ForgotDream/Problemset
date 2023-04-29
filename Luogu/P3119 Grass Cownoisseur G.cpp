@@ -1,7 +1,7 @@
 /**
- * @file    
+ * @file    P3119 Grass Cownoisseur G.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   Tarjan + SSSP
  * @date    2023-04-29
  */
 #include <bits/stdc++.h>
@@ -47,7 +47,7 @@ struct Graph {
     return;
   }
 
-  int tarjan(std::vector<int> &bln, std::vector<int> &siz) {
+  int findScc(std::vector<int> &bln, std::vector<int> &siz) {
     bln.clear(), siz.clear();
     bln.resize(n), siz.resize(1);
     
@@ -56,14 +56,14 @@ struct Graph {
     std::vector<bool> ins(n);
     int clk = 0, sccCnt = 0;
 
-    std::function<void(int)> dfs = [&](int u) {
+    std::function<void(int)> tarjan = [&](int u) {
       dfn[u] = low[u] = ++clk;
       st.push(u), ins[u] = true;
 
       for (auto i : e[u]) {
         int v = edges[i].v;
         if (!dfn[v]) {
-          dfs(v);
+          tarjan(v);
           low[u] = std::min(low[u], low[v]);
         } else if (ins[v]) {
           low[u] = std::min(low[u], dfn[v]);
@@ -89,52 +89,77 @@ struct Graph {
 
     for (int i = 1; i < n; i++) {
       if (!dfn[i]) {
-        dfs(i);
+        tarjan(i);
       }
     }
 
     return sccCnt;
   }
+
+  std::vector<int> spfa(int s) {
+    std::vector<int> dis(n, -INF);
+    std::vector<bool> vis(n, false);
+    std::queue<int> q;
+
+    q.push(s), dis[s] = 0;
+    while (!q.empty()) {
+      int u = q.front();
+      q.pop(), vis[u] = false;
+      for (auto i : e[u]) {
+        int v = edges[i].v, w = edges[i].w;
+        if (dis[v] < dis[u] + w) {
+          dis[v] = dis[u] + w;
+          if (!vis[v]) {
+            vis[v] = true, q.push(v);
+          }
+        }
+      }
+    }
+
+    return dis;
+  }
   
 };
+
+void solve() {
+  std::vector<int> t(24);
+  for (int i = 0; i < 24; i++) {
+    std::cin >> t[i];
+  }
+
+  return;
+}
 
 signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  int n;
-  std::cin >> n;
+  int n, m;
+  std::cin >> n >> m;
 
   Graph g(n + 1);
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      int c;
-      std::cin >> c;
-      if (c) {
-        g.add(i + 1, j + 1);
-      }
-    }
+  for (int i = 0; i < m; i++) {
+    int u, v;
+    std::cin >> u >> v;
+    g.add(u, v);
   }
 
   std::vector<int> bln, siz;
-  int cnt = g.tarjan(bln, siz);
+  int cnt = g.findScc(bln, siz);
 
-  std::vector<int> in(cnt + 1);
+  Graph aft(2 * cnt + 1);
   for (auto i : g.edges) {
     int u = i.u, v = i.v;
     if (bln[u] != bln[v]) {
-      in[bln[v]]++;
+      aft.add(bln[u], bln[v], siz[bln[u]]);
+      aft.add(bln[u] + cnt, bln[v] + cnt, siz[bln[u]]);
+      aft.add(bln[v], bln[u] + cnt, siz[bln[v]]);
     }
   }
 
-  int ans = 0;
-  for (int i = 1; i <= cnt; i++) {
-    if (!in[i]) {
-      ans++;
-    }
-  }
+  auto dis = aft.spfa(bln[1]);
 
-  std::cout << ans << "\n";
+  std::cout << dis[bln[1] + cnt] << "\n";
 
   return 0;
 }

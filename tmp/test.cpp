@@ -1,146 +1,127 @@
-#include <bits/stdc++.h>
-
-using i64 = long long;
-
-namespace myFile {
-void useFileIO() {
-  freopen("redstone.in", "r", stdin);
-  freopen("redstone.out", "w", stdout);
-  return;
+#include<cstdio>
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+#include<queue>
+#include<cmath>
+using namespace std;
+typedef long long i64;
+struct EDGE
+{
+	int to,w,Next,from;
+}edge[100005<<1];
+int head[100005],total;
+void add_edge(int x,int y,int w)
+{
+	edge[++total]={y,w,head[x],x};
+	head[x]=total;
 }
+int dfn[100005],low[100005],Cnt,stk[100005],top,col[100005],color,Size[100005];
+bool instk[100005];
+void tarjan(int pos)
+{
+	dfn[pos]=low[pos]=++Cnt;
+	stk[++top]=pos;
+	instk[pos]=true;
+	for(int e=head[pos],Next;e;e=edge[e].Next)
+	{
+		Next=edge[e].to;
+		if(!dfn[Next])
+		{
+			tarjan(Next);
+			low[pos]=min(low[pos],low[Next]);
+		}
+		else if(instk[Next])
+			low[pos]=min(low[pos],dfn[Next]);
+	}
+	if(dfn[pos]==low[pos])
+	{
+		int temp;
+		color++;
+		do
+		{
+			temp=stk[top--];
+			instk[temp]=false;
+			col[temp]=color;
+			Size[color]++;
+		}while(temp!=pos);
+	}
+	return;
 }
-
-namespace fastIO {
-template<typename T>
-void read(T &x) {
-  x = 0;
-  T f = 1;
-  char c = getchar();
-  while (!std::isdigit(c)) {
-    if (c == '-') { f = -1; }
-    c = getchar();
-  }
-  while (std::isdigit(c)) {
-    x = 10 * x + c - '0';
-    c = getchar();
-  }
-  x *= f;
-  return;
+int n,m,in[100005];
+long long dp[100005];
+void topo()
+{
+	queue<int>q;
+	for(int i=1;i<=color;i++)
+		if(!in[i]) {q.push(i);dp[i]=1;}
+	int pos;
+	while(!q.empty())
+	{
+		pos=q.front();q.pop();
+		for(int e=head[pos],y;e;e=edge[e].Next)
+		{
+			y=edge[e].to;
+            std::cerr << edge[e].w << "\n";
+			if(!(--in[y])) q.push(y);
+			dp[y]=max(dp[y],dp[pos]+edge[e].w);
+		}
+	}
+	return;
 }
-
-template<typename T, typename ...arg>
-void read(T &x, arg &...args) {
-  read(x), read(args...);
-  return;
-}
-}
-
-struct Graph {
-  static constexpr i64 INF = 1e18;
-  struct Edge {
-    int u, v;
-    i64 w;
-    Edge(int _u, int _v, i64 _w) : u(_u), v(_v), w(_w) {}
-  };
-  int n;
-  std::vector<Edge> edges;
-  std::vector<std::vector<int>> e;
-  
-  Graph(int _n) : n(_n + 1) {
-    e.resize(n);
-    return;
-  }
-  
-  void insert(int u, int v, int w) {
-    edges.emplace_back(u, v, w);
-    e[u].push_back(edges.size() - 1);
-    return;
-  }
-  
-  void add(int u, int v, int w) {
-    insert(u, v, w), insert(v, u, w);
-    return;
-  }
-  
-  std::vector<i64> spfa(int s, std::vector<int> &pre) {
-    pre.resize(n);
-    std::vector<i64> dis(n, -INF);
-    std::vector<bool> vis(n, false);
-    std::queue<int> q;
-    
-    q.push(s), dis[s] = 0;
-    while (!q.empty()) {
-      int u = q.front();
-      q.pop();
-      vis[u] = false;
-      for (auto i : e[u]) {
-        int v = edges[i].v;
-        i64 w = edges[i].w;
-        if (dis[v] < dis[u] + w) {
-          dis[v] = dis[u] + w;
-          pre[v] = u;
-          if (!vis[v]) {
-            vis[v] = true;
-            q.push(v);
-          }
-        }
-      }
+int main()
+{
+	ios::sync_with_stdio(false),cin.tie(0),cout.tie(0);
+	cin>>n>>m;
+	for(int i=1,order,x,y;i<=m;i++)
+	{
+		cin>>order>>x>>y;
+		switch (order)
+		{
+			case 1:
+				add_edge(x,y,0);
+				add_edge(y,x,0);
+				break;
+			case 2:
+				add_edge(x,y,1);
+				break;
+			case 3:
+				add_edge(y,x,0);
+				break;
+			case 4:
+				add_edge(y,x,1);
+				break;
+			case 5:
+				add_edge(x,y,0);
+				break;
+			default : 
+				break;
+		}
+	}
+	for(int i=1;i<=n;i++)
+		if(!dfn[i]) tarjan(i);
+	memset(head, 0, sizeof(head));
+	int PreTotal=total;
+	total=0;
+	for(int i=1,x,y;i<=PreTotal;i++)
+	{
+		x=col[edge[i].from],y=col[edge[i].to];
+		if(x!=y)
+		{
+			add_edge(x,y,edge[i].w);
+			in[y]++;
+		}
+		else if(edge[i].w)
+		{
+			cout<<-1;
+			return 0;
+		}
+	}  
+	topo();
+	long long ans=0;
+	for(int i=1;i<=color;i++) {
+		ans+=dp[i]*Size[i];
     }
-    
-    return dis;
-  }
-};
-
-int main() {
-  // myFile::useFileIO();
-  
-  int n;
-  fastIO::read(n);
-  
-  Graph g(n);
-  for (int i = 1; i <= n; i++) {
-    int t, c;
-    fastIO::read(t, c);
-    if (c == 0) {
-      g.insert(0, i, t);
-    } else {
-      while (c--) {
-        int p;
-        fastIO::read(p);
-        g.insert(p, i, t);
-      }
-    }
-  }
-  
-  std::vector<int> pre;
-  auto dis = g.spfa(0, pre);
-  i64 preAns = *std::max_element(dis.begin(), dis.end());
-  
-  std::vector<int> mask(n + 1);
-  int cnt = 0;
-  for (int i = 1; i <= n; i++) {
-    if (dis[i] == preAns) {
-      int pivot = i;
-      ++cnt;
-      while (pivot) {
-        mask[pivot]++;
-        pivot = pre[pivot];
-      }
-    }
-  }
-  
-  std::vector<int> ans;
-  for (int i = 1; i <= n; i++) {
-    if (mask[i] == cnt) {
-      ans.push_back(i);
-    }
-  }
-  
-  printf("%lld\n%d\n", preAns, (int) ans.size());
-  for (int i = 0; i < ans.size(); i++) {
-    printf("%d ", ans[i]);
-  }
-  putchar('\n');
-  
-  return 0;
+	cout<<ans;
+	return 0;
 }

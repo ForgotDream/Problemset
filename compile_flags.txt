@@ -1,3 +1,4 @@
 -xc++
--std=c++17
+-std=c++20
 -Wall
+--include-directory=/Contest/AtCoder/ac_librabry
