@@ -1,0 +1,1 @@
+{"name":"Local: A","url":"g:\\zyz\\Contests\\ARC157\\A.cpp","tests":[{"id":1677326381893,"input":"5 1 1 1 1\n","output":"Yes\n"},{"id":1677327282843,"input":"5 1 2 1 0\n","output":"Yes\n"},{"id":1677327296025,"input":"5 0 4 0 0\n","output":"No\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"g:\\zyz\\Contests\\ARC157\\A.cpp","group":"local","local":true}

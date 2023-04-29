@@ -1,0 +1,1 @@
+{"name":"Local: B","url":"g:\\zyz\\Contests\\ABC293\\B.cpp","tests":[{"id":1678536354123,"input":"20\n9 7 19 7 10 4 13 9 4 8 10 15 16 3 18 19 12 13 2 12","output":"10\n1 2 5 6 8 11 14 17 18 20"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"g:\\zyz\\Contests\\ABC293\\B.cpp","group":"local","local":true}

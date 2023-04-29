@@ -1,0 +1,1 @@
+{"name":"Local: B","url":"g:\\zyz\\Contests\\ABC288\\B.cpp","tests":[{"id":1675512196208,"input":"5 3\nabc\naaaaa\nxyz\na\ndef\n","output":"aaaaa\nabc\nxyz\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"g:\\zyz\\Contests\\ABC288\\B.cpp","group":"local","local":true}
