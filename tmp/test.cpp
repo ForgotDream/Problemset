@@ -1,127 +1,36 @@
-#include<cstdio>
-#include<iostream>
-#include<cstring>
-#include<algorithm>
-#include<queue>
-#include<cmath>
+#include<bits/stdc++.h>
 using namespace std;
-typedef long long i64;
-struct EDGE
-{
-	int to,w,Next,from;
-}edge[100005<<1];
-int head[100005],total;
-void add_edge(int x,int y,int w)
-{
-	edge[++total]={y,w,head[x],x};
-	head[x]=total;
+const int N=100,M=1024;
+int n,m,ans,g[N],cnt[M];
+int f[2][M][M]; vector<int> S;
+
+char gc() {
+    char ch=0; 
+		while (!isalpha(ch) )
+    	ch=getchar(); 
+		return ch;
 }
-int dfn[100005],low[100005],Cnt,stk[100005],top,col[100005],color,Size[100005];
-bool instk[100005];
-void tarjan(int pos)
-{
-	dfn[pos]=low[pos]=++Cnt;
-	stk[++top]=pos;
-	instk[pos]=true;
-	for(int e=head[pos],Next;e;e=edge[e].Next)
-	{
-		Next=edge[e].to;
-		if(!dfn[Next])
-		{
-			tarjan(Next);
-			low[pos]=min(low[pos],low[Next]);
-		}
-		else if(instk[Next])
-			low[pos]=min(low[pos],dfn[Next]);
-	}
-	if(dfn[pos]==low[pos])
-	{
-		int temp;
-		color++;
-		do
-		{
-			temp=stk[top--];
-			instk[temp]=false;
-			col[temp]=color;
-			Size[color]++;
-		}while(temp!=pos);
-	}
-	return;
+bool check(int x) {
+    return !(x&x>>1||x&x>>2);
 }
-int n,m,in[100005];
-long long dp[100005];
-void topo()
-{
-	queue<int>q;
-	for(int i=1;i<=color;i++)
-		if(!in[i]) {q.push(i);dp[i]=1;}
-	int pos;
-	while(!q.empty())
-	{
-		pos=q.front();q.pop();
-		for(int e=head[pos],y;e;e=edge[e].Next)
-		{
-			y=edge[e].to;
-            std::cerr << edge[e].w << "\n";
-			if(!(--in[y])) q.push(y);
-			dp[y]=max(dp[y],dp[pos]+edge[e].w);
-		}
-	}
-	return;
+int count(int x) {
+    int cnt=0; 
+		while (x)
+    	cnt++,x&=(x-1); 
+		return cnt;
 }
 int main()
 {
-	ios::sync_with_stdio(false),cin.tie(0),cout.tie(0);
-	cin>>n>>m;
-	for(int i=1,order,x,y;i<=m;i++)
-	{
-		cin>>order>>x>>y;
-		switch (order)
-		{
-			case 1:
-				add_edge(x,y,0);
-				add_edge(y,x,0);
-				break;
-			case 2:
-				add_edge(x,y,1);
-				break;
-			case 3:
-				add_edge(y,x,0);
-				break;
-			case 4:
-				add_edge(y,x,1);
-				break;
-			case 5:
-				add_edge(x,y,0);
-				break;
-			default : 
-				break;
+    scanf("%d%d",&n,&m);
+    for (int i=0;i<n;i++) for (int j=0;j<m;j++) {
+			g[i] = (g[i] << 1) + (gc() == 'H');
 		}
-	}
-	for(int i=1;i<=n;i++)
-		if(!dfn[i]) tarjan(i);
-	memset(head, 0, sizeof(head));
-	int PreTotal=total;
-	total=0;
-	for(int i=1,x,y;i<=PreTotal;i++)
-	{
-		x=col[edge[i].from],y=col[edge[i].to];
-		if(x!=y)
-		{
-			add_edge(x,y,edge[i].w);
-			in[y]++;
-		}
-		else if(edge[i].w)
-		{
-			cout<<-1;
-			return 0;
-		}
-	}  
-	topo();
-	long long ans=0;
-	for(int i=1;i<=color;i++) {
-		ans+=dp[i]*Size[i];
-    }
-	cout<<ans;
-	return 0;
+    for (int i=0;i<1<<m;i++) if (check(i) ) S.push_back(i),cnt[i]=count(i);
+
+    for (int i=0;i<n;i++)
+        for (int x:S) for (int y:S) for (int z:S)
+            if ( !(x&y) && !(x&z) && !(y&z) && !(g[i]&x) )
+                f[i&1][x][y]=max(f[i&1][x][y],f[(i-1)&1][y][z]+cnt[x]);
+    for (int u:S) for (int v:S) if (!(u&v) ) ans=max(ans,f[(n-1)&1][u][v]);
+    printf("%d",ans); return 0;
 }
