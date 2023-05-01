@@ -2,7 +2,7 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-04-30
+ * @date    2023-05-01
  */
 #include <bits/stdc++.h>
 
@@ -20,101 +20,89 @@ void useFileInuput() {
 }
 
 void debug(const std::string &s) {
-  std::clog << s << "\n";
+  std::cerr << s << "\n";
   return;
 }
 }
 
 struct Graph {
   static constexpr int INF = 1e9;
+  int n;
   struct Edge {
     int u, v, w;
-    Edge() : u(0), v(0), w(0) {}
-    Edge(int _u = 0, int _v = 0, int _w = 0) : u(_u), v(_v), w(_w) {}
+    Edge(int _u, int _v, int _w = 0) : u(_u), v(_v), w(_w) {}
   };
-  int n;
   std::vector<Edge> edges;
   std::vector<std::vector<int>> e;
-  std::vector<bool> vis, deleted;
-  std::vector<int> match;
-  std::vector<std::vector<bool>> reach;
 
   Graph(int _n) : n(_n) {
     e.resize(n);
-    vis.resize(n), deleted.resize(n);
-    match.resize(n);
-    reach.resize(n, std::vector<bool>(n));
     return;
   }
 
   void add(int u, int v, int w = 0) {
     edges.emplace_back(u, v, w);
     e[u].push_back(edges.size() - 1);
-    reach[u][v] = true;
     return;
   }
 
-  void floyd() {
-    for (int k = 1; k < n; k++) {
-      for (int i = 1; i < n; i++) {
-        for (int j = 1; j < n; j++) {
-          if (reach[i][k] && reach[k][j]) {
-            reach[i][j] = true;
+  int findDCC(std::vector<std::vector<int>> &ans, std::vector<int> &siz) {
+    ans.clear(), siz.clear();
+    ans.resize(1), siz.resize(1);
+    
+    std::vector<int> dfn(n), low(n);
+    std::stack<int> st;
+    int clk = 0, dccCnt = 0;
+
+    std::function<void(int, int)> tarjan = [&](int u, int rt) {
+      dfn[u] = low[u] = ++clk;
+      st.push(u);
+      
+      if (u == rt && e[u].size() == 0) {
+        dccCnt++;
+        ans.emplace_back(1, u);
+        siz.push_back(1);
+      }
+
+      for (auto i : e[u]) {
+        int v = edges[i].v;
+        if (!dfn[v]) {
+          tarjan(v, rt);
+          low[u] = std::min(low[u], low[v]);
+          
+          if (low[v] >= dfn[u]) {
+            int pivot;
+            dccCnt++;
+            siz.push_back(0);
+            ans.emplace_back(0);
+
+            do {
+              pivot = st.top();
+              st.pop();
+              ans[dccCnt].push_back(pivot);
+              siz[dccCnt]++;
+            } while (pivot != v);
+
+            ans[dccCnt].push_back(u);
+            siz[dccCnt]++;
           }
+        } else {
+          low[u] = std::min(low[u], dfn[v]);
         }
       }
-    }
-
-    return;
-  }
-
-  bool dfs(int u) {
-    for (int v = 1; v < n; v++) {
-      // int v = edges[i].v;
-      if (!vis[v] && reach[u][v]) {
-        // std::cerr << u << " " << v << "\n";
-        if (deleted[v]) {
-          continue;
-        }
-        vis[v] = true;
-        if (!match[v] || dfs(match[v])) {
-          match[v] = u;
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  void resetDel() {
-    std::fill(deleted.begin(), deleted.end(), false);
-    return;
-  }
-
-  void del(int u) {
-    deleted[u] = true;
-    return;
-  }
-
-  int binaryMatching() {
-    int res = 0;
-    std::fill(match.begin(), match.end(), 0);
+      
+      return;
+    };
 
     for (int i = 1; i < n; i++) {
-      if (deleted[i]) continue;
-      std::fill(vis.begin(), vis.end(), false);
-      if (dfs(i)) {
-        res++;
+      if (!dfn[i]) {
+        tarjan(i, i);
       }
     }
 
-    return res;
+    return dccCnt;
   }
 
-  bool reachable(int i, int j) {
-    return reach[i][j] || reach[j][i] || i == j;
-  }
-  
 };
 
 signed main() {
@@ -128,59 +116,23 @@ signed main() {
   for (int i = 0; i < m; i++) {
     int u, v;
     std::cin >> u >> v;
-    g.add(u, v);
+    if (u == v) {
+      continue;
+    }
+    g.add(u, v), g.add(v ,u);
   }
 
-  g.floyd();
+  std::vector<int> bln, siz;
+  std::vector ans(0, std::vector<int>());
 
-  int match  = n - g.binaryMatching();
-  std::cout << match << "\n";
+  int cnt = g.findDCC(ans, siz);
 
-  std::vector<bool> onPath(n + 1);  
-  for (int i = 1; i <= n; i++) {
-    g.resetDel();
-    int cnt = n;
-    for (int j = 1; j <= n; j++) {
-      if (g.reachable(i, j)) {
-        g.del(j);
-        cnt--;
-      }
-    }
-    onPath[i] = (cnt - g.binaryMatching() == match - 1);
-  }
+  std::cout << cnt << "\n";
 
-  for (int delta = 0; delta < n; delta++) {
-    int clk = 0;
-    std::vector<int> col(n + 1);
-    std::vector<bool> ans(n + 1, false);
-
-    for (int i = 1; i <= n; i++) {
-      if (onPath[(i + delta) % n] && !col[(i + delta) % n]) {
-        ans[(i + delta) % n] = true;
-        ++clk;
-        for (int j = 1; j <= n; j++) {
-          if (g.reachable((i + delta) % n, j)) {
-            col[j] = clk;
-          }
-        }
-      }
-    }
-
-    int ansCnt = 0;
-    for (int i = 1; i <= n; i++) {
-      if (ans[i]) {
-        ansCnt++;
-      }   
-    }
-
-    if (ansCnt == match) {
-      for (int i = 1; i <= n; i++) {
-        if (ans[i]) {
-          std::cout << i << " ";
-        }   
-      } 
-      std::cout << "\n";
-      break;
+  for (int i = 1; i <= cnt; i++) {
+    std::cout << ans[i].size() << " ";
+    for (int j = 0; j < ans[i].size(); j++) {
+      std::cout << ans[i][j] << " \n"[j == ans[i].size() - 1];
     }
   }
 
