@@ -1,36 +1,46 @@
 #include<bits/stdc++.h>
 using namespace std;
-const int N=100,M=1024;
-int n,m,ans,g[N],cnt[M];
-int f[2][M][M]; vector<int> S;
-
-char gc() {
-    char ch=0; 
-		while (!isalpha(ch) )
-    	ch=getchar(); 
-		return ch;
-}
-bool check(int x) {
-    return !(x&x>>1||x&x>>2);
-}
-int count(int x) {
-    int cnt=0; 
-		while (x)
-    	cnt++,x&=(x-1); 
-		return cnt;
-}
-int main()
+#define int long long
+int dp[18][30][19][13][11],f[4]={2,3,5,7},k[4]={0,0,0,0},st,ed,ans;
+int zt[10][4]={{0,0,0,0},{0,0,0,0},{1,0,0,0},{0,1,0,0},{2,0,0,0},{0,0,1,0},{1,1,0,0},{0,0,0,1},{3,0,0,0},{0,2,0,0}};
+int getsum(int sum,int a,int Max,int st,int ed) 
 {
-    scanf("%d%d",&n,&m);
-    for (int i=0;i<n;i++) for (int j=0;j<m;j++) {
-			g[i] = (g[i] << 1) + (gc() == 'H');
-		}
-    for (int i=0;i<1<<m;i++) if (check(i) ) S.push_back(i),cnt[i]=count(i);
+   int b=a+Max-1,size=0,num=0;Max/=10;
+   
+   std::cout << sum << " " << a << " " << b << " " << Max << "\n";
 
-    for (int i=0;i<n;i++)
-        for (int x:S) for (int y:S) for (int z:S)
-            if ( !(x&y) && !(x&z) && !(y&z) && !(g[i]&x) )
-                f[i&1][x][y]=max(f[i&1][x][y],f[(i-1)&1][y][z]+cnt[x]);
-    for (int u:S) for (int v:S) if (!(u&v) ) ans=max(ans,f[(n-1)&1][u][v]);
-    printf("%d",ans); return 0;
+   if(a>ed||b<st) return 0;
+   if(a>=st&&b<=ed) size=1;
+   if(sum==18) return !k[0]&&!k[1]&&!k[2]&&!k[3];
+   if(size&&dp[sum][k[0]][k[1]][k[2]][k[3]]>=0)
+      return dp[sum][k[0]][k[1]][k[2]][k[3]];   
+   for(int l=(a!=0);l<=9;l++) 
+   {
+      int F=1;
+      for(int i=0;i<4;i++)F&=zt[l][i]<=k[i];
+      if(!F) continue;
+      for(int i=0;i<4;i++)k[i]-=zt[l][i];
+      num+=getsum(sum+1,a+l*Max,Max,st,ed);
+      for(int i=0;i<4;i++)k[i]+=zt[l][i];
+	}
+   if(size) dp[sum][k[0]][k[1]][k[2]][k[3]]=num;
+   return num;
+}
+void solve(int Max,int sum,int num) 
+{
+	if(sum>1000000000||sum*sum>Max)return;
+  	if(num==4) 
+	{
+   		ans+=getsum(0,0,1e18,(st+sum-1)/sum,ed/sum);return;
+   	}
+   	solve(Max,sum,num+1),k[num]++;
+	solve(Max,sum*f[num],num),k[num]--;
+}
+signed main() 
+{
+   cin>>st>>ed;
+   memset(dp,-1,sizeof dp);
+   solve(ed,1,0);
+   cout<<ans;
+   return 0;
 }
