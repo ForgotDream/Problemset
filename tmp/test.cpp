@@ -1,46 +1,89 @@
-#include<bits/stdc++.h>
+#include<climits>
+#include<cstdio>
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include <type_traits>
 using namespace std;
-#define int long long
-int dp[18][30][19][13][11],f[4]={2,3,5,7},k[4]={0,0,0,0},st,ed,ans;
-int zt[10][4]={{0,0,0,0},{0,0,0,0},{1,0,0,0},{0,1,0,0},{2,0,0,0},{0,0,1,0},{1,1,0,0},{0,0,0,1},{3,0,0,0},{0,2,0,0}};
-int getsum(int sum,int a,int Max,int st,int ed) 
+typedef long long ll;
+typedef long double ldouble ;
+bool dis[205][205];
+int Link[205];
+bool vis[205],isDel[205];
+int N,M;
+bool Match(int x)
 {
-   int b=a+Max-1,size=0,num=0;Max/=10;
-   
-   std::cout << sum << " " << a << " " << b << " " << Max << "\n";
-
-   if(a>ed||b<st) return 0;
-   if(a>=st&&b<=ed) size=1;
-   if(sum==18) return !k[0]&&!k[1]&&!k[2]&&!k[3];
-   if(size&&dp[sum][k[0]][k[1]][k[2]][k[3]]>=0)
-      return dp[sum][k[0]][k[1]][k[2]][k[3]];   
-   for(int l=(a!=0);l<=9;l++) 
-   {
-      int F=1;
-      for(int i=0;i<4;i++)F&=zt[l][i]<=k[i];
-      if(!F) continue;
-      for(int i=0;i<4;i++)k[i]-=zt[l][i];
-      num+=getsum(sum+1,a+l*Max,Max,st,ed);
-      for(int i=0;i<4;i++)k[i]+=zt[l][i];
-	}
-   if(size) dp[sum][k[0]][k[1]][k[2]][k[3]]=num;
-   return num;
+	if (x==0) return true;
+	for (int y=1;y<=N;y++)
+		if (dis[x][y]&&(!vis[y]))
+		{
+			if (isDel[y]) continue;
+			vis[y]=true;
+			if (!Link[y]||Match(Link[y]))
+			{
+				Link[y]=x;
+				return true;
+			}
+		}
+	return false;
 }
-void solve(int Max,int sum,int num) 
+bool isAble[205];
+bool isChoose[205];
+int col[205];
+int main()
 {
-	if(sum>1000000000||sum*sum>Max)return;
-  	if(num==4) 
+	cin>>N>>M;
+	for (int i=1,x,y;i<=M;i++)
 	{
-   		ans+=getsum(0,0,1e18,(st+sum-1)/sum,ed/sum);return;
-   	}
-   	solve(Max,sum,num+1),k[num]++;
-	solve(Max,sum*f[num],num),k[num]--;
-}
-signed main() 
-{
-   cin>>st>>ed;
-   memset(dp,-1,sizeof dp);
-   solve(ed,1,0);
-   cout<<ans;
-   return 0;
+		cin>>x>>y;
+		dis[x][y]=true;
+	}
+	for (int k=1;k<=N;k++)
+		for (int i=1;i<=N;i++)
+			for (int j=1;j<=N;j++)
+				if (dis[i][k]&&dis[k][j])
+					dis[i][j]=true;
+	int sumMatch=0;
+	for (int i=1;i<=N;i++)
+	{
+		memset(vis,false,sizeof(vis));
+		if (Match(i)) sumMatch++;
+	}
+	for (int root=1,sumMatch2,n2;root<=N;root++)
+	{
+		memset(isDel,false,sizeof(isDel));
+		memset(Link,0,sizeof(Link));
+		n2=N, sumMatch2=0;
+		for (int i=1;i<=N;i++)
+			if (dis[i][root]||dis[root][i]||i==root)
+				isDel[i]=true,n2--;
+		for (int i=1;i<=N;i++)
+		{
+			if (isDel[i]) continue;
+			memset(vis,false,sizeof(vis));
+			if (Match(i)) sumMatch2++;
+		}
+		if (n2-sumMatch2==N-sumMatch-1) isAble[root]=true;
+	}
+	int Color=0;
+	for (int i=1;i<=N;i++)
+	{
+		if (isAble[i]&&(!col[i]))
+		{
+			Color++;
+			isChoose[i]=true;
+			for (int j=1;j<=N;j++)
+				if (dis[i][j]||dis[j][i]||j==i)
+					col[j]=Color;
+		}
+	}
+	cout<<N-sumMatch<<'\n';
+	for (int i=1;i<=N;i++)
+		cout<<isChoose[i];
+	cout<<'\n';
+	for (int i=1;i<=N;i++)
+		cout<<isAble[i];
+	return 0;
 }

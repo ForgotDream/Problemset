@@ -1,8 +1,8 @@
 /**
- * @file    
+ * @file    P8436 边双连通分量.cpp
  * @author  ForgotDream
- * @brief   
- * @date    2023-05-02
+ * @brief   e-DCC
+ * @date    2023-05-01
  */
 #include <bits/stdc++.h>
 
@@ -45,9 +45,6 @@ struct Graph {
     e[u].push_back(edges.size() - 1);
     return;
   }
-<<<<<<< Updated upstream
-  
-=======
 
   int findDCC(std::vector<int> &bln, std::vector<int> &siz) {
     bln.clear(), siz.clear();
@@ -57,42 +54,31 @@ struct Graph {
     std::stack<int> st;
     int clk = 0, dccCnt = 0;
 
-    std::function<void(int, int)> tarjan = [&](int u, int frm) {
-      int ch = 0;
+    std::function<void(int, int)> tarjan = [&](int u, int inEdge) {
       dfn[u] = low[u] = ++clk;
       st.push(u);
 
       for (auto i : e[u]) {
         int v = edges[i].v;
         if (!dfn[v]) {
-          ch++;
-          tarjan(v, u);
+          tarjan(v, i);
           low[u] = std::min(low[u], low[v]);
-          
-          if (low[v] >= dfn[u]) {
-            int pivot;
-            dccCnt++;
-            siz.push_back(0);
-            do {
-              pivot = st.top();
-              if (pivot != u) st.pop();
-              bln[pivot] = dccCnt;
-              siz[dccCnt]++;
-            } while (pivot != u);
-            bln[u] = dccCnt;
-            siz[dccCnt]++;
-          }
-        } else if (v != frm) {
+        } else if (i != (inEdge ^ 1)) {
           low[u] = std::min(low[u], dfn[v]);
         }
       }
 
-      if (!frm && !ch) {
-        dccCnt++;
-        siz.push_back(1);
-        bln[u] = dccCnt;
+      if (low[u] == dfn[u]) {
+        int pivot;
+        ++dccCnt;
+        siz.push_back(0);
+        do {
+          pivot = st.top();
+          st.pop();
+          bln[pivot] = dccCnt;
+          siz[dccCnt]++;
+        } while (pivot != u);
       }
-      return;
     };
 
     for (int i = 1; i < n; i++) {
@@ -104,7 +90,6 @@ struct Graph {
     return dccCnt;
   }
 
->>>>>>> Stashed changes
 };
 
 signed main() {
