@@ -45,10 +45,7 @@ struct Graph {
     e[u].push_back(edges.size() - 1);
     return;
   }
-<<<<<<< Updated upstream
   
-=======
-
   int findDCC(std::vector<int> &bln, std::vector<int> &siz) {
     bln.clear(), siz.clear();
     bln.resize(n), siz.push_back(0);
@@ -104,7 +101,6 @@ struct Graph {
     return dccCnt;
   }
 
->>>>>>> Stashed changes
 };
 
 signed main() {
