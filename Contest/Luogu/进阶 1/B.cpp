@@ -16,7 +16,7 @@ signed main() {
     std::cin >> a[i];
   }
 
-  std::vector<int> pow(n);
+  std::vector<i64> pow(n);
   pow[0] = 1;
   for (int i = 1; i < n; i++) {
     (pow[i] = 10 * pow[i - 1]) %= MOD;
@@ -26,12 +26,12 @@ signed main() {
     pow[i] %= MOD;
   }
 
-  int fact = 1;
+  i64 fact = 1;
   for (int i = 1; i < n; i++) {
-    fact *= i;
+    (fact *= i) %= MOD;
   }
 
-  int ans = 0;
+  i64 ans = 0;
   for (int i = 0; i < n; i++) {
     (ans += (i64) a[i] * pow[n - 1] * fact % MOD) %= MOD;
   }
