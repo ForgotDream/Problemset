@@ -2,7 +2,7 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-05-05
+ * @date    2023-05-06
  */
 #include <bits/stdc++.h>
 
@@ -13,6 +13,11 @@ using f80 = long double;
 signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
+
+  int n, m;
+  std::cin >> n >> m;
+
+  
 
   return 0;
 }
