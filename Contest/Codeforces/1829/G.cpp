@@ -6,9 +6,6 @@ static std::vector<i64> f(1e6 + 1);
 
 void init() {
   f[1] = 1;
-  for (int i = 1; i <= 1e6; i++) {
-
-  }
 
   std::vector a(1.5e3, std::vector<i64>(1.5e3));
   std::vector<i64> pre(1e6 + 1);
