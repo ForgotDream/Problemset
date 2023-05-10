@@ -12,10 +12,22 @@ signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(0);
 
-  int n, m, c;
-  std::cin >> n >> m >> c;
+  int n, m;
+  std::cin >> n >> m;
 
-  
+  for (int i = 0; i < n - 1; i++) {
+    int u, v;
+    std::cin >> u >> v;
+  }
+
+  std::vector<int> w(n);
+  for (int i = 0; i < n; i++) {
+    std::cin >> w[i];
+  }
+
+  for (int i = 0; i < m; i++) {
+
+  }
 
   return 0;
 }
