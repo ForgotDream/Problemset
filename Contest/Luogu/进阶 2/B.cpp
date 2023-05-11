@@ -9,30 +9,33 @@ int main() {
   int n;
   std::cin >> n;
 
-  std::vector<int> a(n), d(n);
+  std::vector<int> a(n);
   for (int i = 0; i < n; i++) {
     std::cin >> a[i];
   }
 
-  std::vector bucket(n + 1, std::vector<int>());
+  std::vector<int> bucket(n + 1);
   for (int i = n - 1; i >= 0; i--) {
-    bucket[std::max(0, i - a[i])].push_back(i);
+    if (bucket[std::max(0, i - a[i])]) {
+      continue;
+    }
+    bucket[std::max(0, i - a[i])] = i;
   }
 
   int ans = 0, pre = 0;
-  for (int i = bucket[0][0]; i < n;) {
+  for (int i = bucket[0]; i < n;) {
     ans++;
     if (i + a[i] >= n - 1) {
       break;
     }
     int pivot = i;
     for (int j = pre; j < std::min(n, i + a[i] + 2); j++) {
-      if (bucket[j].empty()) {
+      if (bucket[j] == 0) {
         continue;
-      } else if (bucket[j][0] + a[bucket[j][0]] < pivot + a[pivot]) {
+      } else if (bucket[j] + a[bucket[j]] < pivot + a[pivot]) {
         continue;
       }
-      pivot = bucket[j][0];
+      pivot = bucket[j];
       pre = j;
     }
     i = pivot;
