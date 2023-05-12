@@ -1,0 +1,1 @@
+{"name":"Local: B","url":"f:\\zyz\\Problemset\\Contest\\Luogu\\进阶 3\\B.cpp","tests":[{"id":1683855030941,"input":"5 7\n3 2 1 3 5\nQ 1\nQ 2\nQ 3\nC 2 2\nC 5 3\nC 4 2\nQ 2","output":"1\n2\n1\n3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\Contest\\Luogu\\进阶 3\\B.cpp","group":"local","local":true}
