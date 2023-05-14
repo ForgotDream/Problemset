@@ -1,1 +1,1 @@
-{"name":"Local: tmp","url":"f:\\zyz\\Problemset\\tmp\\tmp.cpp","tests":[{"id":1683883894091,"input":"1 2\n1 1\n100 110\n1\n1000","output":"1210"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\tmp\\tmp.cpp","group":"local","local":true}
+{"name":"Local: tmp","url":"f:\\zyz\\Problemset\\tmp\\tmp.cpp","tests":[{"id":1683883894091,"input":"2\n3\n9","output":"3\n0"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\tmp\\tmp.cpp","group":"local","local":true}

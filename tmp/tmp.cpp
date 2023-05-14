@@ -8,6 +8,7 @@
 
 using i64 = long long;
 
+<<<<<<< Updated upstream
 constexpr int inf = 1e9;
 constexpr int d[][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -82,6 +83,9 @@ struct Dinic {
     return res;
   }
 };
+=======
+constexpr int mod = 19260817;
+>>>>>>> Stashed changes
 
 signed main() {
   std::ios::sync_with_stdio(false);
