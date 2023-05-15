@@ -1,119 +1,126 @@
-#include<iostream>
-#include<cstdio>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<algorithm>
-#include<queue>
-#include<stack>
-#include<vector>
-#include<map>
-#include<set>
-#include<bitset>
-#define int long long
-#define ls (p<<1)
-#define rs (p<<1|1)
-#define mid ((l+r)>>1) 
+#include <bits/stdc++.h>
+
 using namespace std;
-inline int read(){
-	int x=0,f=1;char ch=getchar();
-	while(ch<'0'||ch>'9'){if(ch=='-')f=-1;ch=getchar();}
-	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-	return x*f;
-}
-const int N=3e5+10;
-const int mod=1e9+9;
-const int M=383008016;
-inline int ksm(int x,int y){
-	int res=1;
-	while(y){
-		if(y&1)res=(res*x)%mod;
-		x=(x*x)%mod;
-		y>>=1;
-	}
-	return res;
-}
-inline int inv(int x){
-	if(x<0)x+=mod;
-	return ksm(x,mod-2);
-}
-const int Inv=inv(M);
-inline int calc(int a,int p,int n){
-	return ((((ksm(p,n)-1+mod)%mod)*inv(p-1)%mod)*a)%mod;
-}
-int n,q,a[N],b[N];
-struct Tree{
-	int P,sum[N<<2],tag[N<<2];
-	inline void pushup(int p){
-		sum[p]=(sum[ls]+sum[rs])%mod;
-	}
-	inline void f(int p,int l,int r,int k){
-		sum[p]+=calc(k,P,r-l+1);
-		tag[p]+=k;
-		sum[p]%=mod;
-		tag[p]%=mod;
-	}
-	inline void pushdown(int p,int l,int r){
-		if(!tag[p])return;
-		int len=mid-l+1;
-		f(ls,l,mid,tag[p]);
-		f(rs,mid+1,r,(tag[p]*ksm(P,len))%mod);
-		tag[p]=0;
-	}
-	void update(int L,int R,int p,int l,int r,int k){
-		if(L==l&&r==R){
-			sum[p]+=calc(k,P,r-l+1);
-			tag[p]+=k;
-			sum[p]%=mod;
-			tag[p]%=mod;
-			return;
-		}
-		pushdown(p,l,r);
-		int len=mid-L+1;
-		if (R <= mid) {
-		    update(L, R, ls, l, mid, k);
-		} else if (L > mid) {
-		    update(L, R, rs, mid + 1, r, k);
-		} else {
-		    update(L, mid, ls, l, mid, k);
-		    update(mid + 1, R, rs, mid + 1, r, (k * ksm(P, len)) % mod);
-		}
-		pushup(p);
-	}
-	int query(int L,int R,int p,int l,int r){
-		if(L<=l&&r<=R)
-			return sum[p];
-		pushdown(p,l,r);
-		int res=0;
-		if(L<=mid)(res+=query(L,R,ls,l,mid)) %= mod;
-		if(R>mid) (res+=query(L,R,rs,mid+1,r)) %= mod;
-		return res%mod;
-	}
-}T1,T2;
-signed main()
-{
-	T1.P=((1+M)*inv(2))%mod;
-	T2.P=(((1-M+mod)%mod)*inv(2))%mod;
-	n=read(),q=read();
-	for(int i=1;i<=n;i++){
-		a[i]=read();
-		b[i]=(b[i-1]+a[i])%mod;
-	}
-	while(q--){
-		int opt=read(),l=read(),r=read();
-		if(opt==1){
-			T1.update(l,r,1,1,n,T1.P);
-			T2.update(l,r,1,1,n,T2.P);
-		}
-		if(opt==2){
-			int s1=T1.query(l,r,1,1,n),s2=T2.query(l,r,1,1,n),s3=((b[r]-b[l-1]) % mod+mod)%mod;
-            std::cerr << s1 << " " << s2 << "\n";
-			int res=(s1-s2+mod)%mod;
-			res=(res*Inv)%mod;
-			res=(res+s3)%mod;
-			printf("%lld",res);
-			putchar('\n');
-		}
-	}
-	return 0;
-}
+
+namespace FastIO {
+		class FastIOBase {
+				protected:
+#ifdef OPENIOBUF
+						static const int BUFSIZE = 1 << 22;
+						char buf[BUFSIZE + 1];
+						int buf_p = 0;
+#endif
+						FILE*target;
+				public:
+#ifdef OPENIOBUF
+						virtual void flush() = 0;
+#endif
+						FastIOBase(FILE*f): target(f) {}~FastIOBase() = default;
+		};
+		class FastOutput: public FastIOBase {
+#ifdef OPENIOBUF
+				public:
+						inline void flush() {
+								fwrite(buf, 1, buf_p, target), buf_p = 0;
+						}
+#endif
+				protected:
+						inline void __putc(char x) {
+#ifdef OPENIOBUF
+								if (buf[buf_p++] = x, buf_p == BUFSIZE)flush();
+#else
+								putc(x, target);
+#endif
+						} template<typename T>inline void __write(T x) {
+								static char stk[64], *top;
+								top = stk;
+								if (x < 0)return __putc('-'), __write(-x);
+								do*(top++) = x % 10, x /= 10;
+								while (x);
+								for (; top != stk; __putc(*(--top) + '0'));
+						} public:
+						FastOutput(FILE*f = stdout): FastIOBase(f) {}
+#ifdef OPENIOBUF
+						inline void setTarget(FILE*f) {
+								this->flush(), target = f;
+						}~FastOutput() {
+								flush();
+						}
+#else
+						inline void setTarget(FILE*f) {
+								target = f;
+						}
+#endif
+						template<typename...T>inline void writesp(const T&...x) {
+								initializer_list<int> {(this->operator<<(x), __putc(' '), 0)...};
+						} template<typename...T>inline void writeln(const T&...x) {
+								initializer_list<int> {(this->operator<<(x), __putc('\n'), 0)...};
+						} inline FastOutput&operator<<(char x) {
+								return __putc(x), *this;
+						} inline FastOutput&operator<<(const char*s) {
+								for (; *s; __putc(*(s++)));
+								return*this;
+						} inline FastOutput&operator<<(const string&s) {
+								return (*this) << s.c_str();
+						} template<typename T, typename = typename enable_if<is_integral<T>::value>::type>inline FastOutput & operator<<(const T&x) {
+								return __write(x), *this;
+						}
+		} qout;
+		class FastInput: public FastIOBase {
+#ifdef OPENIOBUF
+				public:
+						inline void flush() {
+								buf[fread(buf, 1, BUFSIZE, target)] = '\0', buf_p = 0;
+						}
+#endif
+				protected:
+						inline char __getc() {
+#ifdef OPENIOBUF
+								if (buf_p == BUFSIZE)flush();
+								return buf[buf_p++];
+#else
+								return getc(target);
+#endif
+						} public:
+#ifdef OPENIOBUF
+						FastInput(FILE*f = stdin): FastIOBase(f) {
+								buf_p = BUFSIZE;
+						} inline void setTarget(FILE*f) {
+								this->flush(), target = f;
+						}
+#else
+						FastInput(FILE*f = stdin): FastIOBase(f) {} inline void setTarget(FILE*f) {
+								target = f;
+						}
+#endif
+						inline char getchar() {
+								return __getc();
+						} template<typename...T>inline void read(T&...x) {
+								initializer_list<int> {(this->operator>>(x), 0)...};
+						} inline FastInput&operator>>(char&x) {
+								while (isspace(x = __getc()));
+								return*this;
+						} template<typename T, typename = typename enable_if<is_integral<T>::value>::type>inline FastInput & operator>>(T&x) {
+								static char ch, sym;
+								x = sym = 0;
+								while (isspace(ch = __getc()));
+								if (ch == '-')sym = 1, ch = __getc();
+								for (; isdigit(ch); x = (x << 1) + (x << 3) + (ch ^ 48), ch = __getc());
+								return sym ? x = -x : x, *this;
+						} inline FastInput&operator>>(char*s) {
+								while (isspace(*s = __getc()));
+								for (; !isspace(*s) && *s && ~*s; * (++s) = __getc());
+								return*s = '\0', *this;
+						} inline FastInput&operator>>(string&s) {
+								char str_buf[(1 << 8) + 1], *p = str_buf;
+								char*const buf_end = str_buf + (1 << 8);
+								while (isspace(*p = __getc()));
+								for (s.clear(), p++;; p = str_buf) {
+										for (; p != buf_end && !isspace(*p = __getc()) && *p && ~*p; p++);
+										*p = '\0', s.append(str_buf);
+										if (p != buf_end)break;
+								}
+								return*this;
+						}
+		} qin;
+} using namespace FastIO;
