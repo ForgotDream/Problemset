@@ -1,7 +1,7 @@
 /**
- * @file    
+ * @file    P1220 关路灯.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   Interval DP
  * @date    2023-06-02
  */
 #include <bits/stdc++.h>
