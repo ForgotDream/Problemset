@@ -2,7 +2,11 @@
  * @file    
  * @author  ForgotDream
  * @brief   
+<<<<<<< Updated upstream
  * @date    2023-06-02
+=======
+ * @date    2023-06-03
+>>>>>>> Stashed changes
  */
 #include <bits/stdc++.h>
 
