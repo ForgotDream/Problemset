@@ -1,20 +1,13 @@
 /**
- * @file    
+ * @file    P3979 遥远的国度.cpp
  * @author  ForgotDream
- * @brief   
-<<<<<<< Updated upstream
- * @date    2023-06-10
-=======
+ * @brief   HLD
  * @date    2023-06-05
->>>>>>> Stashed changes
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
-<<<<<<< Updated upstream
-signed main() {
-=======
 const int inf = INT_MAX;
 
 struct SegTree {
@@ -80,16 +73,12 @@ struct SegTree {
 };
 
 int main() {
->>>>>>> Stashed changes
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  int k, v, n;
-  std::cin >> k >> v >> n;
+  int n, m;
+  std::cin >> n >> m;
 
-<<<<<<< Updated upstream
-  
-=======
   std::vector<std::vector<int>> adj(n);
   for (int i = 0; i < n - 1; i++) {
     int u, v;
@@ -195,7 +184,6 @@ int main() {
       }
     }
   }
->>>>>>> Stashed changes
 
   return 0;
 }
