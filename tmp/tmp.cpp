@@ -40,6 +40,7 @@ signed main() {
   int m, k;
   std::cin >> n >> m >> k;
 
+<<<<<<< Updated upstream
   int d = (1 << (m - 1)) - 1;
 
   std::vector<bool> valid;
@@ -75,6 +76,13 @@ signed main() {
   }
 
   std::cout << ans << "\n";
+=======
+  for (int i = 0; i < n; i++) {
+    
+  }
+
+  std::vector<std::vector<int>> f;
+>>>>>>> Stashed changes
 
   return 0;
 }
