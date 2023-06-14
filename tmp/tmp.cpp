@@ -7,46 +7,114 @@
 #include <bits/stdc++.h>
 
 using i64 = long long;
-using seg = std::pair<int, int>;
 
-void solve() {
-  int n;
-  std::cin >> n;
-  std::vector<seg> a(n);
-  for (int i = 0; i < n; i++) { std::cin >> a[i].first >> a[i].second; }
-  std::sort(a.begin(), a.end());
-  std::vector<std::vector<int>> adj(n);
-  std::vector<int> deg(n);
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      if (a[j].first <= a[i].second) {
-        adj[i].push_back(j), deg[j]++;
-      } else {
-        break;
+struct hashTable {
+  static constexpr int siz = 1e5, mod = 99983;
+  std::vector<int> head, nxt;
+  std::vector<i64> val, stt;
+  int cnt, offset;
+  hashTable() {
+    cnt = 0;
+    head.resize(mod, -1), nxt.resize(siz);
+    stt.resize(siz), val.resize(siz);
+  }
+  void setOffset(int _o) { offset = _o; }
+  void clear() { cnt = 0, head.assign(siz, -1); }
+  int size() { return cnt; }
+  void insert(i64 st, i64 w) {
+    int cur = st % mod;
+    for (int i = head[cur]; ~i; i = nxt[i]) {
+      if (stt[i] == st) {
+        val[i] = std::max(val[i], w);
+        return;
       }
     }
+    stt[cnt] = st, val[cnt] = w;
+    nxt[cnt] = head[cur], head[cur] = cnt++;
   }
-  int ans = 0;
-  std::vector f(n, std::vector<int>(3));
-  std::function<void(int)> dfs = [&](int u) {
-    for (auto v : adj[u]) {
-      dfs(v);
-      f[u][0] = std::max({f[u][0], f[v][0], f[v][1], f[v][2]});
-      f[u][1] = std::max({f[u][1], f[v][0], f[v][2]});
-      f[u][2] = std::max({f[u][2], f[v][0]});
-    }
-  };
-  std::cout << ans << "\n";
-}
+  void roll() {
+    for (int i = 0; i < cnt; i++) { stt[i] <<= offset; }
+  }
+};
 
 signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  int t;
-  std::cin >> t;
+  int n;
+  std::cin >> n;
 
-  while (t--) { solve(); }
+  std::vector a(n, std::vector<int>(n));
+  i64 ans = INT_MIN;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) { 
+      std::cin >> a[i][j]; 
+      ans = std::max(ans, 1ll * a[i][j]); 
+    }
+  }
+
+  int offset = 3, mask = (1 << offset) - 1;
+  auto encode = [&](const std::vector<int> &bit, i64 w) {
+    static std::vector<int> b(n + 1);
+    b.assign(n + 1, -1), b[0] = 0;
+    i64 st = 0;
+    int cnt = 1;
+    for (int i = n; i >= 0; i--) {
+      if (!~b[bit[i]]) { b[bit[i]] = cnt++; }
+      st <<= offset, st |= b[bit[i]];
+    }
+    if (cnt <= 2) { ans = std::max(ans, w); }
+    return st;
+  };
+  auto decode = [&](i64 st) {
+    std::vector<int> bit(n + 1);
+    for (int i = 0; i <= n; i++) {
+      bit[i] = st & mask, st >>= offset;
+    }
+    return bit;
+  };
+
+  std::array<hashTable, 2> h;
+  for (int i = 0; i < 2; i++) { h[i].setOffset(offset); }
+
+  int cur = 0, lst = 1;
+
+  auto push = [&](int pl, int dn, int rt, i64 w, const std::vector<int> &bit) {
+    auto b = bit;
+    b[pl] = dn, b[pl + 1] = rt;
+    h[cur].insert(encode(b, w), w);
+  };
+
+  h[cur].insert(0, 0);
+  for (int i = 0; i < n; i++) {
+    h[cur].roll();
+    for (int j = 0; j < n; j++) {
+      cur ^= 1, lst ^= 1;
+      h[cur].clear();
+      for (int k = 0; k < h[lst].size(); k++) {
+        i64 w = h[lst].val[k];
+        auto st = decode(h[lst].stt[k]);
+        int lt = st[j], up = st[j + 1];
+        bool rt = (j != n - 1);
+        if (lt && up) {
+          if (lt == up) { push(j, 0, 0, w, st); }
+          for (int l = 0; l <= n; l++) {
+            if (st[l] == lt) { st[l] = up; }
+          }
+          push(j, up, up, w + a[i][j], st);
+        } else if (lt || up) {
+          int t = lt | up;
+          push(j, 0, 0, w, st);
+          push(j, t, t, w + a[i][j], st);
+        } else {
+          push(j, 0, 0, w, st);
+          push(j, n, n, w + a[i][j], st);
+        }
+      }
+    }
+  }
+
+  std::cout << ans << "\n";
 
   return 0;
 }

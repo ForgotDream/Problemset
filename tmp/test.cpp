@@ -1,148 +1,125 @@
-//Code by __dest__ruct__or__(uid=592238)
-#include <iostream>
-#include <string>
+#include <bits/stdc++.h>
+#define int long long
 using namespace std;
-#define umap unordered_map
-#define uset unordered_set
-#define mset multiset
-#define ll long long
-#define ld long double
-#define ull unsigned ll
-#define pii pair<int,int>
-#define pll pair<ll,ll>
-#define spe putchar(' ')
-#define edl putchar('\n')
-#define tpcTi template<class T>inline
-#define ret return
-const ll INF=9223372036854775807;
-namespace mySTL{
-	tpcTi T _max(T a,T b){ret a>b?a:b;}
-	tpcTi T _min(T a,T b){ret a<b?a:b;}
-	tpcTi T _abs(T a){ret a<0?-a:a;}
-	inline int read(){char c=getchar();int f=1,ans=0;
-	while(c<'0'||c>'9'){if(c=='-') f=-1;c=getchar();}
-	while(c>='0'&&c<='9')ans=(ans*10+c-'0'),c=getchar();
-	ret ans*f;}
-	inline ll readll(){char c=getchar();ll f=1,ans=0;
-	while(c<'0'||c>'9'){if(c=='-') f=-1;c=getchar();}
-	while(c>='0'&&c<='9')ans=(ans*10+c-'0'),c=getchar();
-	ret ans*f;}
-	tpcTi void _swap(T &a,T &b){a^=b,b^=a,a^=b;}
-	inline void write(int x){if(x<0){putchar('-');x=-x;}
-	if(x>=10){write(x/10);}putchar(x%10+'0');}
-	inline void write(ll x){if(x<0){putchar('-');x=-x;}
-	if(x>=10){write(x/10);}putchar(x%10+'0');}
-	inline ll pw(ll a,ll b,ll p=INF){if(b==0)ret 1;
-	if(b==1)ret a%p;
-	ll mid=pw(a,b/2,p)%p;
-	if(b&1)ret mid*mid%p*a%p;else{ret mid*mid%p;}}
-	tpcTi T gcd(T a,T b){ret b?gcd<T>(b,a%b):a;}
-	tpcTi T lcm(T a,T b){ret a/gcd<T>(a,b)*b;}
-	inline void write(string s){int len=s.length();
-	for(int i=0;i<len;i++) putchar(s[i]);}
+const int M = 13;
+const int offset = 3, mask = (1 << offset) - 1;
+int n, m;
+long long ans, d;
+const int MaxSZ = 1e5, Prime = 99983;
+
+struct hashTable {
+  int head[Prime], next[MaxSZ], sz;
+  int state[MaxSZ];
+  long long key[MaxSZ];
+
+  void clear() {
+    sz = 0;
+    memset(head, -1, sizeof(head));
+  }
+
+  void push(int s) {
+    int x = s % Prime;
+    for (int i = head[x]; ~i; i = next[i]) {
+      if (state[i] == s) {
+        key[i] += d;
+        return;
+      }
+    }
+    state[sz] = s, key[sz] = d;
+    next[sz] = head[x];
+    head[x] = sz++;
+  }
+
+  void roll() {
+    for (int i = 0; i < sz; i++) state[i] <<= offset;
+  }
+} H[2], *H0, *H1;
+
+int b[M + 1], bb[M + 1];
+
+int encode() {
+  int s = 0;
+  memset(bb, -1, sizeof(bb));
+  int bn = 1;
+  bb[0] = 0;
+  for (int i = m; i >= 0; --i) {
+    if (!~bb[b[i]]) bb[b[i]] = bn++;
+    s <<= offset;
+    s |= bb[b[i]];
+  }
+  return s;
 }
-using namespace mySTL;
-int n,m,opt,x,y;
-ll k,a[110000],p,tree[110000*4],mtag[110000*4],atag[110000*4];
-inline int lc(int x){
-	ret x<<1;
+
+void decode(int s) {
+  for (int i = 0; i < m + 1; i++) {
+    b[i] = s & mask;
+    s >>= offset;
+  }
 }
-inline int rc(int x){
-	ret x<<1|1;
+
+void push(int j, int dn, int rt) {
+  b[j] = dn;
+  b[j + 1] = rt;
+  H1->push(encode());
 }
-inline void build(int l,int r,int k){
-	mtag[k]=1;
-	if(l==r){
-		tree[k]=a[l];
-		ret;
-	}
-	int m=l+r>>1;
-	build(l,m,lc(k));
-	build(m+1,r,rc(k));
-	tree[k]=(tree[lc(k)]+tree[rc(k)])%p;
-}
-inline void pushdown(int l,int r,int x){
-	int m=l+r>>1;
-	mtag[lc(x)]=(mtag[x]*mtag[lc(x)])%p;
-	mtag[rc(x)]=(mtag[x]*mtag[rc(x)])%p;
-    atag[lc(x)]=(atag[lc(x)]*mtag[x])%p;
-    atag[rc(x)]=(atag[rc(x)]*mtag[x])%p;
-    tree[lc(x)]=(tree[lc(x)]*mtag[x])%p;
-    tree[rc(x)]=(tree[rc(x)]*mtag[x])%p;
-    // 先统一处理乘法
-    atag[lc(x)]=(atag[lc(x)]+atag[x])%p;
-    atag[rc(x)]=(atag[rc(x)]+atag[x])%p;
-    tree[lc(x)]=(tree[lc(x)]+atag[x]*(m-l+1))%p;
-    tree[rc(x)]=(tree[rc(x)]+atag[x]*(r-m))%p;
-    // 再统一处理加法
-	mtag[x]=1;
-	atag[x]=0;
-}
-inline void mul(int x,int y,ll z,int l,int r,int k){
-	if(l>r||l>y||r<x){
-		ret;
-	}
-	if(l>=x&&r<=y){
-		mtag[k]=(mtag[k]*z)%p;
-		atag[k]=(atag[k]*z)%p;
-		tree[k]=(tree[k]*z)%p;
-		ret;
-	}
-	pushdown(l,r,k);
-	int m=l+r>>1;
-	mul(x,y,z,l,m,lc(k));
-	mul(x,y,z,m+1,r,rc(k));
-	tree[k]=(tree[lc(k)]+tree[rc(k)])%p;
-}
-inline void add(int x,int y,ll z,int l,int r,int k){
-	if(l>r||l>y||r<x){
-		ret;
-	}
-	if(l>=x&&r<=y){
-		atag[k]=(atag[k]+z)%p;
-		tree[k]=(tree[k]+z*(r-l+1)%p)%p;
-		ret;
-	}
-	pushdown(l,r,k);
-	int m=l+r>>1;
-	add(x,y,z,l,m,lc(k));
-	add(x,y,z,m+1,r,rc(k));
-	tree[k]=(tree[lc(k)]+tree[rc(k)])%p;
-}
-inline ll sum(int x,int y,int l,int r,int k){
-	if(l>r||l>y||r<x){
-		ret 0;
-	}
-	if(l>=x&&r<=y){
-		ret tree[k];
-	}
-	pushdown(l,r,k);
-	int m=l+r>>1;
-	ret (sum(x,y,l,m,lc(k))+sum(x,y,m+1,r,rc(k)))%p;
-}
-int main(void){
-	n=read();
-	m=read();
-	p=readll();
-	for(int i=1;i<=n;i++){
-		a[i]=readll();
-		a[i]%=p;
-	}
-	build(1,n,1);
-	while(m--){
-		opt=read();
-		x=read();
-		y=read();
-		if(opt==1){
-			k=readll();
-			mul(x,y,k,1,n,1);
-		}else if(opt==2){
-			k=readll();
-			add(x,y,k,1,n,1);
-		}else{
-			write(sum(x,y,1,n,1)%p);
-			edl;
-		}
-	}
-	ret 0;
+
+signed main() {
+  cin >> n >> m;
+  std::vector a(n, std::vector<bool>(m));
+  int ex, ey;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      char c;
+      std::cin >> c;
+      if (c == '.') { a[i][j] = true, ex = i, ey = j; }
+    }
+  }
+  H0 = H, H1 = H + 1;
+  H1->clear();
+  d = 1;
+  H1->push(0);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      swap(H0, H1);
+      H1->clear();
+      for (int ii = 0; ii < (H0->sz); ii++) {
+        decode(H0->state[ii]);
+        d = H0->key[ii];
+        int lt = b[j], up = b[j + 1];
+        bool dn = i != n - 1, rt = j != m - 1;
+        if (!a[i][j]) {
+          if (!lt && !up) {
+            push(j, 0, 0);
+          }
+        } else {
+          if (lt && up) {
+            if (lt == up) {
+              if (i == ex && j == ey) {
+                push(j, 0, 0);
+              }
+            } else {
+              for (int i = 0; i < m + 1; i++)
+                if (b[i] == lt) b[i] = up;
+              push(j, 0, 0);
+            }
+          } else if (lt || up) {
+            int t = lt | up;
+            if (dn) {
+              push(j, t, 0);
+            }
+            if (rt) {
+              push(j, 0, t);
+            }
+          } else {
+            if (dn && rt) {
+              push(j, m, m);
+            }
+          }
+        }
+      }
+    }
+    H1->roll();
+  }
+  assert(H1->sz <= 1);
+  cout << (H1->sz == 1 ? H1->key[0] : 0) << endl;
 }
