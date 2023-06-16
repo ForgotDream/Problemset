@@ -1,125 +1,91 @@
-#include <bits/stdc++.h>
-#define int long long
+#include<bits/stdc++.h>
+#define MAXN 18
+#define p 1000000007
 using namespace std;
-const int M = 13;
-const int offset = 3, mask = (1 << offset) - 1;
-int n, m;
-long long ans, d;
-const int MaxSZ = 1e5, Prime = 99983;
-
-struct hashTable {
-  int head[Prime], next[MaxSZ], sz;
-  int state[MaxSZ];
-  long long key[MaxSZ];
-
-  void clear() {
-    sz = 0;
-    memset(head, -1, sizeof(head));
-  }
-
-  void push(int s) {
-    int x = s % Prime;
-    for (int i = head[x]; ~i; i = next[i]) {
-      if (state[i] == s) {
-        key[i] += d;
-        return;
-      }
-    }
-    state[sz] = s, key[sz] = d;
-    next[sz] = head[x];
-    head[x] = sz++;
-  }
-
-  void roll() {
-    for (int i = 0; i < sz; i++) state[i] <<= offset;
-  }
-} H[2], *H0, *H1;
-
-int b[M + 1], bb[M + 1];
-
-int encode() {
-  int s = 0;
-  memset(bb, -1, sizeof(bb));
-  int bn = 1;
-  bb[0] = 0;
-  for (int i = m; i >= 0; --i) {
-    if (!~bb[b[i]]) bb[b[i]] = bn++;
-    s <<= offset;
-    s |= bb[b[i]];
-  }
-  return s;
+int n,m,ma[20][20];
+int f[MAXN][MAXN][270000];
+int g[MAXN][MAXN][270000];
+int ans[20][20];
+void modify(int &a,int b)//卡常，用%的话会变慢
+{
+	a+=b;
+	if(a>p)a-=p;
 }
-
-void decode(int s) {
-  for (int i = 0; i < m + 1; i++) {
-    b[i] = s & mask;
-    s >>= offset;
-  }
-}
-
-void push(int j, int dn, int rt) {
-  b[j] = dn;
-  b[j + 1] = rt;
-  H1->push(encode());
-}
-
-signed main() {
-  cin >> n >> m;
-  std::vector a(n, std::vector<bool>(m));
-  int ex, ey;
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      std::cin >> c;
-      if (c == '.') { a[i][j] = true, ex = i, ey = j; }
-    }
-  }
-  H0 = H, H1 = H + 1;
-  H1->clear();
-  d = 1;
-  H1->push(0);
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      swap(H0, H1);
-      H1->clear();
-      for (int ii = 0; ii < (H0->sz); ii++) {
-        decode(H0->state[ii]);
-        d = H0->key[ii];
-        int lt = b[j], up = b[j + 1];
-        bool dn = i != n - 1, rt = j != m - 1;
-        if (!a[i][j]) {
-          if (!lt && !up) {
-            push(j, 0, 0);
-          }
-        } else {
-          if (lt && up) {
-            if (lt == up) {
-              if (i == ex && j == ey) {
-                push(j, 0, 0);
-              }
-            } else {
-              for (int i = 0; i < m + 1; i++)
-                if (b[i] == lt) b[i] = up;
-              push(j, 0, 0);
-            }
-          } else if (lt || up) {
-            int t = lt | up;
-            if (dn) {
-              push(j, t, 0);
-            }
-            if (rt) {
-              push(j, 0, t);
-            }
-          } else {
-            if (dn && rt) {
-              push(j, m, m);
-            }
-          }
-        }
-      }
-    }
-    H1->roll();
-  }
-  assert(H1->sz <= 1);
-  cout << (H1->sz == 1 ? H1->key[0] : 0) << endl;
+int main()
+{
+	scanf("%d%d",&n,&m);
+	for(int i=1;i<=n;i++)
+		for(int j=1;j<=m;j++)
+			scanf("%d",&ma[i][j]),ma[i][j]^=1;
+	int max_state=(1<<m+1)-1;
+	f[0][m][0]=1;
+	for(int i=1;i<=n;i++)//正着dp
+	{
+		for(int j=0;j<=max_state;j++)modify(f[i][0][j<<1],f[i-1][m][j]);//转移这一行的初始状态
+		for(int j=1;j<=m;j++)
+			for(int k=0;k<=max_state;k++)
+			{
+				int val=f[i][j-1][k];
+				if(!val)continue;
+				int pl1=(k>>j-1)&1;//右插头
+				int pl2=(k>>j)&1;//下插头
+				if(!ma[i][j]){if(!pl1&&!pl2)modify(f[i][j][k],val);}//第一种情况
+				else if(!pl1&&!pl2)//第二种情况
+				{
+					modify(f[i][j][k],val);
+					if(ma[i+1][j])modify(f[i][j][k^(1<<j-1)],val);
+					if(ma[i][j+1])modify(f[i][j][k^(1<<j)],val);
+				}
+				else if(!pl1&&pl2)//第三种情况
+					modify(f[i][j][k^(1<<j)],val);
+				else if(pl1&&!pl2)//第三种情况
+					modify(f[i][j][k^(1<<j-1)],val);
+			}
+	}
+	g[n+1][1][0]=1;
+	for(int i=n;i>0;i--)//反着dp与正着dp同理，反过来就好了
+	{
+		for(int j=0;j<=max_state;j++)modify(g[i][m+1][j>>1],g[i+1][1][j]);
+		for(int j=m;j>0;j--)
+			for(int k=0;k<=max_state;k++)
+			{
+				int val=g[i][j+1][k];
+				if(!val)continue;
+				int pl1=(k>>j-1)&1;
+				int pl2=(k>>j)&1;
+				if(!ma[i][j]){if(!pl1&&!pl2)modify(g[i][j][k],val);}
+				else if(!pl1&&!pl2)
+				{
+					modify(g[i][j][k],val);
+					if(ma[i-1][j])modify(g[i][j][k^(1<<j)],val);
+					if(ma[i][j-1])modify(g[i][j][k^(1<<j-1)],val);
+				}
+				else if(!pl1&&pl2)
+					modify(g[i][j][k^(1<<j)],val);
+				else if(pl1&&!pl2)
+					modify(g[i][j][k^(1<<j-1)],val);
+			}
+	}
+  auto print = [&](int x) {
+    for (int i = 0; i < m + 1; i++) { std::cerr << !!(x & (1 << i)); }
+    std::cerr << "\n";
+  };
+	for(int i=1;i<=n;i++)//合并答案
+		for(int j=1;j<=m;j++)
+		{
+			if(!ma[i][j])continue;
+			int now=max_state^(1<<j-1)^(1<<j);//合法状态
+			for(int k=now;k;k=(k-1)&now)//取合法状态的所有子集
+				modify(ans[i][j],1ll*f[i][j-1][k]*g[i][j+1][k]%p), cerr << g[i][j+1][k] << "\t", print(k);
+			cerr << g[i][j+1][0] << "\t", print(0);
+      modify(ans[i][j],1ll*f[i][j-1][0]*g[i][j+1][0]%p);//0也是合法状态
+      cerr << "\n";
+		}
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=1;j<=m;j++)
+			printf("%d ",ans[i][j]);//输出即可
+		puts("");
+	}
+	return 0;
 }
