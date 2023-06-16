@@ -15,6 +15,9 @@ i64 fastPow(i64 base, i64 exp, i64 mod) {
 }
 
 int main() {
+  freopen("calculator.in", "r", stdin);
+  freopen("calculator.out", "w", stdout);
+
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
