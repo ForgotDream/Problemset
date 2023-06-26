@@ -1,15 +1,14 @@
 #include <bits/stdc++.h>
 
 using i64 = long long;
-using f80 = long double;
 
 int main() {
-	freopen("exp.in", "r", stdin);
-	freopen("exp1.out", "w", stdout);
-	
+  freopen("explore.in", "r", stdin);
+  freopen("explore.out", "w", stdout);
+
   std::ios::sync_with_stdio(false);
-  std::cin.tie(0);
-  
+  std::cin.tie(nullptr);
+
   int n;
   std::cin >> n;
 
@@ -44,7 +43,7 @@ int main() {
       if (a[i].second >= a[j].second) {
         continue;
       }
-      f[i] = f[j] + 1;
+      f[i] = std::max(f[i], f[j] + 1);
     }
   }
 
