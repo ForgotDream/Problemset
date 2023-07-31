@@ -1,11 +1,7 @@
 /**
  * @file    
  * @author  ForgotDream
-<<<<<<< Updated upstream
  * @brief   CDQ
-=======
- * @brief   
->>>>>>> Stashed changes
  * @date    2023-07-31
  */
 #include <bits/stdc++.h>
