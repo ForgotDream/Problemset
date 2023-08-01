@@ -1,8 +1,8 @@
 /**
  * @file    
  * @author  ForgotDream
- * @brief   CDQ
- * @date    2023-07-31
+ * @brief   
+ * @date    2023-08-01
  */
 #include <bits/stdc++.h>
 
@@ -17,6 +17,7 @@ signed main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
+<<<<<<< Updated upstream
   std::cin >> n >> k;
   k = n - k;
   for (int i = 1; i <= n; i++) std::cin >> p[i];
@@ -29,5 +30,7 @@ signed main() {
     cir.push_back(cnt), sum += cnt / 2;
   }
 
+=======
+>>>>>>> Stashed changes
   return 0;
 }
