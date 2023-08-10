@@ -1,7 +1,7 @@
 /**
- * @file    CF1294F Three Paths on a Tree.cpp
+ * @file    
  * @author  ForgotDream
- * @brief   树的直径
+ * @brief   
  * @date    2023-08-09
  */
 #include <bits/stdc++.h>
