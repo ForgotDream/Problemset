@@ -1,43 +1,75 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-mt19937 rd(time(0));
-struct T{
-	int l,r,d,mn,mx,s,h;
-}s[100009];
-int n,k,h,r;
-void up(int x){//更新size，最大值，最小值
-	s[x].mn=min(s[x].h,min(s[s[x].l].mn,s[s[x].r].mn));
-	s[x].mx=max(s[x].h,max(s[s[x].l].mx,s[s[x].r].mx));
-	s[x].s=s[s[x].l].s+s[s[x].r].s+1;
+#define int __int128
+inline int read(){
+    int x=0;bool f=1;char c=getchar();
+    while(c<48||c>57){if(c=='-') f=0;c=getchar();}
+    while(c>=48&&c<=57){x=x*10+(c^48);c=getchar();}
+    return f?x:-x;
 }
-void sp(int x,int k,int&p,int&q){//分裂
-	if(!x){p=q=0;return;}
-	if(s[s[x].l].s<k)p=x,sp(s[x].r,k-s[s[x].l].s-1,s[x].r,q);else q=x,sp(s[x].l,k,p,s[x].l);
-	up(x);
+inline void write(int x){
+    if(x<0) putchar('-'),x=-x;
+    if(x>9) write(x/10);
+    putchar(x%10+48);
 }
-int mg(int x,int y){//合并
-	if(!x||!y)return x|y;
-	if(s[x].d<s[y].d)return s[x].r=mg(s[x].r,y),up(x),x;
-	return s[y].l=mg(x,s[y].l),up(y),y;
+#define lcm(x,y) (x)*(y)/gcd((x),(y))
+inline int gcd(int a,int b){
+    if (b==0) return a;
+    return gcd(b,a%b);
 }
-int e1(int x){//求最小的w满足x子树内第w+1~sizex个元素属于[h-k,h+k]
-	int w=0;
-	while(x)if(min(s[x].h,s[s[x].r].mn)<h-k||max(s[x].h,s[s[x].r].mx)>h+k)w+=s[s[x].l].s+1,x=s[x].r;else x=s[x].l;
-	return w;
+inline void simp(int &a, int &b) {
+	int g = gcd(a, b);
+	a /= g, b /= g;
 }
-int e2(int x){//求最小的w满足x子树内第w+1个元素大于h
-	int w=0;
-	while(x)if(max(s[s[x].l].mx,s[x].h)>h)x=s[x].l;else w+=s[s[x].l].s+1,x=s[x].r;
-	return w;
+inline pair<int,int> fs_equal(int a,int b,int c){
+    if (a==0&&b==0) return make_pair(0,0);
+    simp(a, b), simp(a, c);
+		b *= c;
+    simp(a, b);
+    return make_pair(a,b);
 }
-void dfs(int x){if(x)dfs(s[x].l),cout<<s[x].h<<'\n',dfs(s[x].r);}//中序遍历
-int main(){ios::sync_with_stdio(0),cin.tie(0);
-	int i,x,y;
-	for(cin>>n>>k,s[0].mn=2e9,s[0].mx=0,i=1;i<=n;++i){
-		cin>>h,s[i]={0,0,(int)rd(),h,h,1,h};
-		int t1, t2;
-		sp(r,t1 = e1(r),x,r),sp(r,t2 = e2(r),y,r),r=mg(mg(x,y),mg(i,r));
-		std::cerr << t1 << " " << t2 << "\n";
-	}
-	dfs(r);
+inline void fs_clac(int &a,int &b,int c,int d){
+    if (a==0&&b==0) {a=c,b=d;return;}
+		simp(a, b), simp(c, d);
+    a=a*d+b*c,b=b*d;
+    simp(a, b);
 }
+int n,m,k,x,cnt,fs[200005][2],rd[200005];
+vector<int>e[200005];
+bool tmp[200005];
+signed main(){
+    n=read(),m=read();
+    for (int i=1;i<=n;i++){
+        k=read();
+        if (k==0) tmp[i]=1;
+        while (k--) x=read(),e[i].push_back(x),rd[x]++;
+    }
+    for (int i=1;i<=m;i++) fs[i][0]=1,fs[i][1]=1;
+		std::queue<int> q;
+    for (int i = 1; i <= m; i++) q.push(i);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			auto [up, dwn] = fs_equal(fs[u][0], fs[u][1], e[u].size());
+			for (auto v : e[u]) {
+				fs_clac(fs[v][0], fs[v][1], up, dwn);
+				if (!--rd[v]) q.push(v);
+			}
+		}
+    for (int i=1;i<=n;i++) if (tmp[i]) write(fs[i][0]),putchar(' '),write(fs[i][1]),putchar('\n');
+    return 0;
+}
+/*
+10 1
+5 2 3 4 5 6
+2 7 8
+2 8 10
+2 9 7
+1 9
+3 7 8 9
+1 10
+0
+1 10
+0
+
+*/
