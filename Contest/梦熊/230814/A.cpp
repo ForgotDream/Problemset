@@ -1,9 +1,3 @@
-/**
- * @file    
- * @author  ForgotDream
- * @brief   
- * @date    2023-08-12
- */
 #include <bits/stdc++.h>
 using i64 = long long;
 constexpr int N = 17;
@@ -24,12 +18,12 @@ void rotate(int i, int j) {
   tmp[i][j] ^= 1;
 }
 int solve(int st) {
-  cpy();
   int ans = 0x3f3f3f3f;
-  for (int i = 1; i <= n; i++) {
-    if (st & (1 << (i - 1))) rotate(1, i);
-  }
   for (int t = 0; t < 2; t++) {
+    cpy();
+    for (int i = 1; i <= n; i++) {
+      if (st & (1 << (i - 1))) rotate(1, i);
+    }
     int cur = __builtin_popcount(st);
     for (int i = 2; i <= n; i++) {
       for (int j = 1; j <= n; j++) {
