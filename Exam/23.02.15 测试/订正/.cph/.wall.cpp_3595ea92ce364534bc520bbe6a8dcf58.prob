@@ -1,0 +1,1 @@
+{"name":"Local: wall","url":"g:\\zyz\\Exams\\23.02.15 测试\\订正\\wall.cpp","tests":[{"id":1676469735166,"input":"3000 5\n600 800\n1600 1800\n100 1300\n300 2100\n1600 2300","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"g:\\zyz\\Exams\\23.02.15 测试\\订正\\wall.cpp","group":"local","local":true}

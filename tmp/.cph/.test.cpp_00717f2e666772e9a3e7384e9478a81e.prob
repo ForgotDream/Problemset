@@ -1,1 +1,1 @@
-{"name":"Local: test","url":"f:\\zyz\\Problemset\\tmp\\test.cpp","tests":[],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\tmp\\test.cpp","group":"local","local":true}
+{"name":"Local: test","url":"f:\\zyz\\Problemset\\tmp\\test.cpp","tests":[{"id":1692152745103,"input":"1","output":"1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\tmp\\test.cpp","group":"local","local":true}

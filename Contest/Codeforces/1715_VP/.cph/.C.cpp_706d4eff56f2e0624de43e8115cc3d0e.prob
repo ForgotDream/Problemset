@@ -1,0 +1,1 @@
+{"name":"Local: C","url":"f:\\zyz\\Problemset\\Contest\\Codeforces\\1715_VP\\C.cpp","tests":[{"id":1692017203025,"input":"5 5\n1 2 3 4 5\n3 2\n4 2\n3 1\n2 1\n2 2","output":"29\n23\n35\n25\n35"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\Contest\\Codeforces\\1715_VP\\C.cpp","group":"local","local":true}

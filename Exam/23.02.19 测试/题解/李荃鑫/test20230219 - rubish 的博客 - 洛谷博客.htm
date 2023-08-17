@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html class="js cssanimations"><head lang="en">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="blog-uid" content="750240">
+  <meta name="blog-name" content="rubish 的博客">
+  <meta name="current-user" content="750240">
+  <link rel="stylesheet" href="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/common.css">
+  <link rel="stylesheet" href="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/article.css">
+  <title>test20230219 - rubish 的博客 - 洛谷博客</title>
+<style>
+    body {
+      background: url(https://i0.hdslb.com/bfs/new_dyn/21df859e988eef94c8b9f1d14e99fd7b61198859.png) fixed center;
+      background-size: cover;
+    }
+  </style><script charset="utf-8" src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/22.js"></script><script charset="utf-8" src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/34.js"></script><style id="leczqls1.gwg">.bb-rnkitm:nth-child(1)::marker{color:var(--lg-red);font-weight:900}.bb-rnkitm:nth-child(2)::marker{color:var(--lg-orange);font-weight:900}.bb-rnkitm:nth-child(3)::marker{color:var(--lg-yellow);font-weight:900}.bb-rnkitm>span{display:flex;flex-wrap:wrap}.bb-rnkitm>span>span{margin-left:auto}.bb-rnklst-span{font-size:1em;font-weight:400}.btn-disable{pointer-events:none;color:#97979a}</style><style id="leczhg42.xcg">.exlg-copy{position:relative;display:inline-block;border:1px solid #3498db;border-radius:3px;background-color:#3498db00;color:#3498db;font-family:-apple-system,BlinkMacSystemFont,San Francisco,Helvetica Neue,Noto Sans,Noto Sans CJK SC,Noto Sans CJK,Source Han Sans,PingFang SC,Segoe UI,Microsoft YaHei,sans-serif;flex:none;outline:0;cursor:pointer;font-weight:400;line-height:1.5;text-align:center;vertical-align:middle;background:0 0;font-size:12px;padding:0 5px;margin-left:1px}.exlg-copy.exlg-copy-right{float:right}.exlg-copy:hover{background-color:#3498db1a}div.exlg-copied{background-color:#3498dbe6!important;color:#fff!important}div.exlg-copied.exlg-copied-fail{background-color:#db3434e6!important;color:#fff!important}.copy-btn{font-size:.8em;padding:0 5px}.lfe-form-sz-middle{font-size:.875em;padding:.313em 1em}.exlg-code-title{margin:0;font-family:inherit;font-size:1.125em;color:inherit}h3.exlg-code-title.exlg-beautified-cbex{margin-bottom:0!important;padding:.4rem .6rem .4rem 2rem;background-color:#eee;font-weight:700;border-top-left-radius:5px;border-top-right-radius:5px;padding-top:8px;margin-top:10px;box-shadow:0 2px 2px #00000024,0 1px 5px #0000001f,0 3px 1px -2px #0003}h3.exlg-code-title.exlg-beautified-cbex+pre[exlg-copy-code-block]{margin-top:0;border-bottom-left-radius:5px;border-bottom-right-radius:5px;border:1px solid #eee;box-shadow:0 2px 2px #00000024,0 1px 5px #0000001f,0 3px 1px -2px #0003;background-color:#fafafa}h3.exlg-code-title.exlg-beautified-cbex+pre>code.hljs[class]{font-family:Fira Code,Consolas,monospace;background:white;padding:.5em}h3.exlg-code-title.exlg-beautified-cbex>div.exlg-copy{color:#6c757d;border:0px solid #3498db;margin-left:1px;font-size:0;transition:background-color .3s;background-image:url("data:image/svg+xml;utf8,<svg class='icon' style='width: 1em;height: 1em;vertical-align: middle;fill: rgb(108, 117, 125);overflow: hidden;' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2669'><path d='M661.333333 234.666667A64 64 0 0 1 725.333333 298.666667v597.333333a64 64 0 0 1-64 64h-469.333333A64 64 0 0 1 128 896V298.666667a64 64 0 0 1 64-64z m-21.333333 85.333333H213.333333v554.666667h426.666667v-554.666667z m191.829333-256a64 64 0 0 1 63.744 57.856l0.256 6.144v575.701333a42.666667 42.666667 0 0 1-85.034666 4.992l-0.298667-4.992V149.333333H384a42.666667 42.666667 0 0 1-42.368-37.674666L341.333333 106.666667a42.666667 42.666667 0 0 1 37.674667-42.368L384 64h447.829333z' p-id='2670'></path></svg>");height:20px;width:20px;padding:0}h3.exlg-code-title.exlg-beautified-cbex>div.exlg-copy:hover{background-color:#6c757d1a}h3.exlg-code-title.exlg-beautified-cbex>div.exlg-copied[class]{background-color:#6c757d00!important;background-image:url("data:image/svg+xml;utf8,<svg class='icon' style='width: 1em;height: 1em;vertical-align: middle;fill: rgb(70, 160, 240);overflow: hidden;' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2669'><path d='M661.333333 234.666667A64 64 0 0 1 725.333333 298.666667v597.333333a64 64 0 0 1-64 64h-469.333333A64 64 0 0 1 128 896V298.666667a64 64 0 0 1 64-64z m-21.333333 85.333333H213.333333v554.666667h426.666667v-554.666667z m191.829333-256a64 64 0 0 1 63.744 57.856l0.256 6.144v575.701333a42.666667 42.666667 0 0 1-85.034666 4.992l-0.298667-4.992V149.333333H384a42.666667 42.666667 0 0 1-42.368-37.674666L341.333333 106.666667a42.666667 42.666667 0 0 1 37.674667-42.368L384 64h447.829333z' p-id='2670'></path></svg>")}h3.exlg-code-title.exlg-beautified-cbex>div.exlg-copied[class]:hover{background-color:#6c757d4d!important}h3.exlg-code-title.exlg-beautified-cbex>div.exlg-copied.exlg-copied-fail[class]{background-color:#6c757d00!important;background-image:url("data:image/svg+xml;utf8,<svg class='icon' style='width: 1em;height: 1em;vertical-align: middle;fill: rgb(219, 52, 52);overflow: hidden;' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2669'><path d='M661.333333 234.666667A64 64 0 0 1 725.333333 298.666667v597.333333a64 64 0 0 1-64 64h-469.333333A64 64 0 0 1 128 896V298.666667a64 64 0 0 1 64-64z m-21.333333 85.333333H213.333333v554.666667h426.666667v-554.666667z m191.829333-256a64 64 0 0 1 63.744 57.856l0.256 6.144v575.701333a42.666667 42.666667 0 0 1-85.034666 4.992l-0.298667-4.992V149.333333H384a42.666667 42.666667 0 0 1-42.368-37.674666L341.333333 106.666667a42.666667 42.666667 0 0 1 37.674667-42.368L384 64h447.829333z' p-id='2670'></path></svg>")}h3.exlg-code-title.exlg-beautified-cbex>div.exlg-copied.exlg-copied-fail[class]:hover{background-color:#6c757d4d!important}</style><style id="lecvifwz.5wb">.exlg-badge{border-radius:50px;padding:2px 10px;transition:all .15s;display:inline;min-width:10px;font-size:1em;font-weight:700;line-height:1;vertical-align:baseline;white-space:nowrap;cursor:pointer;margin-left:2px;margin-right:2px}</style><style id="led29451.x3a">#exlg-dash{margin-right:5px;position:relative;display:inline-block;padding:1px 10px 3px;color:#fff;border-radius:6px;box-shadow:0 0 7px #1e90ff;cursor:pointer}#exlg-dash>.exlg-warn{position:absolute;top:-.5em;right:-.5em}.exlg-icon:before{display:inline-block;width:1.3em;height:1.3em;margin-left:3px;text-align:center;border-radius:50%}.exlg-icon:hover:after{display:inline-block}.exlg-icon:after{display:none;content:attr(name);margin-left:5px;padding:0 3px;background-color:#fff;box-shadow:0 0 7px #00bfff;border-radius:7px}.exlg-icon.exlg-info:before{content:"i";color:#fff;background-color:#00bfff;font-style:italic}.exlg-icon.exlg-warn:before{content:"!";color:#fff;background-color:#e74c3c;font-style:normal}.exlg-unselectable{-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none}:root{--exlg-azure: #7bb8eb;--exlg-aqua: #03a2e8;--exlg-indigo: #3f48cb;--std-mediumturquoise: #48d1cc;--std-cornflowerblue: #6495ed;--std-dodgerblue: #1e90ff;--std-white: #fff;--std-black: #000;--lg-gray: #bbb;--lg-gray-2: #7f7f7f;--lg-gray-3: #6c757d;--lg-gray-4: #414345;--lg-gray-5: #333;--lg-gray-6: #000000bf;--lg-blue: #3498db;--lg-blue-button: #0e90d2;--lg-blue-dark: #34495e;--lg-blue-2: #7cb5ecbf;--lg-green: #5eb95e;--lg-green-dark: #054310c9;--lg-green-light: #5eb95e26;--lg-green-light-2: #c9e7c9;--lg-yellow: #f1c40f;--lg-orange: #e67e22;--lg-red: #e74c3c;--lg-red-light: #dd514c26;--lg-red-light-2: #f5cecd;--lg-red-button: #dd514c;--lg-purple: #8e44ad;--argon-indigo: #5e72e4;--argon-red: #f80031;--argon-red-button: #f5365c;--argon-green: #1aae6f;--argon-green-button: #2dce89;--argon-cyan: #03acca;--argon-yellow: #ff9d09;--lg-red-problem: #fe4c61;--lg-orange-problem: #f39c11;--lg-yellow-problem: #ffc116;--lg-green-problem: #52c41a;--lg-blue-problem: #3498db;--lg-purple-problem: #9d3dcf;--lg-black-problem: #0e1d69;--lg-gray-problem: #bfbfbf}.exlg-difficulty-color{font-weight:700}.exlg-difficulty-color.color-0{color:#bfbfbf!important}.exlg-difficulty-color.color-1{color:#fe4c61!important}.exlg-difficulty-color.color-2{color:#f39c11!important}.exlg-difficulty-color.color-3{color:#ffc116!important}.exlg-difficulty-color.color-4{color:#52c41a!important}.exlg-difficulty-color.color-5{color:#3498db!important}.exlg-difficulty-color.color-6{color:#9d3dcf!important}.exlg-difficulty-color.color-7{color:#0e1d69!important}#exlg-dash-wrapper:hover>.exlg-window{visibility:visible;opacity:1;transition-delay:unset}#exlg-dash-wrapper>.exlg-window{position:absolute;top:35px;left:0;z-index:148;visibility:hidden;opacity:0;width:340px;padding:15px;background:white;color:#000;border-radius:7px;box-shadow:#bbe3ff 0 0 7px;transition:.233s ease all}.exlg-window{position:absolute;top:35px;left:0;width:340px;padding:15px;z-index:6;background:white;color:#000;border-radius:7px;box-shadow:#bbe3ff 0 0 7px;transition:.233s ease all}.exlg-windiv-left-tag{height:2em;width:18%;margin-right:10px;display:inline-block;text-align:center}.exlg-windiv-btn{font-size:.9em;display:inline-block;flex:none;outline:0;cursor:pointer;color:#fff;font-weight:inherit;line-height:1.5;text-align:center;vertical-align:middle;background:0 0;border-radius:5px;border:1px solid;margin:4px}.dropdown>.center{padding:4px 1px 10px}</style><style id="led5hfek.l1t">.am-btn-warning{border-color:#ffc116;background-color:#ffc116;color:#fff}.am-btn-warning:hover{border-color:#f37b1d;background-color:#f37b1d;color:#fff}.am-btn{outline:none}</style><style id="led3b6e9.g67">.mp-editor-ground.exlg-ext.exlg-show-emo.exlg-show-emo-long{top:8.25em!important}.mp-editor-ground.exlg-ext.exlg-show-emo.exlg-show-emo-short{top:4.75em!important}.mp-editor-menu>br~li{position:relative;display:inline-block;margin:0;padding:5px 1px}.mp-editor-menu.exlg-show-emo.exlg-show-emo-long{height:6em!important;overflow:auto;background-color:#fff}.mp-editor-menu.exlg-show-emo.exlg-show-emo-short{height:2.5em!important;overflow:auto;background-color:#fff}.exlg-emo-btn{position:relative;top:0;border:none;background-color:#eee;border-radius:.7em;margin:.1em;transition:all .4s;height:2em}.exlg-emo-btn:hover{background-color:#f3f3f3;top:-3px}.exlg-emo,.exlg-ext{transition:all .15s}</style><style id="lecxywy5.ez">.juan-rnkitm:nth-child(1)::marker{color:var(--lg-red);font-weight:900}.juan-rnkitm:nth-child(2)::marker{color:var(--lg-orange);font-weight:900}.juan-rnkitm:nth-child(3)::marker{color:var(--lg-yellow);font-weight:900}.juan-rnkitm>span{display:flex;flex-wrap:wrap}.juan-rnkitm>span>span{margin-left:auto}</style><style id="led5qtnw.57n">#exlg-cli{position:fixed;top:0;z-index:134;display:none;width:100%;height:40px;background-color:#fff;box-shadow:0 0 7px #1e90ff}#exlg-cli-input{display:block;height:100%;width:100%;border:none;outline:none;font-family:Fira Code,Fira Mono,consolas,Courier New;color:#000}#exlg-cli-input.error{background-color:#cd5c5c}</style><style id="lecvgak5.c6j">.exlg-high-risk{color:#dd514c}.exlg-med-risk{color:#ff5722}.exlg-low-risk{color:#8c8c8c}</style><style id="led0sc15.mon">#exlg-messages-outter{z-index:129;position:fixed;right:1em;bottom:96px;border-radius:.6em;padding:6px;width:calc(18em + 12px);overflow:hidden}#exlg-messages-container{position:relative;width:100%;height:100%}.exlg-message-outter{background-color:#faf9fa;border-radius:.6em;width:18em;height:6em;box-shadow:0 0 6px #e1e1e2;position:relative;margin:.4em 0}.exlg-message-inner{width:100%;height:100%}.exlg-message-avatar{position:absolute;top:.8em;left:.8em;border-radius:100%;width:3.4em;height:3.4em}.exlg-message-username{position:absolute;top:.4em;left:4.7em;width:10.5em;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.exlg-message-content{position:absolute;top:2em;left:4.7em;width:12em;line-height:1;word-break:break-all;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.exlg-message-type{position:absolute;top:5.45em;left:1.1em;font-size:.8em;color:#bbbabb}.exlg-message-close{position:absolute;top:.4em;right:.4em;width:1.2em;height:1.2em;border-radius:100%;text-align:center;background-color:#f1f0f1;box-sizing:border-box;transition:ease-in-out background-color .1s;cursor:pointer}.exlg-message-close:hover{background-color:#e3e2e3}.exlg-message-close>svg{position:relative;top:40%;transform:translateY(-50%)}.exlg-message-show{display:block;color:#000;text-decoration:none;position:absolute;top:5.2em;right:.5em;font-size:.8em;padding-top:.1em;width:5em;height:1.7em;border-radius:.3em;text-align:center;background-color:#f1f0f1;box-sizing:border-box;transition:ease-in-out background-color .1s}.exlg-message-show:hover{background-color:#e3e2e3;color:#000}.exlg-message-show:visited{color:#000}</style><style id="lecw1mvb.c0j">.exlg-back-to-contest{text-decoration:none;float:right;color:#e74c3c}.exlg-back-to-contest:hover{color:#e74c3c}</style><style id="led3eu33.pq">.exlg-rand-settings{display:inline-block;padding:1px 5px;background-color:#fff;border:1px solid #6495ED;color:#6495ed;border-radius:6px;font-size:12px;position:relative;top:-2px}.exlg-rand-settings.selected{background-color:#6495ed;border:1px solid #6495ED;color:#fff}.exlg-rand-settings:hover{box-shadow:0 0 7px #1e90ff}.exlg-smallbtn{position:relative;display:inline-block;padding:1px 5px;color:#fff;border-radius:6px;font-size:12px;margin-left:1px;margin-right:1px}.exrand-enabled{width:49%;float:left}.exrand-disabled{width:49%;float:right}#exlg-dash-0>#exlg-exrand-window{width:250px;height:300px;z-index:6;background:white;color:#000;border-radius:7px;box-shadow:#bbe3ff 0 0 7px;visibility:hidden;opacity:0;transition:.233s ease all;position:absolute;left:-100px;top:20px;z-index:9;font-weight:initial}#exlg-dash-0:hover>#exlg-exrand-window{visibility:visible;opacity:1;transition-delay:unset}</style><style id="lecvaajz.x1">.exlg-rand-training-problem-btn{border-color:#343434;background-color:#343434}</style><style id="lecvwevf.to7">iframe{border:none;display:block;width:100%;height:100%}iframe::-webkit-scrollbar{display:none}</style><style id="lecwe2zz.uw6">.exlg-rand-tasklist-problem-btn{margin-left:.5em}</style><style id="led3qvnh.8d">.exlg-update-log-text{overflow-x:auto;white-space:nowrap;text-align:left}</style><style id="led4rxvv.xgk">.exlg-usercom-edit{transition:all .4s;opacity:0;border-radius:.2em;margin-left:.2em;width:1em;height:1em;vertical-align:middle;fill:currentColor;overflow:hidden}.exlg-usercom-edit:hover{transition:all .4s;opacity:.8;background:rgba(0,0,0,.1)}.exlg-usercom-tag{color:#8a7b7b;font-weight:lighter;font-size:.9em;margin-left:.3em;line-height:1em;font-family:Consolas}</style><style id="lecv4hln.4fh">iframe{border:none;display:block}iframe::-webkit-scrollbar{display:none}</style><style id="lecv4mgk.fg9">.main>.card>h3{display:inline-block}</style><style id="lecz6dv1.gb9">#exlg-vp{margin-right:.5em;display:inline-block;flex:none;outline:0;cursor:pointer;color:#fff;font-weight:inherit;line-height:1.5;text-align:center;vertical-align:middle;background:0 0;border-radius:3px;border:1px solid;border-color:#52c41a;background-color:#52c41a}</style><style id="led4jzpk.wzh">input[exlg-badge-register],select[exlg-badge-register]{outline:none;display:inline-block;width:auto;padding:.5em;line-height:1.2;color:#555;vertical-align:middle;background-color:#fff;background-image:none;border:1px solid #ccc;border-radius:0;-webkit-appearance:none;-webkit-transition:border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}input[exlg-badge-register][disabled]{cursor:not-allowed;background-color:#eee}input[exlg-badge-register]:focus{border:1px solid #3bb4f2}body{margin:0}.exlg-dialog-footer{bottom:0;position:absolute;right:0;padding:10px 6px}.exlg-dialog-container.container-show:hover>.exlg-dialog-btn{background:rgba(255,255,255,.8)}.exlg-dialog-btn{margin:0 4px;float:right;color:#666;min-width:75px;cursor:pointer;background:rgba(255,255,255,.2);padding:7px 10px;border:1px solid #ddd;border-radius:3px}.exlg-dialog-container.container-hide{opacity:0}.exlg-dialog-container.container-show:hover{background:rgba(250,250,250,.8);box-shadow:0 2px 8px #0006;opacity:1}.exlg-dialog-container{filter:blur(0);position:relative;opacity:.75;background:rgba(204,204,204,.2);width:500px;min-height:300px;border-radius:5px;margin:0 auto;box-shadow:0 2px 8px #00000040;font-size:16px;line-height:1.5;backdrop-filter:blur(20px)}.exlg-dialog-wrapper{position:fixed;left:0;top:0;background:rgba(0,0,0,0);width:100%;height:100%;align-items:center;display:table-cell;z-index:150}.exlg-dialog-header{height:auto;border-bottom:1px solid #eee;padding:11px 20px}.exlg-dialog-body{text-align:center;margin-bottom:50px;padding:20px 30px 10px;line-height:2}#header-right{position:absolute;width:30px;height:30px;border-radius:5px;background:rgba(0,0,0,0);color:red;right:10px;top:10px;text-align:center}</style><style id="led1cr25.83q">#regbadge-preview .exlg-badge-preview{border:none}#regbadge-preview input{border:none;background:0 0;outline:0}textarea.exlg-regbadge-configinput,.exlg-regbadge-box input:not([disabled]),input[exlg-regbadge]{padding:.5em;line-height:1.2;color:#555;outline:0;background-color:#fff;background-image:none;border:1px solid #ccc;border-radius:0;-webkit-appearance:none;-webkit-transition:border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}textarea.exlg-regbadge-configinput:hover{background-color:#fefffe;border-color:#3bb4f2;outline:0;-webkit-box-shadow:inset 0 1px 1px rgb(0 0 0 / 8%),0 0 5px rgb(59 180 242 / 30%);box-shadow:inset 0 1px 1px #00000014,0 0 5px #3bb4f24d}input[exlg-regbadge]:hover{background-color:#fefffe;border-color:#3bb4f2}input[exlg-regbadge]:focus{background-color:#fefffe;border-color:#3bb4f2;outline:0;-webkit-box-shadow:inset 0 1px 1px rgb(0 0 0 / 8%),0 0 5px rgb(59 180 242 / 30%);box-shadow:inset 0 1px 1px #00000014,0 0 5px #3bb4f24d}.exlg-regbadge-box input:not([disabled]):hover{background-color:#fefffe;border-color:#3bb4f2}.exlg-regbadge-box input:not([disabled]):focus{background-color:#fefffe;border-color:#3bb4f2;outline:0;-webkit-box-shadow:inset 0 1px 1px rgb(0 0 0 / 8%),0 0 5px rgb(59 180 242 / 30%);box-shadow:inset 0 1px 1px #00000014,0 0 5px #3bb4f24d}#regbadge-preview-id{font-family:apple-system,BlinkMacSystemFont,San Francisco,Helvetica Neue,Noto Sans CJK SC,Noto Sans CJK,Source Han Sans,PingFang SC,Microsoft YaHei,sans-serif}#preview-lg-badge>.lg3-badge{text-align:center;box-sizing:border-box;display:inline-block;min-width:10px;padding:.25em .625em;font-size:1.2rem;font-weight:700;color:#fff;line-height:1;vertical-align:baseline;white-space:nowrap;border-radius:2px}#preview-lg-badge>.lg4-badge{color:#fff;display:inline-block;padding:0 8px;box-sizing:border-box;font-weight:400;line-height:1.5;border-radius:2px;margin-left:.2em;font-size:.875em}.exlg-badge-page .exlg-regbadge-box{width:50%;float:left;display:inline}.exlg-badge-page .exlg-regbadge-fronttitle{height:1.5em;float:left;padding:.1em;width:5em}.exlg-badge-page button[exlg]{color:#666;min-width:75px;cursor:pointer;background:rgba(255,255,255,.2);padding:3px 10px;border:1px solid #ddd;border-radius:3px}select[exlg-badge-register]{background:url("data:image/svg+xml;charset=UTF-8, %3Csvg%20style=%22fill:%20rgb(108,%20117,%20125);%22%20width=%2210%22%20height=%2210%22%20viewBox=%220%200%209%209%22%20fill=%22rgb(108,%20117,%20125)%22%20xmlns=%22http://www.w3.org/2000/svg%22%20class=%22link-icon--right%22%3E%3Cpath%20fill-rule=%22evenodd%22%20clip-rule=%22evenodd%22%20d=%22M7.50588%203.40623C7.40825%203.3086%207.24996%203.3086%207.15232%203.40623L4.41244%206.14612L1.67255%203.40623C1.57491%203.3086%201.41662%203.3086%201.31899%203.40623C1.22136%203.50386%201.22136%203.66215%201.31899%203.75978L4.11781%206.5586C4.28053%206.72132%204.54434%206.72132%204.70706%206.5586L7.50588%203.75978C7.60351%203.66215%207.60351%203.50386%207.50588%203.40623Z%22%20fill=%22rgb(108,%20117,%20125)%22%3E%3C/path%3E%3Cpath%20d=%22M7.15232%203.40623L7.50588%203.75978L7.50588%203.75978L7.15232%203.40623ZM7.50588%203.40623L7.15232%203.75978L7.15233%203.75978L7.50588%203.40623ZM4.41244%206.14612L4.05888%206.49967C4.15265%206.59344%204.27983%206.64612%204.41244%206.64612C4.54504%206.64612%204.67222%206.59344%204.76599%206.49967L4.41244%206.14612ZM1.67255%203.40623L2.0261%203.05268L2.0261%203.05268L1.67255%203.40623ZM1.31899%203.40623L0.965439%203.05268L0.965439%203.05268L1.31899%203.40623ZM1.31899%203.75978L1.67255%203.40623V3.40623L1.31899%203.75978ZM4.11781%206.5586L3.76425%206.91215L4.11781%206.5586ZM4.70706%206.5586L4.35351%206.20505L4.70706%206.5586ZM7.50588%203.75978L7.15233%203.40623L7.15232%203.40623L7.50588%203.75978ZM7.50588%203.75978C7.40825%203.85742%207.24996%203.85742%207.15232%203.75978L7.85943%203.05268C7.56654%202.75978%207.09166%202.75978%206.79877%203.05268L7.50588%203.75978ZM4.76599%206.49967L7.50588%203.75978L6.79877%203.05268L4.05888%205.79257L4.76599%206.49967ZM1.31899%203.75978L4.05888%206.49967L4.76599%205.79257L2.0261%203.05268L1.31899%203.75978ZM1.67254%203.75979C1.57491%203.85742%201.41662%203.85742%201.31899%203.75979L2.0261%203.05268C1.73321%202.75978%201.25833%202.75978%200.965439%203.05268L1.67254%203.75979ZM1.67255%203.40623C1.77018%203.50386%201.77018%203.66215%201.67255%203.75978L0.965439%203.05268C0.672546%203.34557%200.672546%203.82044%200.965439%204.11334L1.67255%203.40623ZM4.47136%206.20505L1.67255%203.40623L0.965439%204.11334L3.76425%206.91215L4.47136%206.20505ZM4.35351%206.20505C4.38605%206.1725%204.43882%206.1725%204.47136%206.20505L3.76425%206.91215C4.12223%207.27013%204.70264%207.27013%205.06062%206.91215L4.35351%206.20505ZM7.15232%203.40623L4.35351%206.20505L5.06062%206.91215L7.85943%204.11334L7.15232%203.40623ZM7.15233%203.75978C7.05469%203.66215%207.05469%203.50386%207.15233%203.40623L7.85943%204.11334C8.15233%203.82045%208.15233%203.34557%207.85943%203.05268L7.15233%203.75978Z%22%20fill=%22rgb(108,%20117,%20125)%22%3E%3C/path%3E%3C/svg%3E") right no-repeat;background-size:auto}.exlg-badge-page div.exlg-regbadge-preset-list{border:1px solid #ccc;height:200px;overflow:overlay}.exlg-badge-page div.exlg-regbadge-preset-list>span{width:50%;display:inline-block}.exlg-badge-page div.exlg-regbadge-preset-list>span>span{text-align:center;margin:0 10px}.exlg-badge-page div.exlg-regbadge-preset-title{font-weight:700;margin:0 15px;font-size:large}.exlg-badge-page div.pickr{display:inline-block}</style><style id="led27co0.v0m">.ops>a.color-none{width:auto;display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-radius:8px;color:var(--text2);font-size:14px;cursor:pointer;transition:background-color .3s;margin:2px}.ops>a.color-none:hover{background-color:#e3e5e7;border-radius:8px}.ops>a.color-none>.link-title{display:flex;align-items:center}.ops>a.color-none>.link-title>svg{margin-right:8px;width:16px}.ops>a.color-none:after{transform:rotate(-90deg);content:url("data:image/svg+xml;charset=UTF-8, %3Csvg%20style=%22fill:%20rgb(108,%20117,%20125);%22%20width=%2210%22%20height=%2210%22%20viewBox=%220%200%209%209%22%20fill=%22rgb(108,%20117,%20125)%22%20xmlns=%22http://www.w3.org/2000/svg%22%20class=%22link-icon--right%22%3E%3Cpath%20fill-rule=%22evenodd%22%20clip-rule=%22evenodd%22%20d=%22M7.50588%203.40623C7.40825%203.3086%207.24996%203.3086%207.15232%203.40623L4.41244%206.14612L1.67255%203.40623C1.57491%203.3086%201.41662%203.3086%201.31899%203.40623C1.22136%203.50386%201.22136%203.66215%201.31899%203.75978L4.11781%206.5586C4.28053%206.72132%204.54434%206.72132%204.70706%206.5586L7.50588%203.75978C7.60351%203.66215%207.60351%203.50386%207.50588%203.40623Z%22%20fill=%22rgb(108,%20117,%20125)%22%3E%3C/path%3E%3Cpath%20d=%22M7.15232%203.40623L7.50588%203.75978L7.50588%203.75978L7.15232%203.40623ZM7.50588%203.40623L7.15232%203.75978L7.15233%203.75978L7.50588%203.40623ZM4.41244%206.14612L4.05888%206.49967C4.15265%206.59344%204.27983%206.64612%204.41244%206.64612C4.54504%206.64612%204.67222%206.59344%204.76599%206.49967L4.41244%206.14612ZM1.67255%203.40623L2.0261%203.05268L2.0261%203.05268L1.67255%203.40623ZM1.31899%203.40623L0.965439%203.05268L0.965439%203.05268L1.31899%203.40623ZM1.31899%203.75978L1.67255%203.40623V3.40623L1.31899%203.75978ZM4.11781%206.5586L3.76425%206.91215L4.11781%206.5586ZM4.70706%206.5586L4.35351%206.20505L4.70706%206.5586ZM7.50588%203.75978L7.15233%203.40623L7.15232%203.40623L7.50588%203.75978ZM7.50588%203.75978C7.40825%203.85742%207.24996%203.85742%207.15232%203.75978L7.85943%203.05268C7.56654%202.75978%207.09166%202.75978%206.79877%203.05268L7.50588%203.75978ZM4.76599%206.49967L7.50588%203.75978L6.79877%203.05268L4.05888%205.79257L4.76599%206.49967ZM1.31899%203.75978L4.05888%206.49967L4.76599%205.79257L2.0261%203.05268L1.31899%203.75978ZM1.67254%203.75979C1.57491%203.85742%201.41662%203.85742%201.31899%203.75979L2.0261%203.05268C1.73321%202.75978%201.25833%202.75978%200.965439%203.05268L1.67254%203.75979ZM1.67255%203.40623C1.77018%203.50386%201.77018%203.66215%201.67255%203.75978L0.965439%203.05268C0.672546%203.34557%200.672546%203.82044%200.965439%204.11334L1.67255%203.40623ZM4.47136%206.20505L1.67255%203.40623L0.965439%204.11334L3.76425%206.91215L4.47136%206.20505ZM4.35351%206.20505C4.38605%206.1725%204.43882%206.1725%204.47136%206.20505L3.76425%206.91215C4.12223%207.27013%204.70264%207.27013%205.06062%206.91215L4.35351%206.20505ZM7.15232%203.40623L4.35351%206.20505L5.06062%206.91215L7.85943%204.11334L7.15232%203.40623ZM7.15233%203.75978C7.05469%203.66215%207.05469%203.50386%207.15233%203.40623L7.85943%204.11334C8.15233%203.82045%208.15233%203.34557%207.85943%203.05268L7.15233%203.75978Z%22%20fill=%22rgb(108,%20117,%20125)%22%3E%3C/path%3E%3C/svg%3E")}.ops>a:hover{background-color:#e3e5e7;border-radius:1em}.wrapper.hover>.dropdown>.center{font-size:1.1em}.exlg-dropdown.field{display:inline-block;border-left:none;padding:0 .8em}.exlg-dropdown.field:hover{color:#00aeec!important}.exlg-dropdown.field:hover>.value{color:#00aeec!important}.exlg-dropdown.field:hover>.key{color:#00aeec!important}.exlg-dropdown.field>.value{display:block;text-align:center;line-height:1.5;font-weight:700;color:#6c757d;font-size:1.1em;transition:color .2s}.exlg-dropdown.field>.key{display:block;text-align:center;color:#9499a0;font-weight:400;font-size:.75em;transition:color .2s}.exlg-dropdown.field>.key-small{display:block;text-align:center;color:#9499a0;font-weight:400;font-size:.5em;transition:color .2s}.ops[data-v-78704ac9]{padding:.5em .9em}.header[data-v-78704ac9]{margin-bottom:-.6em}</style><style id="led3uhdn.gm"></style><style id="led12oq8.fw"></style></head>
+  
+<body>
+<header class="am-topbar am-topbar-inverse">
+  <div class="blog-g-fixed am-g">
+    <h1 class="am-topbar-brand">
+        <a href="https://www.luogu.com.cn/blog/rubish/">rubish 的博客</a></h1>
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}">
+      <span class="am-sr-only">导航切换</span>
+      <span class="am-icon-bars"></span>
+    </button>
+    <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+      <ul class="am-nav am-nav-pills am-topbar-nav">
+        <li>
+          <a href="https://www.luogu.com.cn/blog/rubish/">首页</a></li>
+        <li>
+          <a href="https://www.luogu.com.cn/blog/rubish/">文章</a></li>
+          <li>
+            <a href="https://www.luogu.com.cn/blogAdmin">管理后台</a>
+          </li>
+      </ul>
+      <div id="search"><form role="search" class="am-topbar-form am-topbar-left am-form-inline am-topbar-right"><div class="am-form-group"><input type="text" placeholder="搜索文章" class="am-form-field am-input-sm"></div> <button class="am-btn am-btn-default am-btn-sm">搜索</button></form></div>
+    </div>
+  </div>
+</header>
+<div class="am-g am-g-fixed blog-g-fixed" id="bodymain">
+  <div class="am-u-md-4 blog-sidebar" style="float:right">
+    <div class="am-panel-group">
+      <section class=" lg-summary am-panel">
+        <img class="am-circle am-center" src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/750240.png" width="80" height="80">
+        <h1 class="ui header">rubish 的博客</h1>
+        <p></p>
+      </section>
+    </div>
+  </div>
+  <div class="am-u-md-8" style="float:right">
+    <div id="blog-container" data-blogid="546079" data-vote="0" data-thumbup="0">
+      <article class="lg-article am-g">
+        <h3 class="am-article-title blog-title">
+          <a :href="post.identifier">test20230219</a>
+        </h3>
+        <b> posted on 2023-02-19 22:16:38 | under <a href="https://www.luogu.com.cn/blog/rubish/#type=%E6%9C%AA%E5%88%86%E7%B1%BB">未分类</a>
+          |
+            <a href="https://www.luogu.com.cn/blogAdmin/article/edit/546079">编辑</a>
+          |
+        </b>
+        <span id="article-vote" class="am-comment-actions"><a href="#"><i class="am-icon-thumbs-up"></i></a> 0
+	<a href="#"><i class="am-icon-thumbs-down"></i></a> <a href="#"><i class="am-icon-reply"></i></a></span>
+        <hr>
+        <div id="article-content">
+          <p><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">T1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.68333em; vertical-align: 0em;"></span><span style="margin-right: 0.13889em;" class="mord mathdefault">T</span><span class="mord">1</span></span></span></span></span></p>
+<p><a href="https://www.luogu.com.cn/problem/P1583">题目</a></p>
+<p>分析：送分题，将题意模拟一下，就出来了</p>
+<p>要注意<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">sort</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.61508em; vertical-align: 0em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">o</span><span style="margin-right: 0.02778em;" class="mord mathdefault">r</span><span class="mord mathdefault">t</span></span></span></span></span>排序的<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>m</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">cmp</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.625em; vertical-align: -0.19444em;"></span><span class="mord mathdefault">c</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span></span></span></span></span>第一关键字为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.43056em; vertical-align: 0em;"></span><span style="margin-right: 0.02691em;" class="mord mathdefault">w</span></span></span></span></span>,从大到小，第二关键字为<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>u</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">num</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.43056em; vertical-align: 0em;"></span><span class="mord mathdefault">n</span><span class="mord mathdefault">u</span><span class="mord mathdefault">m</span></span></span></span></span>，从小到大</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> int long long</span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">read</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> a=<span class="hljs-number">0</span>;<span class="hljs-keyword">int</span> f=<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> ch=getchar();
+    <span class="hljs-keyword">while</span>(ch&lt;<span class="hljs-string">'0'</span>||ch&gt;<span class="hljs-string">'9'</span>) {<span class="hljs-keyword">if</span>(ch==<span class="hljs-string">'-'</span>) f=<span class="hljs-number">-1</span>;ch=getchar();}
+    <span class="hljs-keyword">while</span>(ch&gt;=<span class="hljs-string">'0'</span>&amp;&amp;ch&lt;=<span class="hljs-string">'9'</span>) {a=(a&lt;&lt;<span class="hljs-number">1</span>)+(a&lt;&lt;<span class="hljs-number">3</span>)+ch-<span class="hljs-string">'0'</span>;ch=getchar();}
+    <span class="hljs-keyword">return</span> a*f;
+}
+<span class="hljs-keyword">int</span> n,k,e[<span class="hljs-number">20</span>];
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">node</span>{</span>
+    <span class="hljs-keyword">int</span> w,d,num,c;
+}p[<span class="hljs-number">500500</span>];
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">cmp2</span><span class="hljs-params">(node l,node r)</span></span>{
+    <span class="hljs-keyword">if</span>(l.w==r.w)<span class="hljs-keyword">return</span> l.num&lt;r.num;
+    <span class="hljs-keyword">return</span> l.w&gt;r.w;
+}
+<span class="hljs-function"><span class="hljs-keyword">signed</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    freopen(<span class="hljs-string">"photo.in"</span>,<span class="hljs-string">"r"</span>,<span class="hljs-built_in">stdin</span>);
+    freopen(<span class="hljs-string">"photo.out"</span>,<span class="hljs-string">"w"</span>,<span class="hljs-built_in">stdout</span>);
+    n=read();k=read();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">10</span>;i++)e[i]=read();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        p[i].w=read();
+        p[i].num=i; 
+    }
+    sort(p+<span class="hljs-number">1</span>,p+<span class="hljs-number">1</span>+n,cmp2);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        p[i].d=i;
+        p[i].c=((p[i].d<span class="hljs-number">-1</span>)%<span class="hljs-number">10</span>)+<span class="hljs-number">1</span>;   
+        p[i].w+=e[p[i].c];
+    }
+    sort(p+<span class="hljs-number">1</span>,p+<span class="hljs-number">1</span>+n,cmp2);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=k;i++){
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%lld "</span>,p[i].num);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">T2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.68333em; vertical-align: 0em;"></span><span style="margin-right: 0.13889em;" class="mord mathdefault">T</span><span class="mord">2</span></span></span></span></span></p>
+<p><del>考场上调了两个小时才调出来的我是个跪物</del></p>
+<p><a href="https://www.luogu.com.cn/problem/P1875">题目</a></p>
+<p>题意：给出一对关系<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo separator="true">,</mo><mi>b</mi><mo>−</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">a,b-c</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.88888em; vertical-align: -0.19444em;"></span><span class="mord mathdefault">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault">b</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 0.43056em; vertical-align: 0em;"></span><span class="mord mathdefault">c</span></span></span></span></span>,形如<span><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>i</mi><mi>s</mi><mo stretchy="false">[</mo><mi>c</mi><mo stretchy="false">]</mo><mo>=</mo><mi>m</mi><mi>i</mi><mi>n</mi><mo stretchy="false">(</mo><mi>d</mi><mi>i</mi><mi>s</mi><mo stretchy="false">[</mo><mi>a</mi><mo stretchy="false">]</mo><mo>+</mo><mi>d</mi><mi>i</mi><mi>s</mi><mo stretchy="false">[</mo><mi>b</mi><mo stretchy="false">]</mo><mo separator="true">,</mo><mi>d</mi><mi>i</mi><mi>s</mi><mo stretchy="false">[</mo><mi>c</mi><mo stretchy="false">]</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">dis[c]=min(dis[a]+dis[b],dis[c])</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mopen">[</span><span class="mord mathdefault">c</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.277778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.277778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mopen">(</span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mopen">[</span><span class="mord mathdefault">a</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mopen">[</span><span class="mord mathdefault">b</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mopen">[</span><span class="mord mathdefault">c</span><span class="mclose">]</span><span class="mclose">)</span></span></span></span></span></span></p>
+<p>的式子，可以化为最短路问题；</p>
+<p>由于数据范围小于<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1000</mn></mrow><annotation encoding="application/x-tex">1000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.64444em; vertical-align: 0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span></span></span>邻接矩阵是个不错的选择</p>
+<p>读入</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;">    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;n;i++){
+        w[i]=read();
+        ans[i]=<span class="hljs-number">1</span>;   
+    }
+    <span class="hljs-keyword">int</span> a,b,c;
+    <span class="hljs-built_in">memset</span>(dis,<span class="hljs-number">-1</span>,<span class="hljs-keyword">sizeof</span> dis);
+    <span class="hljs-keyword">while</span>(<span class="hljs-built_in">cin</span>&gt;&gt;a&gt;&gt;b&gt;&gt;c){
+        dis[a][b]=c;
+        dis[b][a]=c;
+    }</code></pre>
+<p>在每一次收敛中如果w的值变小<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>n</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">ans</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.43056em; vertical-align: 0em;"></span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault">s</span></span></span></span></span>的值重置为联通两端之积，如果收敛的值等于原值</p>
+<p>，<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>n</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">ans</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.43056em; vertical-align: 0em;"></span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault">s</span></span></span></span></span>加上联通两边之<del>只因</del>，</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;">w[dis[j][k]]=w[j]+w[k];
+w[dis[k][j]]=w[j]+w[k];
+ans[dis[j][k]]=ans[k]*ans[j];
+ans[dis[k][j]]=ans[k]*ans[j];</code></pre>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;">ans[dis[j][k]]+=ans[k]*ans[j];</code></pre>
+<p>具体操作类似<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>p</mi><mi>f</mi><mi>a</mi><mo>+</mo></mrow><annotation encoding="application/x-tex">spfa+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.88888em; vertical-align: -0.19444em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">p</span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mord mathdefault">a</span><span class="mord">+</span></span></span></span></span>弗洛伊德</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> int long long</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> inf 0x3f3f3f3f</span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">read</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> a=<span class="hljs-number">0</span>;<span class="hljs-keyword">int</span> f=<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> ch=getchar();
+    <span class="hljs-keyword">while</span>(ch&lt;<span class="hljs-string">'0'</span>||ch&gt;<span class="hljs-string">'9'</span>) {<span class="hljs-keyword">if</span>(ch==<span class="hljs-string">'-'</span>) f=<span class="hljs-number">-1</span>;ch=getchar();}
+    <span class="hljs-keyword">while</span>(ch&gt;=<span class="hljs-string">'0'</span>&amp;&amp;ch&lt;=<span class="hljs-string">'9'</span>) {a=(a&lt;&lt;<span class="hljs-number">1</span>)+(a&lt;&lt;<span class="hljs-number">3</span>)+ch-<span class="hljs-string">'0'</span>;ch=getchar();}
+    <span class="hljs-keyword">return</span> a*f;
+}
+
+<span class="hljs-keyword">int</span> n,w[<span class="hljs-number">500500</span>],ans[<span class="hljs-number">500500</span>],vis[<span class="hljs-number">500500</span>];
+<span class="hljs-built_in">vector</span>&lt;<span class="hljs-built_in">pair</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-keyword">int</span>&gt; &gt;vec[<span class="hljs-number">50500</span>];
+<span class="hljs-keyword">int</span> dis[<span class="hljs-number">1205</span>][<span class="hljs-number">1205</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">signed</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    freopen(<span class="hljs-string">"syrup.in"</span>,<span class="hljs-string">"r"</span>,<span class="hljs-built_in">stdin</span>);
+    freopen(<span class="hljs-string">"syrup.out"</span>,<span class="hljs-string">"w"</span>,<span class="hljs-built_in">stdout</span>);
+    n=read();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;n;i++){
+        w[i]=read();
+        ans[i]=<span class="hljs-number">1</span>;   
+    }
+    <span class="hljs-keyword">int</span> a,b,c;
+    <span class="hljs-built_in">memset</span>(dis,<span class="hljs-number">-1</span>,<span class="hljs-keyword">sizeof</span> dis);
+    <span class="hljs-keyword">while</span>(<span class="hljs-built_in">cin</span>&gt;&gt;a&gt;&gt;b&gt;&gt;c){
+        dis[a][b]=c;
+        dis[b][a]=c;
+    }
+    <span class="hljs-keyword">int</span> maxl;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;n;i++){
+        maxl=inf;
+        <span class="hljs-keyword">int</span> k;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> j=<span class="hljs-number">0</span>;j&lt;n;j++){
+            <span class="hljs-keyword">if</span>(vis[j])<span class="hljs-keyword">continue</span>;
+            <span class="hljs-keyword">if</span>(w[j]&lt;maxl){
+                k=j;
+                <span class="hljs-comment">//cout&lt;&lt;k&lt;&lt;" "&lt;&lt;i&lt;&lt;" "&lt;&lt;maxl&lt;&lt;endl;</span>
+                maxl=w[j];
+                <span class="hljs-comment">//cout&lt;&lt;maxl&lt;&lt;endl;</span>
+            }
+        }
+        vis[k]=<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> j=<span class="hljs-number">0</span>;j&lt;n;j++){
+            <span class="hljs-keyword">if</span>(vis[j]&amp;&amp;dis[j][k]!=<span class="hljs-number">-1</span>){
+                <span class="hljs-keyword">if</span>(w[dis[j][k]]==w[j]+w[k]){
+                    ans[dis[j][k]]+=ans[k]*ans[j];
+                    <span class="hljs-comment">//ans[dis[k][j]]+=ans[k]*ans[j];</span>
+                    <span class="hljs-comment">//int ll=dis[j][k];</span>
+                    <span class="hljs-comment">//cout&lt;&lt;w[ll]&lt;&lt;" "&lt;&lt;ans[ll]&lt;&lt;endl;</span>
+                }
+                <span class="hljs-keyword">if</span>(w[dis[j][k]]&gt;w[j]+w[k]){
+                    w[dis[j][k]]=w[j]+w[k];
+                    w[dis[k][j]]=w[j]+w[k];
+                    ans[dis[j][k]]=ans[k]*ans[j];
+                    ans[dis[k][j]]=ans[k]*ans[j];
+                    <span class="hljs-comment">//int ll=dis[j][k];</span>
+                    <span class="hljs-comment">//cout&lt;&lt;w[ll]&lt;&lt;" "&lt;&lt;ans[ll]&lt;&lt;endl;</span>
+                }
+            }
+        }
+    }
+    <span class="hljs-built_in">cout</span>&lt;&lt;w[<span class="hljs-number">0</span>]&lt;&lt;<span class="hljs-string">" "</span>&lt;&lt;ans[<span class="hljs-number">0</span>]&lt;&lt;<span class="hljs-built_in">endl</span>;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p>但是考场上本来第一思路是<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>f</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">dfs</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.88888em; vertical-align: -0.19444em;"></span><span class="mord mathdefault">d</span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mord mathdefault">s</span></span></span></span></span>，可是写挂了，考后就重写一遍、</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> int long long</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> inf 0x3f3f3f3f</span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">read</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> a=<span class="hljs-number">0</span>;<span class="hljs-keyword">int</span> f=<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> ch=getchar();
+    <span class="hljs-keyword">while</span>(ch&lt;<span class="hljs-string">'0'</span>||ch&gt;<span class="hljs-string">'9'</span>) {<span class="hljs-keyword">if</span>(ch==<span class="hljs-string">'-'</span>) f=<span class="hljs-number">-1</span>;ch=getchar();}
+    <span class="hljs-keyword">while</span>(ch&gt;=<span class="hljs-string">'0'</span>&amp;&amp;ch&lt;=<span class="hljs-string">'9'</span>) {a=(a&lt;&lt;<span class="hljs-number">1</span>)+(a&lt;&lt;<span class="hljs-number">3</span>)+ch-<span class="hljs-string">'0'</span>;ch=getchar();}
+    <span class="hljs-keyword">return</span> a*f;
+}
+
+<span class="hljs-keyword">int</span> n,w[<span class="hljs-number">500500</span>],ans[<span class="hljs-number">500500</span>],f[<span class="hljs-number">500500</span>];
+<span class="hljs-built_in">vector</span>&lt;<span class="hljs-built_in">pair</span>&lt;<span class="hljs-keyword">int</span>,<span class="hljs-keyword">int</span>&gt; &gt;vec[<span class="hljs-number">50500</span>];
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u)</span></span>{
+    <span class="hljs-keyword">if</span>(f[u]&lt;inf){
+        <span class="hljs-keyword">return</span> f[u];
+    }
+    f[u]=w[u];
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">auto</span> i:vec[u]){
+        <span class="hljs-keyword">int</span> l=i.first,r=i.second;
+        <span class="hljs-keyword">int</span> t=dfs(l)+dfs(r);
+        <span class="hljs-keyword">if</span> (t &lt; f[u]) {
+            f[u] = t;
+            ans[u]=ans[l]*ans[r];
+        } 
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(t==f[u]){
+            ans[u]+=(ans[l]*ans[r]);
+        }
+    }
+}
+<span class="hljs-function"><span class="hljs-keyword">signed</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    freopen(<span class="hljs-string">"syrup.in"</span>,<span class="hljs-string">"r"</span>,<span class="hljs-built_in">stdin</span>);
+    freopen(<span class="hljs-string">"syrup.out"</span>,<span class="hljs-string">"w"</span>,<span class="hljs-built_in">stdout</span>);
+    n=read();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;n;i++){
+        w[i]=read();
+        ans[i]=<span class="hljs-number">1</span>;   
+    }
+    <span class="hljs-built_in">memset</span>(f,<span class="hljs-number">0x3f</span>,<span class="hljs-keyword">sizeof</span> f);
+    <span class="hljs-keyword">int</span> a,b,c;
+    <span class="hljs-keyword">while</span>(<span class="hljs-built_in">cin</span>&gt;&gt;a&gt;&gt;b&gt;&gt;c){
+        vec[c].push_back({a,b});
+    }
+    dfs(<span class="hljs-number">0</span>);
+    <span class="hljs-built_in">cout</span>&lt;&lt;f[<span class="hljs-number">0</span>]&lt;&lt;<span class="hljs-string">' '</span>&lt;&lt;ans[<span class="hljs-number">0</span>]&lt;&lt;<span class="hljs-built_in">endl</span>;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">T3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.68333em; vertical-align: 0em;"></span><span style="margin-right: 0.13889em;" class="mord mathdefault">T</span><span class="mord">3</span></span></span></span></span></p>
+<p>大意：给你一堆一样的树枝，从中截取下<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.68333em; vertical-align: 0em;"></span><span style="margin-right: 0.10903em;" class="mord mathdefault">N</span></span></span></span></span>段做魔杖，每一段有一个魔法值和长度，要求一共可以截取下多少符合条件切树枝两两不完全重合的树枝使魔法值最大</p>
+<p><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mi>P</mi></mrow><annotation encoding="application/x-tex">DP</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.68333em; vertical-align: 0em;"></span><span style="margin-right: 0.02778em;" class="mord mathdefault">D</span><span style="margin-right: 0.13889em;" class="mord mathdefault">P</span></span></span></span></span>问题</p>
+<p>令<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">f[i][j]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mclose">]</span></span></span></span></span>为起点小于i终点小于j的最大值</p>
+<p>先将前面的状态传递过来</p>
+<p><span><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo>=</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo separator="true">,</mo><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo separator="true">;</mo></mrow><annotation encoding="application/x-tex">f[i][j]=max(f[i-1][j],f[i][j-1]);</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.277778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.277778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mopen">(</span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mclose">)</span><span class="mpunct">;</span></span></span></span></span></span></p>
+<p>如果长度满足条件，因为可以重合，只要不完全包含就行，所以转移方程里是f[i-1][j-1]</p>
+<p><span><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo>=</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo separator="true">,</mo><mi>f</mi><mo stretchy="false">[</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo>+</mo><mi>s</mi><mi>u</mi><mi>m</mi><mi>m</mi><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo>−</mo><mi>s</mi><mi>u</mi><mi>m</mi><mi>m</mi><mo stretchy="false">[</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo separator="true">;</mo></mrow><annotation encoding="application/x-tex">f[i][j]=max(f[i][j],f[i-1][j-1]+summ[j]-summ[i-1]);</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.277778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.277778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord mathdefault">x</span><span class="mopen">(</span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span style="margin-right: 0.10764em;" class="mord mathdefault">f</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">u</span><span class="mord mathdefault">m</span><span class="mord mathdefault">m</span><span class="mopen">[</span><span style="margin-right: 0.05724em;" class="mord mathdefault">j</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">u</span><span class="mord mathdefault">m</span><span class="mord mathdefault">m</span><span class="mopen">[</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mclose">)</span><span class="mpunct">;</span></span></span></span></span></span></p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> int long long</span>
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">read</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,f=<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> ch=getchar();
+    <span class="hljs-keyword">while</span> (ch&lt;<span class="hljs-string">'0'</span>||ch&gt;<span class="hljs-string">'9'</span>){<span class="hljs-keyword">if</span>(ch==<span class="hljs-string">'-'</span>) f=<span class="hljs-number">-1</span>;ch=getchar();}
+    <span class="hljs-keyword">while</span> (ch&gt;=<span class="hljs-string">'0'</span>&amp;&amp;ch&lt;=<span class="hljs-string">'9'</span>){x=x*<span class="hljs-number">10</span>+ch<span class="hljs-number">-48</span>;ch=getchar();}
+    <span class="hljs-keyword">return</span> x*f;
+}
+<span class="hljs-keyword">int</span> n,low,hi,l[<span class="hljs-number">1500</span>],m[<span class="hljs-number">1500</span>],suml[<span class="hljs-number">1500</span>],summ[<span class="hljs-number">1500</span>],f[<span class="hljs-number">1300</span>][<span class="hljs-number">1300</span>];
+<span class="hljs-function"><span class="hljs-keyword">signed</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    n=read();low=read();hi=read();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        l[i]=read();
+        suml[i]=suml[i<span class="hljs-number">-1</span>]+l[i]; 
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        m[i]=read();
+        summ[i]=summ[i<span class="hljs-number">-1</span>]+m[i]; 
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> j=i;j&lt;=n;j++){
+            <span class="hljs-keyword">int</span> len=suml[j]-suml[i<span class="hljs-number">-1</span>];
+            f[i][j]=max(f[i<span class="hljs-number">-1</span>][j],f[i][j<span class="hljs-number">-1</span>]);
+            <span class="hljs-keyword">if</span>(len&gt;=low&amp;&amp;len&lt;=hi){
+                f[i][j]=max(f[i][j],f[i<span class="hljs-number">-1</span>][j<span class="hljs-number">-1</span>]+summ[j]-summ[i<span class="hljs-number">-1</span>]);
+            }
+        }
+    }
+    <span class="hljs-built_in">cout</span>&lt;&lt;f[n][n]&lt;&lt;<span class="hljs-string">"\n"</span>;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">T4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.68333em; vertical-align: 0em;"></span><span style="margin-right: 0.13889em;" class="mord mathdefault">T</span><span class="mord">4</span></span></span></span></span></p>
+<p><a href="https://www.luogu.com.cn/problem/P1585">题目</a></p>
+<p>暴搜非常好写，轻松可以骗80分，只用两个数组存下每一步的坐标就行了</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> int long long</span>
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">read</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,f=<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> ch=getchar();
+    <span class="hljs-keyword">while</span> (ch&lt;<span class="hljs-string">'0'</span>||ch&gt;<span class="hljs-string">'9'</span>){<span class="hljs-keyword">if</span>(ch==<span class="hljs-string">'-'</span>) f=<span class="hljs-number">-1</span>;ch=getchar();}
+    <span class="hljs-keyword">while</span> (ch&gt;=<span class="hljs-string">'0'</span>&amp;&amp;ch&lt;=<span class="hljs-string">'9'</span>){x=x*<span class="hljs-number">10</span>+ch<span class="hljs-number">-48</span>;ch=getchar();}
+    <span class="hljs-keyword">return</span> x*f;
+}
+<span class="hljs-keyword">int</span> n,m,k1,k2,mod,ans=<span class="hljs-number">0x3f3f3f3f</span>,vis[<span class="hljs-number">500</span>][<span class="hljs-number">500</span>],px[<span class="hljs-number">2550</span>],py[<span class="hljs-number">2550</span>];
+<span class="hljs-keyword">int</span> dx[]={<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>},dy[]={<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>};
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">calc</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x1,<span class="hljs-keyword">int</span> y1,<span class="hljs-keyword">int</span> x2,<span class="hljs-keyword">int</span> y2)</span></span>{
+    <span class="hljs-keyword">return</span> k1*<span class="hljs-built_in">abs</span>(x1-x2)+k2*<span class="hljs-built_in">abs</span>(y1-y2);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y,<span class="hljs-keyword">int</span> step,<span class="hljs-keyword">int</span> sum)</span></span>{
+    <span class="hljs-keyword">int</span> res=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(step&lt;=mod){
+        px[step]=x;
+        py[step]=y; 
+    }
+    <span class="hljs-keyword">else</span> res=calc(x,y,px[step-mod],py[step-mod]);
+    <span class="hljs-keyword">if</span>(sum&gt;=ans) <span class="hljs-keyword">return</span> ;
+    <span class="hljs-keyword">if</span>(step==n*m) {
+        ans=min(ans,max(sum,res));
+        <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;=<span class="hljs-number">3</span>;i++){
+        <span class="hljs-keyword">int</span> tx=x+dx[i],ty=y+dy[i];
+        <span class="hljs-keyword">if</span>(tx&lt;=<span class="hljs-number">0</span>||ty&lt;=<span class="hljs-number">0</span>||tx&gt;n||ty&gt;m)<span class="hljs-keyword">continue</span>;
+        <span class="hljs-keyword">if</span>(vis[tx][ty])<span class="hljs-keyword">continue</span>;
+        vis[tx][ty]=<span class="hljs-number">1</span>;
+        dfs(tx,ty,step+<span class="hljs-number">1</span>,max(sum,res));
+        vis[tx][ty]=<span class="hljs-number">0</span>;
+    }
+}
+<span class="hljs-function"><span class="hljs-keyword">signed</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    n=read();m=read();k1=read();k2=read();
+    mod=n*m/<span class="hljs-number">2</span>;
+    init();
+    dfs(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>);
+    <span class="hljs-built_in">cout</span>&lt;&lt;ans;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+<p>但是一百分的剪枝有点思维难度，首先注意这句话</p>
+<p>每个格子必须且仅能到过1次</p>
+<p>当我们走到一个位置时,如果已经走过它的上下，却没有走过它左右的任意一格，或者相反，已经走过它的左右，却没有走过它上下的任意一格，那么一定无法走完魔法阵，直接<span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>e</mi><mi>t</mi><mi>u</mi><mi>r</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">return</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.61508em; vertical-align: 0em;"></span><span style="margin-right: 0.02778em;" class="mord mathdefault">r</span><span class="mord mathdefault">e</span><span class="mord mathdefault">t</span><span class="mord mathdefault">u</span><span style="margin-right: 0.02778em;" class="mord mathdefault">r</span><span class="mord mathdefault">n</span></span></span></span></span>;</p>
+<p><img src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/y877ig5h.png" alt=""></p>
+<p>证明：如图，从A走到B的路径隔绝了C和D，因此不可能在不经过A到B路径的情况下同时走到C和D，</p>
+<h3 class="exlg-code-title exlg-beautified-cbex" style="/*width: 100%;*/">源代码 - C++<div class="exlg-copy exlg-copy-left">复制</div></h3><pre exlg-copy-code-block=""><code class="language-cpp hljs" style="font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Consolas;"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> int long long</span>
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">read</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,f=<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> ch=getchar();
+    <span class="hljs-keyword">while</span> (ch&lt;<span class="hljs-string">'0'</span>||ch&gt;<span class="hljs-string">'9'</span>){<span class="hljs-keyword">if</span>(ch==<span class="hljs-string">'-'</span>) f=<span class="hljs-number">-1</span>;ch=getchar();}
+    <span class="hljs-keyword">while</span> (ch&gt;=<span class="hljs-string">'0'</span>&amp;&amp;ch&lt;=<span class="hljs-string">'9'</span>){x=x*<span class="hljs-number">10</span>+ch<span class="hljs-number">-48</span>;ch=getchar();}
+    <span class="hljs-keyword">return</span> x*f;
+}
+<span class="hljs-keyword">int</span> n,m,k1,k2,mod,ans=<span class="hljs-number">0x3f3f3f3f</span>,vis[<span class="hljs-number">500</span>][<span class="hljs-number">500</span>],px[<span class="hljs-number">2550</span>],py[<span class="hljs-number">2550</span>];
+<span class="hljs-keyword">int</span> dx[]={<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>},dy[]={<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>};
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">int</span> <span class="hljs-title">calc</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x1,<span class="hljs-keyword">int</span> y1,<span class="hljs-keyword">int</span> x2,<span class="hljs-keyword">int</span> y2)</span></span>{
+    <span class="hljs-keyword">return</span> k1*<span class="hljs-built_in">abs</span>(x1-x2)+k2*<span class="hljs-built_in">abs</span>(y1-y2);
+}
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-built_in">memset</span>(vis,<span class="hljs-number">0x3f</span>,<span class="hljs-keyword">sizeof</span>(vis));
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++) {
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> j= <span class="hljs-number">1</span>;j&lt;=m;j++) {
+            vis[i][j]=<span class="hljs-number">0</span>;
+        }
+    }
+    vis[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;
+}
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y,<span class="hljs-keyword">int</span> step,<span class="hljs-keyword">int</span> sum)</span></span>{
+    <span class="hljs-keyword">if</span> (vis[x+<span class="hljs-number">1</span>][y] &amp;&amp; vis[x<span class="hljs-number">-1</span>][y] &amp;&amp; !vis[x][y+<span class="hljs-number">1</span>] &amp;&amp; !vis[x][y<span class="hljs-number">-1</span>]) <span class="hljs-keyword">return</span> ;
+    <span class="hljs-keyword">if</span> (!vis[x+<span class="hljs-number">1</span>][y] &amp;&amp; !vis[x<span class="hljs-number">-1</span>][y] &amp;&amp; vis[x][y+<span class="hljs-number">1</span>] &amp;&amp; vis[x][y<span class="hljs-number">-1</span>]) <span class="hljs-keyword">return</span> ;
+
+    <span class="hljs-keyword">int</span> res=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(step&lt;=mod){
+        px[step]=x;
+        py[step]=y; 
+    }
+    <span class="hljs-keyword">else</span> res=calc(x,y,px[step-mod],py[step-mod]);
+    <span class="hljs-keyword">if</span>(sum&gt;=ans) <span class="hljs-keyword">return</span> ;
+    <span class="hljs-keyword">if</span>(step==n*m) {
+        ans=min(ans,max(sum,res));
+        <span class="hljs-keyword">return</span>;
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;=<span class="hljs-number">3</span>;i++){
+        <span class="hljs-keyword">int</span> tx=x+dx[i],ty=y+dy[i];
+        <span class="hljs-keyword">if</span>(tx&lt;=<span class="hljs-number">0</span>||ty&lt;=<span class="hljs-number">0</span>||tx&gt;n||ty&gt;m)<span class="hljs-keyword">continue</span>;
+        <span class="hljs-keyword">if</span>(vis[tx][ty])<span class="hljs-keyword">continue</span>;
+        vis[tx][ty]=<span class="hljs-number">1</span>;
+        dfs(tx,ty,step+<span class="hljs-number">1</span>,max(sum,res));
+        vis[tx][ty]=<span class="hljs-number">0</span>;
+    }
+}
+<span class="hljs-function"><span class="hljs-keyword">signed</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    n=read();m=read();k1=read();k2=read();
+    mod=n*m/<span class="hljs-number">2</span>;
+    init();
+    dfs(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>);
+    <span class="hljs-built_in">cout</span>&lt;&lt;ans;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+          <br>
+        </div>
+      </article>
+      <div id="article-comments" class="ui comments"><div><div class="lg-article"><h2>
+        有什么感想？
+      </h2> <div class="am-form-group am-form"><textarea rows="3" name="benbencontent"></textarea></div> <button class="am-btn am-btn-danger am-btn-sm">
+        　发射评论！　
+      </button></div></div> <ul class="am-comments-list am-comments-list-flip lg-article"><li class="am-comment am-comment-primary"><div class="lg-left"><a href="https://www.luogu.com.cn/space/show?uid=378346" target="_blank" class="avatar"><img src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/378346.png" class="am-comment-avatar"></a></div> <div class="am-comment-main"><header class="am-comment-hd"><div class="am-comment-meta"><a href="https://www.luogu.com.cn/space/show?uid=378346" target="_blank" class="author">
+              small_rubbish
+            </a>
+            2023-02-20 08:20:57
+          </div></header> <div class="am-comment-bd">
+          Orz&nbsp;
+        </div></div></li></ul> <div class="ui three column centered grid" style="margin: 30px; text-align: center;"><!----> <ul class="am-pagination blog-pagination"><!----> <!----></ul></div></div>
+    </div>
+    
+    <link rel="stylesheet" href="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/katex.css">
+  </div>
+</div>
+<div class="lg-footer">
+  <div class="lg-footer-top"></div>
+  <div class="blog-g-fixed am-g">
+    <div class="am-u-md-3 am-hide-sm">
+      <img src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/logo_white_3.webp" class="lg-inline-up" width="175">
+    </div>
+    <div class="am-u-md-4 am-hide-sm">
+      <h2 style="color: #999;margin: 0">在洛谷，<br>享受 Coding 的欢乐</h2>
+    </div>
+    <div class="am-u-md-5 am-md-text-right">2013-2020 , <a href="https://www.luogu.com.cn/">洛谷</a> © Developed by the
+      <a href="https://github.com/luogu-dev" target="_blank">Luogu Dev Team</a>. <a href="https://www.luogu.com.cn/blog/rubish/_sitemap">Site Map</a>
+      <br>Blog theme 'Luogu3' By @kkksc03
+    </div>
+  </div>
+</div>
+<script>
+var BlogGlobals = {
+  blogName: document.querySelector('meta[name=blog-name]').getAttribute('content'),
+  blogUID: parseInt(document.querySelector('meta[name=blog-uid]').getAttribute('content')),
+  currentUser: parseInt(document.querySelector('meta[name=current-user]').getAttribute('content')),
+  luoguAddress: 'https://www.luogu.com.cn',
+  picAddress: 'https://cdn.luogu.com.cn'
+}
+</script>
+<script src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/common.js"></script>
+<script>
+var blogContainer = document.getElementById('blog-container')
+BlogGlobals.blogID = parseInt(blogContainer.getAttribute('data-blogid'))
+BlogGlobals.vote = parseInt(blogContainer.getAttribute('data-vote'))
+BlogGlobals.thumbUp = parseInt(blogContainer.getAttribute('data-thumbUp'))
+</script>
+<script src="test20230219%20-%20rubish%20%E7%9A%84%E5%8D%9A%E5%AE%A2%20-%20%E6%B4%9B%E8%B0%B7%E5%8D%9A%E5%AE%A2_files/article.js"></script>
+
+
+<div class="exlg-dialog-wrapper" id="exlg-wrapper" style="display: none;"><div class="exlg-dialog-container container-hide" id="exlg-container" style="transition: all 0.4s ease 0s;"><div class="exlg-dialog-header"><strong id="exlg-dialog-title"></strong><div id="header-right" style="opacity: 0.5;"><svg class="icon" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5446"><path d="M512 128c-211.7 0-384 172.3-384 384s172.3 384 384 384 384-172.3 384-384-172.3-384-384-384z m0 717.4c-183.8 0-333.4-149.6-333.4-333.4S328.2 178.6 512 178.6 845.4 328.2 845.4 512 695.8 845.4 512 845.4zM651.2 372.8c-9.9-9.9-25.9-9.9-35.8 0L512 476.2 408.6 372.8c-9.9-9.9-25.9-9.9-35.8 0-9.9 9.9-9.9 25.9 0 35.8L476.2 512 372.8 615.4c-9.9 9.9-9.9 25.9 0 35.8 4.9 4.9 11.4 7.4 17.9 7.4s13-2.5 17.9-7.4L512 547.8l103.4 103.4c4.9 4.9 11.4 7.4 17.9 7.4s13-2.5 17.9-7.4c9.9-9.9 9.9-25.9 0-35.8L547.8 512l103.4-103.4c9.9-9.9 9.9-25.9 0-35.8z" p-id="5447"></path></svg></div></div><div class="exlg-dialog-body"><div id="exlg-dialog-content"></div><div class="exlg-dialog-footer"><button class="exlg-dialog-btn" btn-rnk="0">取消</button><button class="exlg-dialog-btn" btn-rnk="1">确定</button></div></div></div></div><div id="exlg-cli" exlg="exlg"><input id="exlg-cli-input"></div><div id="exlg-messages-outter"><div id="exlg-messages-container"></div></div></body><style id="stylus-2" type="text/css" class="stylus">/*洛谷主站*/
+    /*动画*/
+    @keyframes user {
+        from {
+            margin-top: 0px;
+        }
+        to {
+            margin-top: 20px;
+        }
+    }
+    @keyframes h1 {
+        from {
+            margin-left: -200px;
+        }
+        to {
+            margin-left: 0px;
+        }
+    }
+    @keyframes cl {
+        from {
+            margin-left:-200px;
+        }
+        to {
+            margin-left:10px;
+        }
+    }
+    /*背景*/
+    body {
+        background-image: url('https://cdn.luogu.com.cn/upload/image_hosting/tjr12qai.png');/*这个地方可以改背景，只需把图片地址换掉即可*/
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    /*顶部*/
+    .wrapper.wrapped.lfe-body,
+    div.wrapper.wrapped.lfe-body.header-layout.narrow {
+        visibility: hidden;
+    }
+    .footer,
+    .header {
+        visibility: visible;
+    }
+    .user-nav[data-v-2dfcfd35] {
+        transition: all 0.5s ease;
+        color: #fff!important;
+        border-radius: 25px;
+        animation: user 1s;
+        margin-top: 20px;
+    }
+    .user-nav[data-v-2dfcfd35]:hover{
+        transition: all 0.5s ease;
+        box-shadow: 15px 15px 15px rgba(0, 0, 0, .5);
+    }
+    .user-nav {
+        color: #fff;
+    }
+    /*主体*/
+    .lfe-body {
+        visibility: hidden;
+    }
+    .clone-card,
+    .card.user-header-container.padding-0,
+    .am-modal-dialog,
+    .am-g.lg-main-content,
+    .container,
+    .lg-index-content.am-center,
+    .full-container {
+        visibility: visible;
+    }
+    .clone-card,
+    .swal2-popup.swal2-modal.swal2-show,
+    .popup[data-v-1d675dd8],
+    .center,
+    .card.padding-none,
+    .am-panel.am-panel-default.lg-summary,
+    .am-g.lg-table-bg0.lg-table-row,
+    .card.padding-default,
+    .lg-article {
+        transition: all 0.5s ease;
+        border-radius: 10px!important;
+        background-color: #ffffffc2!important;
+    }
+    .clone-card:hover,
+    .swal2-popup.swal2-modal.swal2-show:hover,
+    .card.padding-none:hover,
+    .popup[data-v-1d675dd8]:hover,
+    .center:hover,
+    card.padding-none:hover,
+    .am-panel.am-panel-default.lg-summary:hover,
+    .am-g.lg-table-bg0.lg-table-row:hover,
+    .card.padding-default:hover,
+    .lg-article:hover {
+        transition: all 0.5s ease;
+        background-color: #fff!important;
+        box-shadow: 15px 15px 15px rgba(0, 0, 0, .5);
+    }
+    .am-panel.lg-index-contest.am-panel-danger,
+    .am-panel.lg-index-contest.am-panel-success,
+    .am-panel.lg-index-contest.am-panel-primary{
+        transition: all 0.5s ease;
+        border-radius:10px
+    }
+    
+    .am-panel.lg-index-contest.am-panel-primary:hover{
+        transition: all 0.5s ease;
+        box-shadow: 15px 15px 15px rgba(0, 0, 0, .5);
+        border-color:rgb(120, 52, 219);
+    }
+    .am-panel.lg-index-contest.am-panel-primary a{
+        transition: all 0.5s ease;
+    }
+    .am-panel.lg-index-contest.am-panel-primary:hover a{
+        transition: all 0.5s ease;
+        color:rgb(120, 52, 219);
+    }
+    .am-panel.lg-index-contest.am-panel-success:hover,
+    .am-panel.lg-index-contest.am-panel-danger:hover{
+        transition: all 0.5s ease;
+        box-shadow: 15px 15px 15px rgba(0, 0, 0, .5);
+    }
+    .am-panel.lg-index-contest.am-panel-success,
+    .am-panel.lg-index-contest.am-panel-danger{
+        transition: all 0.5s ease;
+    }
+    /*侧栏*/
+    div[data-v-27b2cd59] {
+        border-radius: 10px 10px 0px 0px;
+        background-color: #fff0!important;
+    }
+    #app > .lfe-body {
+        visibility: visible;
+        top: 130px;
+        border-radius: 25px;
+        height: 430px;
+        background-color: #fff0!important;
+        box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, .5);
+        margin-left:10px;
+    }
+    *#app > .lfe-body > a > .text {
+        opacity: 0;
+        margin-top: -1em;
+        display: block;
+        transition: all 0.3s ease;
+    }
+    #app > .lfe-body > a:hover > .text {
+        opacity: 1;
+        margin-top: 0.2em;
+    }
+    #app > .lfe-body > a {
+        color: #fff !important;
+        height: 3.7em;
+        margin-top: 3px;
+        padding: 0 !important;
+    }
+    .lfe-body>a{
+        transition: all 0.5s ease;
+        border-radius: 10px;
+    }
+    .lfe-body > a:hover {
+        transition: all 0.5s ease;
+        background-color: #fff;
+        color: #000!important;
+    }
+    #app > .lfe-body > a:hover {
+        color: #000!important;
+    }
+    .popup-button{
+        transition: all 0.5s ease;
+        color:#fff;
+        border-radius: 10px!important;
+    }
+    .popup-button:hover {
+        transition: all 0.5s ease;
+        background-color: #fff!important;
+        color: #000!important;
+    }
+    #app > .lfe-body {
+        animation: cl 1s;
+        width: 70px;
+    }
+    a.logo-wrap[data-v-27b2cd59] {
+        width: 70px;
+    }
+    .copy-btn.lfe-form-sz-middle {
+        background-color:rgb(120, 52, 219)!important;
+        border-color:rgb(120, 52, 219)!important;
+    }
+    /*字体*/
+    .lfe-h1 {
+        font-size: 40px;
+        animation: h1 1s;
+    }
+    nav[data-v-258e49ac],
+    .header-link.color-none,
+    .mdui-list-item-icon.mdui-icon.material-icons,
+    .mdui-drawer {
+        color: #fff;
+    }
+    .lfe-form-sz-small,
+    div[data-v-45591776]>.lfe-form-sz-middle{
+        color:#fff!important;
+    }
+    /*细节*/
+    input:checked + label > .fa-input[data-v-7ecd1f3a], input:enabled + label:hover > .fa-input[data-v-7ecd1f3a]{
+        color:rgb(120, 52, 219);
+    }
+    .lfe-form-sz-small,
+    .am--group-label,
+    .am-btn.am-btn-primary.am-btn-sm,
+    .lfe-form-sz-middle[data-v-7ade990c],
+    .input-group.search-filter > button.lfe-form-sz-middle,
+    button.selected,
+    .items > li.selected {
+        background-color: rgb(120, 52, 219)!important;
+        border-color: rgb(120, 52, 219)!important;
+    }
+    div.tag[data-v-2a31ee10],
+    .lfe-caption.tag.selected {
+        background-color: rgb(120, 52, 219)!important;
+    }
+    .am-form-field {
+        border-color: rgb(120, 52, 219)!important;
+    }
+    button[data-v-66021821]:hover {
+        border-color: rgb(120, 52, 219)!important;
+    }
+    .lfe-caption {
+        border-radius: 10px!important;
+    }
+    .test-case {
+        border-radius: 10px;
+    }
+    .progress-frame.has-tooltip>div{
+        background-color:rgb(120, 52, 219)!important;
+        border-radius:0px 10px 10px 0px;
+    }
+    .am-pagination > .am-active > a:hover,
+    .am-pagination > .am-active > a{
+        background-color:rgb(120, 52, 219);
+        border-color:rgb(120, 52, 219);
+    }
+    .am-pagination.am-pagination-centered a{
+        border-radius:10px;
+    }
+    .am-slider-default .am-control-nav li a.am-active{
+        background-color:rgb(120, 52, 219);
+    }
+     .color-default[data-v-303bbf52]:hover,
+    a:hover{
+        color:rgb(120, 52, 219);
+    }
+    .menu[data-v-0e1ae304]{
+        --main-color:rgb(120, 52, 219)!important;
+    }
+    input:enabled + label:hover > .fa-input[data-v-7ecd1f3a]{
+        color:rgb(120, 52, 219)!important;
+    }
+    .clear-filter{
+        color:rgb(120, 52, 219)!important;
+    }
+    input.lfe-form-sz-small,
+    .text.lfe-form-sz-small{
+        color:#000!important;
+        background-color:#fff!important;
+    }
+    .refined-input.input-wrap.input.frame>.lfe-form-sz-middle{
+        color:#000!important;
+    }
+    .copy-btn.lfe-form-sz-middle{
+        color:#fff!important;
+    }
+    .item:hover{
+        border-radius:10px;
+        transition: all 0.5s ease;
+    }
+    .am-btn.am-btn-primary.am-btn-sm{
+        border-radius:10px;
+    }
+    .am-btn.am-btn-danger.am-btn-sm{
+        border-radius:10px;
+    }
+    button{
+        border-radius:10px!important;
+        box-shadow:6px 6px 8px gray;
+    }
+    /*隐藏广告*/
+    div[data-v-0a593618]{
+        display:none;
+    }
+    /*犇犇*/
+    .am-comment-main{
+        transition: all 0.5s ease;
+        border-color:#fff0!important;
+    }
+    .am-comment-main:hover{
+        transition: all 0.5s ease;
+        box-shadow: 15px 15px 15px rgba(0, 0, 0, .5);
+    }
+    .am-comment-main::before{
+        border-right-color:#fff0!important;
+    }
+    .am-comment-hd{
+        border-radius:10px 10px 0px 0px;
+    }
+    .am-comment-bd{
+        border-radius:0px 0px 10px 10px;
+    }
+    /*洛谷有题*/
+    /*顶部*/
+    #app-header{
+        background-color:#fff0;
+    }
+    nav.user-nav{
+        color: #fff!important;
+        border-radius: 25px!important;
+        animation: user 1s;
+        margin-top: 20px;
+    }
+    /*侧栏*/
+    .sm-hide.router-link-active.color-default{
+        border-radius:25px 25px 0px 0px;
+        background-color:#fff0!important;
+    }
+    #app-sidenav{
+        margin-left:10px;
+        margin-top:200px;
+        height:150px;
+        border-radius:10px;
+        background-color:#fff0;
+        box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, .5);
+        animation: h1 1s;
+    }
+    .list-item-container>span{
+        opacity: 0;
+        margin-top: -1em;
+        display: block;
+        transition: all 0.3s ease;
+    }
+    .list-item-container:hover>span{
+        opacity: 1;
+        margin-top: 0.2em;
+        color:#000!important;
+    }
+    .icon.fa.fa-book{
+        opacity:1;
+        color:#fff;
+    }
+    .list-item-container {
+        transition: all 0.5s ease;
+        border-radius: 10px;
+        color: #fff !important;
+        height: 3.7em;
+        margin-top: 3px;
+        padding: 0 !important;
+    }
+    .list-item-container:hover{
+        transition: all 0.5s ease;
+        background-color: #fff;
+    }
+    /*主体*/
+    .card{
+        transition: all 0.5s ease;
+        border-radius:10px;
+        background-color:#ffffffc2!important;
+    }
+    .card:hover{
+        transition: all 0.5s ease;
+        box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, .5);
+        background-color:#fff!important;
+    }
+    /*底部*/
+    #app-footer{
+        visibility: hidden;
+    }
+    .width-wrap.min-margin{
+        visibility: visible;
+    }
+    .color-default-noline[data-v-985ce5a2]:hover, .color-default[data-v-985ce5a2]:hover{
+        color:rgb(120, 52, 219)!important;
+    }
+    .button[data-v-79732b4a]{
+        border-color:rgb(120, 52, 219)!important;
+        background:rgb(120, 52, 219) none repeat scroll 0% 0%!important;
+    }</style></html>
