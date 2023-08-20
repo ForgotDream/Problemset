@@ -1,0 +1,1 @@
+{"name":"Local: C","url":"f:\\zyz\\Problemset\\Contest\\AtCoder\\ABC315\\C.cpp","tests":[{"id":1692447000896,"input":"4\n1 4\n2 10\n2 8\n3 6\n","output":"16\n"},{"id":1692447005464,"input":"4\n4 10\n3 2\n2 4\n4 12","output":"17"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\Contest\\AtCoder\\ABC315\\C.cpp","group":"local","local":true}
