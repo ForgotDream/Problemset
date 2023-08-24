@@ -1,0 +1,1 @@
+{"name":"Local: A","url":"f:\\zyz\\Problemset\\Contest\\Codeforces\\1749_VP\\A.cpp","tests":[{"id":1692705751510,"input":"2\n2 2\n1 2\n2 1\n3 1\n2 2","output":"NO\nYES"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"f:\\zyz\\Problemset\\Contest\\Codeforces\\1749_VP\\A.cpp","group":"local","local":true}
