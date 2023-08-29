@@ -1,362 +1,232 @@
-#include <iostream>
-#include <queue>
-#include <string>
-#include <vector>
+#include <bits/stdc++.h>
+#define ld long double
+#define ui unsigned int
+#define ull unsigned long long
+#define int long long
+#define eb emplace_back
+#define pb pop_back
+#define ins insert
+#define mp make_pair
+#define pii pair<int, int>
+#define fi first
+#define se second
+#define power(x) ((x) * (x))
+using namespace std;
 
-class DividedByZeroException {};
-class BigInteger {
- private:
-  bool sign;
-  void trim();
-
- public:
-  std::vector<char> digits;
-  BigInteger(int);
-  BigInteger(std::string &);
-  BigInteger();
-  BigInteger(const BigInteger &);
-  BigInteger operator=(const BigInteger &op2);
-  BigInteger abs() const;
-  BigInteger pow(int a);
-  friend BigInteger operator+=(BigInteger &, const BigInteger &);
-  friend BigInteger operator-=(BigInteger &, const BigInteger &);
-  friend BigInteger operator*=(BigInteger &, const BigInteger &);
-  friend BigInteger operator/=(BigInteger &, const BigInteger &);
-  inline friend BigInteger operator%=(BigInteger &, const BigInteger &);
-  inline friend BigInteger operator+(const BigInteger &, const BigInteger &);
-  inline friend BigInteger operator-(const BigInteger &, const BigInteger &);
-  inline friend BigInteger operator*(const BigInteger &, const BigInteger &);
-  inline friend BigInteger operator/(const BigInteger &, const BigInteger &);
-  inline friend BigInteger operator%(const BigInteger &, const BigInteger &);
-  inline friend BigInteger operator-(const BigInteger &);
-  inline friend BigInteger operator++(BigInteger &);
-  inline friend BigInteger operator++(BigInteger &, int);
-  inline friend BigInteger operator--(BigInteger &);
-  inline friend BigInteger operator--(BigInteger &, int);
-  inline friend bool operator>(const BigInteger &, const BigInteger &);
-  friend bool operator<(const BigInteger &, const BigInteger &);
-  friend bool operator==(const BigInteger &, const BigInteger &);
-  inline friend bool operator!=(const BigInteger &, const BigInteger &);
-  inline friend bool operator>=(const BigInteger &, const BigInteger &);
-  inline friend bool operator<=(const BigInteger &, const BigInteger &);
-  friend std::ostream &operator<<(std::ostream &, const BigInteger &);
-  friend std::istream &operator>>(std::istream &, BigInteger &);
-  std::string get_string();
-  static const BigInteger ZERO;
-  static const BigInteger ONE;
-  static const BigInteger TEN;
-};
-const BigInteger BigInteger::ZERO = BigInteger(0);
-const BigInteger BigInteger::ONE = BigInteger(1);
-const BigInteger BigInteger::TEN = BigInteger(10);
-BigInteger::BigInteger() { sign = true; }
-BigInteger::BigInteger(int val) {
-  if (val >= 0)
-    sign = true;
-  else {
-    sign = false;
-    val *= (-1);
+namespace FastIO {
+template <typename T = int>
+inline T read() {
+  T s = 0, w = 1;
+  char c = getchar();
+  while (!isdigit(c)) {
+    if (c == '-') w = -1;
+    c = getchar();
   }
+  while (isdigit(c)) s = (s * 10) + (c ^ 48), c = getchar();
+  return s * w;
+}
+template <typename T>
+inline void read(T &s) {
+  s = 0;
+  int w = 1;
+  char c = getchar();
+  while (!isdigit(c)) {
+    if (c == '-') w = -1;
+    c = getchar();
+  }
+  while (isdigit(c)) s = (s * 10) + (c ^ 48), c = getchar();
+  s = s * w;
+}
+template <typename T, typename... Args>
+inline void read(T &x, Args &...args) {
+  read(x), read(args...);
+}
+template <typename T>
+inline void write(T x, char ch) {
+  if (x < 0) x = -x, putchar('-');
+  static char stk[25];
+  int top = 0;
   do {
-    digits.push_back((char)(val % 10));
-    val /= 10;
-  } while (val != 0);
+    stk[top++] = x % 10 + '0', x /= 10;
+  } while (x);
+  while (top) putchar(stk[--top]);
+  if (ch != '~') putchar(ch);
+  return;
 }
-BigInteger::BigInteger(std::string &def) {
-  sign = true;
-  for (std::string::reverse_iterator iter = def.rbegin(); iter < def.rend();
-       iter++) {
-    char ch = (*iter);
-    if (iter == def.rend() - 1) {
-      if (ch == '+') break;
-      if (ch == '-') {
-        sign = false;
-        break;
-      }
-    }
-    digits.push_back((char)((*iter) - '0'));
-  }
-  trim();
-}
-void BigInteger::trim() {
-  std::vector<char>::reverse_iterator iter = digits.rbegin();
-  while (!digits.empty() && (*iter) == 0) {
-    digits.pop_back();
-    iter = digits.rbegin();
-  }
-  if (digits.size() == 0) {
-    sign = true;
-    digits.push_back(0);
-  }
-}
-BigInteger::BigInteger(const BigInteger &op2) {
-  sign = op2.sign;
-  digits = op2.digits;
-}
-BigInteger BigInteger::operator=(const BigInteger &op2) {
-  digits = op2.digits;
-  sign = op2.sign;
-  return (*this);
-}
-BigInteger BigInteger::abs() const {
-  if (sign)
-    return *this;
-  else
-    return -(*this);
-}
-BigInteger BigInteger::pow(int a) {
-  BigInteger res(1);
-  for (int i = 0; i < a; i++) res *= (*this);
+}  // namespace FastIO
+using namespace FastIO;
 
+namespace MTool {
+#define TA template <typename T, typename... Args>
+#define TT template <typename T>
+static const int Mod = 998244353;
+TT inline void Swp(T &a, T &b) {
+  T t = a;
+  a = b;
+  b = t;
+}
+TT inline void cmax(T &a, T b) { a = max(a, b); }
+TT inline void cmin(T &a, T b) { a = min(a, b); }
+TA inline void cmax(T &a, T b, Args... args) { a = max({a, b, args...}); }
+TA inline void cmin(T &a, T b, Args... args) { a = min({a, b, args...}); }
+TT inline void Madd(T &a, T b) { a = a + b >= Mod ? a + b - Mod : a + b; }
+TT inline void Mdel(T &a, T b) { a = a - b < 0 ? a - b + Mod : a - b; }
+TT inline void Mmul(T &a, T b) { a = a * b % Mod; }
+TT inline void Mmod(T &a) { a = (a % Mod + Mod) % Mod; }
+TT inline T Cadd(T a, T b) { return a + b >= Mod ? a + b - Mod : a + b; }
+TT inline T Cdel(T a, T b) { return a - b < 0 ? a - b + Mod : a - b; }
+TT inline T Cmul(T a, T b) { return a * b % Mod; }
+TT inline T Cmod(T a) { return (a % Mod + Mod) % Mod; }
+TA inline void Madd(T &a, T b, Args... args) { Madd(a, Cadd(b, args...)); }
+TA inline void Mdel(T &a, T b, Args... args) { Mdel(a, Cadd(b, args...)); }
+TA inline void Mmul(T &a, T b, Args... args) { Mmul(a, Cmul(b, args...)); }
+TA inline T Cadd(T a, T b, Args... args) { return Cadd(Cadd(a, b), args...); }
+TA inline T Cdel(T a, T b, Args... args) { return Cdel(Cdel(a, b), args...); }
+TA inline T Cmul(T a, T b, Args... args) { return Cmul(Cmul(a, b), args...); }
+TT inline T qpow(T a, T b) {
+  int res = 1;
+  while (b) {
+    if (b & 1) Mmul(res, a);
+    Mmul(a, a);
+    b >>= 1;
+  }
   return res;
 }
-BigInteger operator+=(BigInteger &op1, const BigInteger &op2) {
-  if (op1.sign == op2.sign) {
-    std::vector<char>::iterator iter1;
-    std::vector<char>::const_iterator iter2;
-    iter1 = op1.digits.begin();
-    iter2 = op2.digits.begin();
-    char to_add = 0;
-    while (iter1 != op1.digits.end() && iter2 != op2.digits.end()) {
-      (*iter1) = (*iter1) + (*iter2) + to_add;
-      to_add = ((*iter1) > 9);
-      (*iter1) = (*iter1) % 10;
-      iter1++;
-      iter2++;
-    }
-    while (iter1 != op1.digits.end()) {
-      (*iter1) = (*iter1) + to_add;
-      to_add = ((*iter1) > 9);
-      (*iter1) %= 10;
-      iter1++;
-    }
-    while (iter2 != op2.digits.end()) {
-      char val = (*iter2) + to_add;
-      to_add = (val > 9);
-      val %= 10;
-      op1.digits.push_back(val);
-      iter2++;
-    }
-    if (to_add != 0) op1.digits.push_back(to_add);
-    return op1;
-  } else {
-    if (op1.sign)
-      return op1 -= (-op2);
-    else
-      return op1 = op2 - (-op1);
+TT inline T qmul(T a, T b) {
+  int res = 0;
+  while (b) {
+    if (b & 1) Madd(res, a);
+    Madd(a, a);
+    b >>= 1;
   }
+  return res;
 }
-BigInteger operator-=(BigInteger &op1, const BigInteger &op2) {
-  if (op1.sign == op2.sign) {
-    if (op1.sign)
-      if (op1 < op2)
-        return op1 = -(op2 - op1);
-      else {
-        if (-op1 > -op2)
-          return op1 = -((-op1) - (-op2));
-        else
-          return op1 = (-op2) - (-op1);
-      }
-    std::vector<char>::iterator iter1;
-    std::vector<char>::const_iterator iter2;
-    iter1 = op1.digits.begin();
-    iter2 = op2.digits.begin();
-    char to_substract = 0;
-    while (iter1 != op1.digits.end() && iter2 != op2.digits.end()) {
-      (*iter1) = (*iter1) - (*iter2) - to_substract;
-      to_substract = 0;
-      if ((*iter1) < 0) {
-        to_substract = 1;
-        (*iter1) += 10;
-      }
-      iter1++;
-      iter2++;
-    }
-    while (iter1 != op1.digits.end()) {
-      (*iter1) = (*iter1) - to_substract;
-      to_substract = 0;
-      if ((*iter1) < 0) {
-        to_substract = 1;
-        (*iter1) += 10;
-      } else
-        break;
-      iter1++;
-      op1.trim();
-      return op1;
-    }
-  } else {
-    if (op1 > BigInteger::ZERO)
-      return op1 += (-op2);
-    else
-      return op1 = -(op2 + (-op1));
+TT inline T spow(T a, T b) {
+  int res = 1;
+  while (b) {
+    if (b & 1) res = qmul(res, a);
+    a = qmul(a, a);
+    b >>= 1;
   }
+  return res;
 }
-BigInteger operator*=(BigInteger &op1, const BigInteger &op2) {
-  BigInteger result(0);
-  if (op1 == BigInteger::ZERO || op2 == BigInteger::ZERO)
-    result = BigInteger::ZERO;
-  else {
-    std::vector<char>::const_iterator iter2 = op2.digits.begin();
-    while (iter2 != op2.digits.end()) {
-      if (*iter2 != 0) {
-        std::deque<char> temp(op1.digits.begin(), op1.digits.end());
-        char to_add = 0;
-        std::deque<char>::iterator iter1 = temp.begin();
-        while (iter1 != temp.end()) {
-          (*iter1) *= (*iter2);
-          (*iter1) += to_add;
-          to_add = (*iter1) / 10;
-          (*iter1) %= 10;
-          iter1++;
-        }
-        if (to_add != 0) temp.push_back(to_add);
-        int num_of_zeros = iter2 - op2.digits.begin();
-        while (num_of_zeros--) temp.push_front(0);
-        BigInteger temp2;
-        temp2.digits.insert(temp2.digits.end(), temp.begin(), temp.end());
-        temp2.trim();
-        result = result + temp2;
-      }
-      iter2++;
-    }
-    result.sign = ((op1.sign && op2.sign) || (!op1.sign && !op2.sign));
-  }
-  op1 = result;
-  return op1;
+TT inline void exgcd(T A, T B, T &X, T &Y) {
+  if (!B) return X = 1, Y = 0, void();
+  exgcd(B, A % B, Y, X), Y -= X * (A / B);
 }
-BigInteger operator/=(BigInteger &op1, const BigInteger &op2) {
-  if (op2 == BigInteger::ZERO) throw DividedByZeroException();
-  BigInteger t1 = op1.abs(), t2 = op2.abs();
-  if (t1 < t2) {
-    op1 = BigInteger::ZERO;
-    return op1;
-  }
-  std::deque<char> temp;
-  std::vector<char>::reverse_iterator iter = t1.digits.rbegin();
-  BigInteger temp2(0);
-  while (iter != t1.digits.rend()) {
-    temp2 = temp2 * BigInteger::TEN + BigInteger((int)(*iter));
-    char s = 0;
-    while (temp2 >= t2) {
-      temp2 = temp2 - t2;
-      s = s + 1;
-    }
-    temp.push_front(s);
-    iter++;
-  }
-  op1.digits.clear();
-  op1.digits.insert(op1.digits.end(), temp.begin(), temp.end());
-  op1.trim();
-  op1.sign = ((op1.sign && op2.sign) || (!op1.sign && !op2.sign));
-  return op1;
+TT inline T Ginv(T x) {
+  T A = 0, B = 0;
+  exgcd(x, Mod, A, B);
+  return Cmod(A);
 }
-inline BigInteger operator%=(BigInteger &op1, const BigInteger &op2) {
-  return op1 -= ((op1 / op2) * op2);
-}
-inline BigInteger operator+(const BigInteger &op1, const BigInteger &op2) {
-  BigInteger temp(op1);
-  temp += op2;
-  return temp;
-}
-inline BigInteger operator-(const BigInteger &op1, const BigInteger &op2) {
-  BigInteger temp(op1);
-  temp -= op2;
-  return temp;
-}
-inline BigInteger operator*(const BigInteger &op1, const BigInteger &op2) {
-  BigInteger temp(op1);
-  temp *= op2;
-  return temp;
+#undef TT
+#undef TA
+}  // namespace MTool
+using namespace MTool;
+
+inline void file() {
+  freopen(".in", "r", stdin);
+  freopen(".out", "w", stdout);
+  return;
 }
 
-inline BigInteger operator/(const BigInteger &op1, const BigInteger &op2) {
-  BigInteger temp(op1);
-  temp /= op2;
-  return temp;
+bool Mbe;
+
+namespace LgxTpre {
+static const int MAX = 510;
+static const int inf = 2147483647;
+static const int INF = 1e7;
+
+int n, m, deg[MAX];
+int id[MAX], odd[MAX], all[MAX];
+int x, y, c, w, fl;
+
+namespace MaxFlowMinCost {
+struct edge {
+  int nex, to, val, flow;
+} e[MAX << 1];
+int head[MAX], cnt = 1;
+inline void add(int x, int y, int val, int flow) {
+  e[++cnt].nex = head[x], head[x] = cnt, e[cnt].to = y, e[cnt].val = val,
+  e[cnt].flow = flow;
+  e[++cnt].nex = head[y], head[y] = cnt, e[cnt].to = x, e[cnt].val = -val,
+  e[cnt].flow = 0;
+  return;
 }
-inline BigInteger operator%(const BigInteger &op1, const BigInteger &op2) {
-  BigInteger temp(op1);
-  temp %= op2;
-  return temp;
-}
-inline BigInteger operator-(const BigInteger &op) {
-  BigInteger temp = BigInteger(op);
-  temp.sign = !temp.sign;
-  return temp;
-}
-inline BigInteger operator++(BigInteger &op) {
-  op += BigInteger::ONE;
-  return op;
-}
-inline BigInteger operator++(BigInteger &op, int x) {
-  BigInteger temp(op);
-  ++op;
-  return temp;
-}
-inline BigInteger operator--(BigInteger &op) {
-  op -= BigInteger::ONE;
-  return op;
-}
-inline BigInteger operator--(BigInteger &op, int x) {
-  BigInteger temp(op);
-  --op;
-  return temp;
-}
-bool operator<(const BigInteger &op1, const BigInteger &op2) {
-  if (op1.sign != op2.sign)
-    return !op1.sign;
-  else {
-    if (op1.digits.size() != op2.digits.size())
-      return (op1.sign && op1.digits.size() < op2.digits.size()) ||
-             (!op1.sign && op1.digits.size() > op2.digits.size());
-    std::vector<char>::const_reverse_iterator iter1, iter2;
-    iter1 = op1.digits.rbegin();
-    iter2 = op2.digits.rbegin();
-    while (iter1 != op1.digits.rend()) {
-      if (op1.sign && *iter1 < *iter2) return true;
-      if (op1.sign && *iter1 > *iter2) return false;
-      if (!op1.sign && *iter1 > *iter2) return true;
-      if (!op1.sign && *iter1 < *iter2) return false;
-      iter1++;
-      iter2++;
+
+int s, t;
+int maxflow, mincost;
+int dis[MAX], vis[MAX], pre[MAX], incf[MAX];
+queue<int> q;
+inline bool SPFA() {
+  fill(vis + 1, vis + n + 1, 0), fill(dis + 1, dis + n + 1, INF);
+  q.push(s), vis[s] = 1, dis[s] = 0, incf[s] = INF;
+  while (!q.empty()) {
+    int now = q.front();
+    q.pop();
+    vis[now] = 0;
+    for (int i = head[now]; i; i = e[i].nex) {
+      int to = e[i].to, val = e[i].val, flow = e[i].flow;
+      if (!flow) continue;
+      if (dis[to] > dis[now] + val) {
+        dis[to] = dis[now] + val, incf[to] = min(incf[now], flow), pre[to] = i;
+        if (!vis[to]) vis[to] = 1, q.push(to);
+      }
     }
-    return false;
+  }
+  return dis[t] != INF;
+}
+inline void Augment() {
+  int now = t;
+  if (incf[t] * dis[t] > 0) return fl = 1, void();
+  maxflow += incf[t], mincost += incf[t] * dis[t];
+  while (now != s) {
+    int i = pre[now];
+    e[i].flow -= incf[t], e[i ^ 1].flow += incf[t], now = e[i ^ 1].to;
   }
 }
-bool operator==(const BigInteger &op1, const BigInteger &op2) {
-  if (op1.sign != op2.sign || op1.digits.size() != op2.digits.size())
-    return false;
-  std::vector<char>::const_iterator iter1, iter2;
-  iter1 = op1.digits.begin();
-  iter2 = op2.digits.begin();
-  while (iter1 != op1.digits.end()) {
-    if (*iter1 != *iter2) return false;
-    iter1++;
-    iter2++;
+inline void solve() {
+  while (SPFA() && !fl) Augment();
+}
+}  // namespace MaxFlowMinCost
+using namespace MaxFlowMinCost;
+
+inline void mian() {
+  read(n, m), s = 1, t = n;
+  for (int i = 1; i <= m; ++i) {
+    read(x, y, c, w);
+    if (c & 1) odd[i] = 1, --deg[x], ++deg[y], --c;
+    add(x, y, w, c >> 1), id[i] = cnt;
   }
-  return true;
+  for (int i = 2; i < n; ++i) {
+    if (deg[i] & 1) return puts("Impossible"), void();
+    deg[i] >>= 1;
+    if (!deg[i]) continue;
+    if (deg[i] > 0)
+      add(s, i, -INF, deg[i]);
+    else
+      add(i, t, -INF, -deg[i]);
+  }
+  MaxFlowMinCost::solve();
+  for (int i = 1; i <= m; ++i)
+    all[e[id[i]].to] += e[id[i]].flow << 1 | odd[i],
+        all[e[id[i] ^ 1].to] -= e[id[i]].flow << 1 | odd[i];
+  for (int i = 2; i < n; ++i)
+    if (all[i]) return puts("Impossible"), void();
+  puts("Possible");
+  for (int i = 1; i <= m; ++i) write(e[id[i]].flow << 1 | odd[i], ' ');
+  return puts(""), void();
 }
-bool operator!=(const BigInteger &op1, const BigInteger &op2) {
-  return !(op1 == op2);
-}
-bool operator>=(const BigInteger &op1, const BigInteger &op2) {
-  return (op1 > op2) || (op1 == op2);
-}
-bool operator<=(const BigInteger &op1, const BigInteger &op2) {
-  return (op1 < op2) || (op1 == op2);
-}
-bool operator>(const BigInteger &op1, const BigInteger &op2) {
-  return !(op1 <= op2);
-}
-std::ostream &operator<<(std::ostream &stream, const BigInteger &val) {
-  if (!val.sign) stream << "-";
-  for (auto iter = val.digits.rbegin(); iter != val.digits.rend(); iter++)
-    stream << (char)((*iter) + '0');
-  return stream;
-}
-std::istream &operator>>(std::istream &stream, BigInteger &val) {
-  std::string str;
-  stream >> str;
-  val = BigInteger(str);
-  return stream;
+}  // namespace LgxTpre
+
+bool Med;
+
+signed main() {
+  //  file();
+  fprintf(stderr, "%.3lf MB\n", abs(&Med - &Mbe) / 1048576.0);
+  int Tbe = clock();
+  LgxTpre::mian();
+  int Ted = clock();
+  cerr << 1e3 * (Ted - Tbe) / CLOCKS_PER_SEC << " ms\n";
+  return (0 - 0);
 }

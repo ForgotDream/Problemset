@@ -2,12 +2,13 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-08-24
+ * @date    2023-08-28
  */
 #include <iostream>
 
 using i64 = long long;
 
+constexpr int N = 505;
 void solve() {
   
 }
