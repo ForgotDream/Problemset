@@ -1,31 +1,42 @@
 #include "testlib.h"
-#include <cstring>
-#include <algorithm>
 
 using i64 = long long;
+
+constexpr int N = 2e5 + 50;
+int b[N], b[N];
 
 int main(int argc, char* argv[]) {
   registerTestlibCmd(argc, argv);
 
-  int x1 = inf.readInt(), x2 = inf.readInt(), y1 = inf.readInt(), y2 = inf.readInt();
-  int sx = ouf.readInt(), sy = ouf.readInt();
-  
-  if (!ouf.eof()) {
-    quitf(_wa, "Your answer is too long!");
+  auto pans = ouf.readLong(), jans = ans.readLong();
+  if (pans != jans) quitf(_wa, "Your answer is worng!");
+
+  int n = inf.readInt(), k = inf.readInt();
+  inf.readEoln();
+  for (int i = 1; i <= n; i++) {
+    b[i] = inf.readInt(), b[i] = inf.readInt();
+    inf.readEoln();
   }
 
-  if (sx < -1e9 || sx > 1e9 || sy < -1e9 || sy > 1e9) {
-    quitf(_wa, "Your answer is out of limits.");
-  } else {
-    i64 dis1 = (sx - x1) * (sx - x1) + (sy - y1) * (sy - y1);
-    i64 dis2 = (sx - x2) * (sx - x2) + (sy - y2) * (sy - y2);
-    i64 dis3 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-    if (dis1 + dis2 == dis3 || dis1 + dis3 == dis2 || dis2 + dis3 == dis1) {
-      quitf(_ok, "Your answer is correct.");
+  i64 pcnt = 0, psum = 0;
+  for (int i = 1; i <= n; i++) {
+    auto pcur = ouf.readInt();
+    ouf.readEoln();
+    pcnt += pcur;
+    if (pcur == 0) {
+      continue;
+    } else if (pcur == 1) {
+      psum += b[i];
+    } else if (pcur == 2) {
+      psum += b[i];
     } else {
-      quitf(_wa, "Your answer is wrong.");
+      quitf(_wa, "WTF are you outputting?");
     }
   }
+  if (pcnt != k) quitf(_wa, "Your answer is wrong!");
+  if (psum != jans) quitf(_wa, "Well, don't try to fool a computer!");
+
+  quitf(_ok, "Your answer is correct");
 
   return 0;
 }
