@@ -8,7 +8,7 @@
 using i64 = long long;
 constexpr int N = 2550, mod = 2333;
 int t, c[N][N], g[N][N];
-i64 n, k;
+i64 n, p;
 void init() {
   for (int i = 0; i <= 2500; i++) {
     for (int j = 0; j <= 2500; j++) {
@@ -31,8 +31,8 @@ int f(i64 n, i64 k) {
          mod;
 }
 void solve() {
-  std::cin >> n >> k;
-  std::cout << f(n, k) << "\n";
+  std::cin >> n >> p;
+  std::cout << f(n, p) << "\n";
 }
 signed main() {
   std::ios::sync_with_stdio(false);
