@@ -21,7 +21,7 @@ int main() {
     system("std.exe < tmp.in > std.out");
     auto ted = std::chrono::system_clock::now().time_since_epoch().count();
     std::cerr << "Used Time: " << (ted - tbe) / 1e9 << "\n";
-    if (system("fc std.out checker.out")) break;
+    if (system("diff std.out checker.out")) break;
   }
   system("pause");
   return 0;
