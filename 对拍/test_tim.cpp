@@ -7,7 +7,6 @@ using f80 = long double;
 void compile() {
   system("g++ generator.cpp -o g.exe -std=c++20 -O2");
   system("g++ std.cpp -o std.exe -std=c++20 -O2");
-  system("g++ checker.cpp -o checker.exe -std=c++20 -O2");
 }
 
 int main() {

@@ -2,26 +2,17 @@
  * @file
  * @author  ForgotDream
  * @brief
- * @date    2023-10-02
+ * @date    2023-10-05
  */
 #include <iostream>
-#include <set>
 
 using i64 = long long;
 
-constexpr int N = 1e6 + 50;
-int q;
-std::set<int> col[N];
-struct BIT {
-  
-} bit;
+constexpr int N = 1e5 + 50;
+int n;
 void solve() {
-  std::cin >> q;
-  while (q--) {
-    char opt;
-    int u;
-    std::cin >> opt >> u;
-  }
+  std::cin >> n;
+
 }
 
 int main() {
