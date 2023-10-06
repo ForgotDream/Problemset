@@ -9,6 +9,7 @@
 using i64 = long long;
 
 void solve() {
+  std::cin >> n;
 }
 
 int main() {
