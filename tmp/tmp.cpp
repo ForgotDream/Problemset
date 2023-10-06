@@ -15,6 +15,7 @@ namespace N_LESS_THAN_100 {
 constexpr int N = 105;
 constexpr i64 inf = 1e18;
 i64 f[N][N];
+=======
 void solve() {
   for (int i = 1; i <= n; i++) a[i] = a[i - 1] + a[i];
   f[0][0] = -inf;
