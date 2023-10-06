@@ -2,17 +2,15 @@
  * @file
  * @author  ForgotDream
  * @brief
- * @date    2023-10-05
+ * @date    2023-10-06
  */
 #include <iostream>
 
 using i64 = long long;
 
-constexpr int N = 1e5 + 50;
-int n;
+constexpr int N = 
 void solve() {
-  std::cin >> n;
-
+  
 }
 
 int main() {
