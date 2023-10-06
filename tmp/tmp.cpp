@@ -5,23 +5,14 @@
  * @date    2023-10-02
  */
 #include <iostream>
-#include <set>
 
 using i64 = long long;
 
-constexpr int N = 1e6 + 50;
-int q;
-std::set<int> col[N];
-struct BIT {
-  
-} bit;
+constexpr int N = 1e5 + 50;
+int n, a[N];
 void solve() {
-  std::cin >> q;
-  while (q--) {
-    char opt;
-    int u;
-    std::cin >> opt >> u;
-  }
+  std::cin >> n;
+  for (int i = 1; i <= n; i++) std::cin >> a[i];
 }
 
 int main() {
