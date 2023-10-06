@@ -7,18 +7,19 @@ using i64 = long long;
 
 std::random_device rd;
 std::mt19937 rng(rd());
-int dep(i64 num) { return 64 - __builtin_clzll(num); }
 
 int main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
-  std::cout << 1 << "\n";
-  std::uniform_int_distribution<i64> N(1, i64(1e18));
-  i64 n = N(rng);
-  int mdep = dep(n);
-  std::uniform_int_distribution<i64> X(1, n);
-  i64 x = X(rng);
-  int cdep = dep(x);
-  std::cout << n << " " << x << " " << mdep - cdep << "\n";
+  int n = 1e5, m = 2e5;
+  std::uniform_int_distribution ud(1, n), udw((int)1e9, (1 << 30) - 1);
+  std::cout << n << " " << m << "\n";
+  for (int i = 1; i <= m; i++) {
+    auto u = ud(rng), v = ud(rng), w = udw(rng);
+    while (u == v) {
+      u = ud(rng), v = ud(rng), w = udw(rng);
+    }
+    std::cout << u << " " << v << " " << w << "\n";
+  }
   return 0;
 }

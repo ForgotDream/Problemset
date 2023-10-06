@@ -16,8 +16,8 @@ void solve() {
       if (i & (1 << (j - 1))) continue;
       for (int k = j + 1; k <= n; k++) {
         if (i & (1 << (k - 1))) continue;
-        cnt[i ^ (1 << (j - 1)) ^ (1 << (k - 1))] =
-            std::max(cnt[i] + a[j][k], cnt[i ^ (1 << (j - 1)) ^ (1 << (k - 1))]);
+        cnt[i ^ (1 << (j - 1)) ^ (1 << (k - 1))] = std::max(
+            cnt[i] + a[j][k], cnt[i ^ (1 << (j - 1)) ^ (1 << (k - 1))]);
       }
     }
   }
