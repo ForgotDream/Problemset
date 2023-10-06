@@ -8,11 +8,7 @@
 
 using i64 = long long;
 
-constexpr int N = 1e5 + 50;
-int n, a[N];
 void solve() {
-  std::cin >> n;
-  for (int i = 1; i <= n; i++) std::cin >> a[i];
 }
 
 int main() {
