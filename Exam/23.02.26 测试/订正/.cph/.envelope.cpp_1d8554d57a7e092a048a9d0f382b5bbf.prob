@@ -1,1 +1,0 @@
-{"name":"Local: envelope","url":"g:\\zyz\\Exams\\23.02.26 测试\\订正\\envelope.cpp","tests":[{"id":1677398509439,"input":"5 2\n10 10 5\n9 8 10\n4 12 20\n12 4 8\n2 3 16","output":"1828"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"g:\\zyz\\Exams\\23.02.26 测试\\订正\\envelope.cpp","group":"local","local":true}

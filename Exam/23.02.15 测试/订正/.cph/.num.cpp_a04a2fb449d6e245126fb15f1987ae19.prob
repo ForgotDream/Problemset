@@ -1,1 +1,0 @@
-{"name":"Local: num","url":"g:\\zyz\\Exams\\23.02.15 测试\\订正\\num.cpp","tests":[{"id":1676556567785,"input":"2\n1 2 1","output":"14"},{"id":1676556703327,"input":"3\n1 2 1 2","output":"48"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"g:\\zyz\\Exams\\23.02.15 测试\\订正\\num.cpp","group":"local","local":true}
