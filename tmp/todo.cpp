@@ -1,68 +1,35 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <queue>
-#include <map>
-
-using i64 = long long;
-
-constexpr i64 mod = 1e9 + 7;
-int n;
-std::string s;
-int ans = 0;
-std::vector<int> p;
-namespace N_LESS_THAN_20 {
-void bfs(const std::string &s) {
-  std::queue<std::string> q;
-  std::map<std::string, bool> used;
-  used[s] = true;
-  q.push(s);
-  while (!q.empty()) {
-    auto p = q.front();
-    q.pop();
-    ans++;
-    std::string nxt;
-    for (int i = 1; i + 1 < n; i++) {
-      if (p[i - 1] == '0' && p[i] == '1' && p[i + 1] == '1') {
-        nxt = p;
-        std::swap(nxt[i - 1], nxt[i + 1]);
-        if (used[nxt]) continue;
-        used[nxt] = true, q.push(nxt);
-      }
-      if (p[i - 1] == '1' && p[i] == '1' && p[i + 1] == '0') {
-        nxt = p;
-        std::swap(nxt[i - 1], nxt[i + 1]);
-        if (used[nxt]) continue;
-        used[nxt] = true, q.push(nxt);
-      }
-    }
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ldouble;
+typedef unsigned long long ull;
+const int N = 1e5 + 5;
+int n, m, cnt;
+ll ans = 0, a[N], b[N];
+int main() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(0);
+  std::cout.tie(0);
+  std::cin >> n >> m;
+  for (int i = 1; i <= n; i++) {
+    std::cin >> a[i];
+    cnt += (a[i] > 0);
   }
-}
-void solve() {
-  for (int i = 0; i < (1 << p.size()); i++) {
-    std::string cur = s;
-    for (int j = 0; j < p.size(); j++) {
-      if (i & (1 << j)) cur[p[j]] = '1';
-      else cur[p[j]] = '0';
-    }
-    bfs(cur);
+  for (int i = 1; i <= m; i++) std::cin >> b[i];
+  std::sort(a + 1, a + n + 1, [](auto x, auto y) { return x > y; });
+  std::sort(b + 1, b + m + 1, [](auto x, auto y) { return x > y; });
+  std::deque<ll> A, B;
+  for (int i = 1; i <= n; i++) A.push_back(a[i]);
+  for (int i = 1; i <= m; i++) B.push_back(b[i]);
+  for (int i = 1; i <= cnt; i++) {
+    ans += A.front() * B.front();
+    A.pop_front();
+    B.pop_front();
+  }
+  for (int i = cnt + 1; i <= n; i++) {
+    ans += A.back() * B.back();
+    A.pop_back();
+    B.pop_back();
   }
   std::cout << ans;
-}
-}
-void solve() {
-  std::cin >> n >> s;
-  for (int i = 0; i < n; i++) {
-    if (s[i] == '?') p.push_back(i);
-  }
-  int len = p.size();
-  if (n <= 20 && len <= 5) N_LESS_THAN_20::solve();
-}
-
-int main() {
-  std::cin.tie(nullptr)->sync_with_stdio(false);
-  int t = 1;
-  // std::cin >> t;
-  while (t--) solve();
   return 0;
 }
