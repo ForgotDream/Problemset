@@ -1,18 +1,11 @@
-/**
- * @file
- * @author  ForgotDream
- * @brief
- * @date    2023-10-10
- */
-#include <algorithm>
 #include <iostream>
+#include <string>
 
 using i64 = long long;
 
-namespace N_LESS_THAN_20 {
-
-}  // namespace N_LESS_THAN_20
+std::string s;
 void solve() {
+  std::cin >> s;
 }
 
 int main() {

@@ -1,113 +1,86 @@
+// Problem: #6490. 「XXOI 2018」暑假时在做什么？有没有空？可以来学物理吗？
+// Contest: LibreOJ
+// URL: https://loj.ac/p/6490
+// Memory Limit: 256 MB
+// Time Limit: 400 ms
+//
+// Powered by CP Editor (https://cpeditor.org)
+
 #include <bits/stdc++.h>
-#define int long long
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma GCC target( \
-        "sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,tune=native")
-#define rd(x) x = read()
-#define wt(x) write(x)
-#define pos(x) (((x)-1) / SZ + 1)
-#define endl "\n"
-#define pii pair<int, int>
-#define fi first
-#define se second
-#define mp make_pair
-#define ls (rt << 1)
-#define rs (rt << 1 | 1)
-#define y1 _________
-using namespace std;
-const int N = 2e5 + 5;
-const int M = 70;
-const int SZ = 450;
-const int mod = 1e9 + 7;
-const int inf = 0x3f3f3f3f3f3f3f3f;
-int read() {
-  int x = 0, f = 1;
-  char ch = getchar();
-  while (ch > '9' || ch < '0') {
-    if (ch == '-') f = -1;
-    ch = getchar();
-  }
-  while (ch >= '0' && ch <= '9') {
-    x = x * 10 + ch - '0';
-    ch = getchar();
-  }
-  return x * f;
-}
-void write(int x) {
-  if (x < 0) {
-    putchar('-');
-    x = -x;
-  }
-  if (x >= 10) write(x / 10);
-  putchar(x % 10 + '0');
-}
-int ksm(int x, int y = mod - 2, int z = mod) {
-  int ret = 1;
-  while (y) {
-    if (y & 1) ret = (ret * x) % z;
-    x = (x * x) % z;
-    y >>= 1;
-  }
-  return ret;
-}
-void gmax(int &x, int y) { x = max(x, y); }
-int n, ans;
-int a[N], p[N], L[N], R[N];
-int mx[N << 2], tag[N << 2];
-void pushup(int rt) { mx[rt] = max(mx[ls], mx[rs]) + tag[rt]; }
+typedef long long ll;
+const ll INF = 1e18;
 
-void build(int rt, int l, int r) {
-  tag[rt] = 0;
+const int maxn = 1e5 + 5;
+int n, L, R, a[maxn];
+ll sum[maxn], f[maxn];
+
+namespace ST {
+int lg[maxn];
+ll f[maxn][20], dp[maxn][20];
+
+void init() {
+  for (int i = 0; i <= n; ++i) f[i][0] = dp[i][0] = sum[i];
+  for (int i = 2; i <= n + 1; ++i) lg[i] = lg[i >> 1] + 1;
+  for (int k = 1; (1 << k) <= n; ++k) {
+    for (int i = 0; i + (1 << k) - 1 <= n; ++i) {
+      f[i][k] = std::max(f[i][k - 1], f[i + (1 << (k - 1))][k - 1]);
+      dp[i][k] = std::min(dp[i][k - 1], dp[i + (1 << (k - 1))][k - 1]);
+    }
+  }
+  return;
+}
+
+ll RMQmax(int l, int r) {
+  if (l > r) return -INF;
+  int k = lg[r - l + 1];
+  return std::max(f[l][k], f[r - (1 << k) + 1][k]);
+}
+
+ll RMQmin(int l, int r) {
+  if (l > r) return INF;
+  int k = lg[r - l + 1];
+  return std::min(dp[l][k], dp[r - (1 << k) + 1][k]);
+}
+}  // namespace ST
+
+void solve(int l, int r) {
+  if (r - l + 1 < L) return;
   if (l == r) {
-    mx[rt] = l - (l & 1);
+    if (L == 1) f[l] = std::max(f[l], (ll)a[l]);
     return;
   }
+
   int mid = (l + r) >> 1;
-  build(ls, l, mid);
-  build(rs, mid + 1, r);
-  pushup(rt);
+  solve(l, mid);
+  solve(mid + 1, r);
+
+  ll pre = -INF, suf = -INF;
+  for (int i = l; i <= mid; ++i) {
+    int x = i + L - 1, y = i + R - 1;
+    pre = std::max(
+        pre, ST::RMQmax(std::max(x, mid + 1), std::min(y, r)) - sum[i - 1]);
+    f[i] = std::max(f[i], pre);
+  }
+
+  for (int i = r; i > mid; --i) {
+    int x = i - R + 1, y = i - L + 1;
+    suf = std::max(
+        suf, sum[i] - ST::RMQmin(std::max(x, l) - 1, std::min(y, mid) - 1));
+    f[i] = std::max(f[i], suf);
+  }
+
+  return;
 }
 
-void update(int rt, int l, int r, int L, int R, int x) {
-  if (L <= l && r <= R) {
-    tag[rt] += x;
-    mx[rt] += x;
-    return;
-  }
-  int mid = (l + r) >> 1;
-  if (L <= mid) update(ls, l, mid, L, R, x);
-  if (R > mid) update(rs, mid + 1, r, L, R, x);
-  pushup(rt);
-}
-int query(int rt, int l, int r, int L, int R) {
-  if (L > R) return 0;
-  if (L <= l && r <= R) return mx[rt];
-  int mid = (l + r) / 2, ret = 0;
-  if (L <= mid) gmax(ret, query(ls, l, mid, L, R));
-  if (R > mid) gmax(ret, query(rs, mid + 1, r, L, R));
-  return ret + tag[rt];
-}
-void DOIT() {
-  ans = 0;
-  rd(n);
-  for (int i = 1; i <= n; i++) rd(a[i]), p[a[i]] = i;
-  build(1, 1, n);
-  L[n + 1] = n + 1;
-  R[0] = 0;
-  for (int i = n; i >= 1; i--) L[i] = min(L[i + 1], p[i]);
-  for (int i = 1; i <= n; i++) R[i] = max(R[i - 1], p[i]);
-  for (int i = 1; i < n; i++) {
-    int t = p[i];
-    update(1, 1, n, t, t, t & 1 ? 1 : -1);
-    if (t != 1) update(1, 1, n, 1, t - 1, 1);
-    if (t != n) update(1, 1, n, t + 1, n, -1);
-    ans = max(ans, query(1, 1, n, L[i + 1], R[i]));
-  }
-  cout << ans << endl;
-}
-signed main() {
-  int JYZ;
-  rd(JYZ);
-  while (JYZ--) DOIT();
+int main() {
+  scanf("%d %d %d", &n, &L, &R);
+  for (int i = 1; i <= n; ++i)
+    scanf("%lld", &a[i]), sum[i] = sum[i - 1] + a[i], f[i] = -INF;
+
+  ST::init();
+
+  solve(1, n);
+
+  for (int i = 1; i <= n; ++i) printf("%lld ", f[i]);
+  return 0;
 }
