@@ -1,86 +1,85 @@
-// Problem: #6490. 「XXOI 2018」暑假时在做什么？有没有空？可以来学物理吗？
-// Contest: LibreOJ
-// URL: https://loj.ac/p/6490
-// Memory Limit: 256 MB
-// Time Limit: 400 ms
-//
-// Powered by CP Editor (https://cpeditor.org)
-
 #include <bits/stdc++.h>
-typedef long long ll;
-const ll INF = 1e18;
-
-const int maxn = 1e5 + 5;
-int n, L, R, a[maxn];
-ll sum[maxn], f[maxn];
-
-namespace ST {
-int lg[maxn];
-ll f[maxn][20], dp[maxn][20];
-
-void init() {
-  for (int i = 0; i <= n; ++i) f[i][0] = dp[i][0] = sum[i];
-  for (int i = 2; i <= n + 1; ++i) lg[i] = lg[i >> 1] + 1;
-  for (int k = 1; (1 << k) <= n; ++k) {
-    for (int i = 0; i + (1 << k) - 1 <= n; ++i) {
-      f[i][k] = std::max(f[i][k - 1], f[i + (1 << (k - 1))][k - 1]);
-      dp[i][k] = std::min(dp[i][k - 1], dp[i + (1 << (k - 1))][k - 1]);
+#define TIME 1e3 * clock() / CLOCKS_PER_SEC
+using namespace std;
+typedef long long i64;
+typedef pair<i64, i64> pii;
+const int N = 1000, Inf = 0x3f3f3f3f, M = 2 * 1e6 + 50;
+int n, m, head[N], edge_sum = 1, a[N];
+struct edge {
+  int nst, to, op;
+} e[N << 1];
+int w[M], from[M];
+i64 bfs(int si) {
+  vector<int> dis(n + 1, Inf);
+  dis[si] = a[si];
+  vector<bool> vis(n + 1, false);
+  vis[si] = true;
+  queue<int> q;
+  q.push(si);
+  while (!q.empty()) {
+    int u = q.front();
+    q.pop();
+    vis[u] = false;
+    for (int i = head[u]; i; i = e[i].nst) {
+      int v = e[i].to;
+      if (e[i].op == -1) continue;
+      if (dis[u] == Inf) continue;
+      if (e[i].op == 0 && dis[v] > dis[u] + 1) {
+        dis[v] = dis[u] + 1;
+        if (!vis[v]) {
+          q.push(v);
+          vis[v] = true;
+        }
+      }
+      if (e[i].op == 1 && dis[v] > from[dis[u]]) {
+        dis[v] = from[dis[u]];
+        if (!vis[v]) {
+          q.push(v);
+          vis[v] = true;
+        }
+      }
     }
   }
-  return;
-}
-
-ll RMQmax(int l, int r) {
-  if (l > r) return -INF;
-  int k = lg[r - l + 1];
-  return std::max(f[l][k], f[r - (1 << k) + 1][k]);
-}
-
-ll RMQmin(int l, int r) {
-  if (l > r) return INF;
-  int k = lg[r - l + 1];
-  return std::min(dp[l][k], dp[r - (1 << k) + 1][k]);
-}
-}  // namespace ST
-
-void solve(int l, int r) {
-  if (r - l + 1 < L) return;
-  if (l == r) {
-    if (L == 1) f[l] = std::max(f[l], (ll)a[l]);
-    return;
+  i64 sum = 0;
+  for (int i = 1; i <= n; i++) {
+    if (dis[i] == Inf) return 0;
+    sum += dis[i];
   }
-
-  int mid = (l + r) >> 1;
-  solve(l, mid);
-  solve(mid + 1, r);
-
-  ll pre = -INF, suf = -INF;
-  for (int i = l; i <= mid; ++i) {
-    int x = i + L - 1, y = i + R - 1;
-    pre = std::max(
-        pre, ST::RMQmax(std::max(x, mid + 1), std::min(y, r)) - sum[i - 1]);
-    f[i] = std::max(f[i], pre);
-  }
-
-  for (int i = r; i > mid; --i) {
-    int x = i - R + 1, y = i - L + 1;
-    suf = std::max(
-        suf, sum[i] - ST::RMQmin(std::max(x, l) - 1, std::min(y, mid) - 1));
-    f[i] = std::max(f[i], suf);
-  }
-
-  return;
+  return sum;
 }
-
+i64 calc() {
+  i64 S = 0;
+  for (int i = 1; i <= n; i++) {
+    S += bfs(i);
+  }
+  return S;
+}
+void _init() {
+  for (int i = 1; i <= 1e6; i++) {
+    w[i] = i - (i / 20 + (i % 20 > 0));
+    if (from[w[i]] == 0) from[w[i]] = i;
+  }
+}
 int main() {
-  scanf("%d %d %d", &n, &L, &R);
-  for (int i = 1; i <= n; ++i)
-    scanf("%lld", &a[i]), sum[i] = sum[i - 1] + a[i], f[i] = -INF;
-
-  ST::init();
-
-  solve(1, n);
-
-  for (int i = 1; i <= n; ++i) printf("%lld ", f[i]);
+  ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+  cin >> n >> m;
+  _init();
+  for (int i = 1; i <= n; i++) cin >> a[i];
+  for (int i = 1, u, v, op; i <= m; i++) {
+    cin >> u >> v >> op;
+    e[++edge_sum] = {head[u], v, op};
+    head[u] = edge_sum;
+    e[++edge_sum] = {head[v], u, op};
+    head[v] = edge_sum;
+  }
+  cout << calc() << " ";
+  i64 maxn = 0;
+  for (int i = 2; i <= edge_sum; i += 2) {
+    int mark = e[i].op;
+    e[i].op = e[i ^ 1].op = -1;
+    maxn = max(maxn, calc());
+    e[i].op = e[i ^ 1].op = mark;
+  }
+  cout << maxn << endl;
   return 0;
 }
