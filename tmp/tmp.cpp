@@ -2,39 +2,46 @@
  * @file
  * @author  ForgotDream
  * @brief
- * @date    2023-10-16
+ * @date    2023-10-17
  */
-#include <cstring>
-#include <cmath>
-#include <iomanip>
 #include <iostream>
+#include <map>
 
 using i64 = long long;
-using f80 = double;
 
-constexpr int N = 3e3 + 50;
-int n;
-f80 t[N], x[N], f[N][N];
+constexpr int N = 1e5 + 50, mod = 1e9 + 7;
+int n, k, a[N];
+std::map<int, int> mp;
+// --- Comb Utils ---
+i64 fac[N], ifc[N];
+i64 fastPow(i64 base, i64 exp, i64 mod) {
+  i64 res = 1;
+  for (; exp; exp >>= 1) {
+    if (exp & 1) (res *= base) %= mod;
+    (base *= base) %= mod;
+  }
+  return res;
+}
+void init(int n) {
+  fac[0] = ifc[0] = 1;
+  for (int i = 1; i <= n; i++) fac[i] = i * fac[i - 1] % mod;
+  ifc[n] = fastPow(fac[n], mod - 2, mod);
+  for (int i = n - 1; i; i--) ifc[i] = (i + 1) * ifc[i + 1] % mod;
+}
+i64 C(i64 n, i64 m) { return fac[n] * ifc[m] % mod * ifc[n - m] % mod; }
+// ------------------
+bool isLucky(int u) {
+  int tmp[10], len = 0;
+  for (int i = 0; i < 10; i++) tmp[i] = 0;
+  while (u) tmp[u % 10]++, u /= 10, len++;
+  return tmp[4] + tmp[7] == len;
+}
 void solve() {
-  std::cin >> n;
-  for (int i = 1; i <= n; i++) std::cin >> t[i] >> x[i];
-  for (int i = 0; i <= n; i++) {
-    for (int j = 0; j <= n; j++) f[i][j] = 1e18;
+  std::cin >> n >> k;
+  for (int i = 1; i <= n; i++) {
+    std::cin >> a[i];
+    if (isLucky(a[i])) mp[a[i]]++;
   }
-  f[0][0] = 0;
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j <= i; j++) {
-      f[i + 1][j] =
-          std::min(f[i + 1][j],
-                   std::max(f[i][j], abs(x[i + 1] - x[i]) / (t[i + 1] - t[i])));
-      f[i + 1][i] =
-          std::min(f[i + 1][i],
-                   std::max(f[i][j], abs(x[i + 1] - x[j]) / (t[i + 1] - t[j])));
-    }
-  }
-  f80 ans = 1e18;
-  for (int i = 0; i <= n; i++) ans = std::min(ans, f[n][i]);
-  std::cout << std::fixed << std::setprecision(9) << ans << "\n";
 }
 
 int main() {
