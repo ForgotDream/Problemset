@@ -1,60 +1,40 @@
 /**
- * @file
+ * @file    
  * @author  ForgotDream
- * @brief
- * @date    2023-10-17
+ * @brief   
+ * @date    2023-10-18
  */
-#include <cstring>
 #include <iostream>
-#include <queue>
-#include <vector>
 
 using i64 = long long;
-using pii = std::pair<int, int>;
-using pli = std::pair<i64, int>;
 
-constexpr int N = 1e5 + 50, M = 20;
-int n, m, c;
-std::vector<pii> adj[N];
-i64 a[N], b[M];
-bool vis[N];
-i64 dis[M][N], f[M][1 << M];
-void dijkstra(int s, i64 *dis) {
-  memset(vis, false, sizeof(vis)), memset(dis, 0x3f, sizeof(int) * N);
-  std::priority_queue<pli, std::vector<pli>, std::greater<>> pq;
-  dis[s] = 0, pq.emplace(0, s);
-  while (!pq.empty()) {
-    int u = pq.top().second;
-    pq.pop();
-    if (vis[u]) continue;
-    vis[u] = true;
-    for (auto [v, w] : adj[u]) {
-      if (dis[v] > dis[u] + w) {
-        dis[v] = dis[u] + w;
-        if (v >= c) pq.emplace(dis[v], v);
-      }
-    }
+constexpr int N = 2050, mod = 1e9 + 7;
+int n, a[4][N];
+int f[N][N][2];
+// --- Comb Utils ---
+i64 fac[N], ifc[N];
+i64 fastPow(i64 base, i64 exp, i64 mod) {
+  i64 res = 1;
+  for (; exp; exp >>= 1) {
+    if (exp & 1) (res *= base) %= mod;
+    (base *= base) %= mod;
   }
+  return res;
 }
+void init(int n) {
+  fac[0] = ifc[0] = 1;
+  for (int i = 1; i <= n; i++) fac[i] = i * fac[i - 1] % mod;
+  ifc[n] = fastPow(fac[n], mod - 2, mod);
+  for (int i = n - 1; i; i--) ifc[i] = (i + 1) * ifc[i + 1] % mod;
+}
+i64 C(i64 n, i64 m) { return fac[n] * ifc[m] % mod * ifc[n - m] % mod; }
+// ------------------
 void solve() {
-  std::cin >> n >> m >> c;
-  for (int i = 0; i < n; i++) std::cin >> a[i];
-  for (int i = 0; i < c; i++) std::cin >> b[i];
-  for (int i = 1, u, v, w; i <= m; i++) {
-    std::cin >> u >> v >> w;
-    adj[u].emplace_back(v, w), adj[v].emplace_back(u, w);
-  }
-  memset(f, 0x3f, sizeof(f));
-  for (int i = 0; i < c; i++) dijkstra(i, dis[i]), f[i][1 << i] = 0;
-  int mask = (1 << c) - 1;
-  for (int i = 0; i <= mask; i++) {
-    for (int j = 0; j < c; j++) {
-      if (!(i & (1 << j))) continue;
-      for (int k = 0; k < c; k++) {
-        if (i & (1 << k)) continue;
-        int p = i | (1 << k);
-        f[k][p] = std::min(f[k][p], f[j][i] + dis[j][k]);
-      }
+  std::cin >> n;
+  for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= n; j++) {
+      char c;
+      std::cin >> c, a[i][j] = c == 'o';
     }
   }
 }
