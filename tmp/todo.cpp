@@ -2,41 +2,45 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-10-18
+ * @date    2023-10-19
  */
 #include <iostream>
+#include <vector>
 
 using i64 = long long;
 
-constexpr int N = 2050, mod = 1e9 + 7;
-int n, a[4][N];
-int f[N][N][2];
-// --- Comb Utils ---
-i64 fac[N], ifc[N];
-i64 fastPow(i64 base, i64 exp, i64 mod) {
-  i64 res = 1;
-  for (; exp; exp >>= 1) {
-    if (exp & 1) (res *= base) %= mod;
-    (base *= base) %= mod;
+constexpr int N = 1e5 + 50;
+int n, f[N], t[N], a[N], b[N], c[N], d[N];
+std::vector<int> disca, discb;
+struct SegTree {
+  struct Node {
+    int lc, rc;
+    i64 sum, tag;
+  } tree[N << 5];
+  int rt[N], cnt;
+  inline &int lc(int u) { return tree[u].lc; }
+  inline &int rc(int u) { return tree[u].rc; }
+  void modify(int l, int r, int s, int t, int u, int v, i64 val) {
+    tree[u] = tree[v];
+    if (l <= s && t <= r) return tree[u].tag += val, void();
+    int mid = (s + t) >> 1;
+    if (mid >= l && s <= r) lc(u) = ++cnt, modify(l, r, s, mid, lc(u), lc(v), val); 
+    if (mid < r && t >= l) rc(u) = ++cnt, modify(l, r, mid + 1, t, rc(u), rc(v), val);
+    tree[u].sum += val * (std::min(t, r) - std::max(s, l) + 1);
   }
-  return res;
-}
-void init(int n) {
-  fac[0] = ifc[0] = 1;
-  for (int i = 1; i <= n; i++) fac[i] = i * fac[i - 1] % mod;
-  ifc[n] = fastPow(fac[n], mod - 2, mod);
-  for (int i = n - 1; i; i--) ifc[i] = (i + 1) * ifc[i + 1] % mod;
-}
-i64 C(i64 n, i64 m) { return fac[n] * ifc[m] % mod * ifc[n - m] % mod; }
-// ------------------
+  i64 query(int tar, int s, int t, int u, i64 tag) {
+    if (l <= s && t <= r) return tree[u].sum + (t - s + 1) * tag;
+    int mid = (s + t) >> 1;
+    if (mid >= tar) return query(tar, s, mid, lc(u), tag + tree[u].tag);
+    else return query(tar, mid + 1, t, rc(u), tag + tree[u].tag);
+  }
+} seg;
 void solve() {
   std::cin >> n;
-  for (int i = 1; i <= 3; i++) {
-    for (int j = 1; j <= n; j++) {
-      char c;
-      std::cin >> c, a[i][j] = c == 'o';
-    }
-  }
+  for (int i = 1; i <= n; i++) std::cin >> f[i];
+  for (int i = 1; i <= n; i++) std::cin >> t[i];
+  for (int i = 1; i <= n; i++) std::cin >> a[i] >> b[i], disca.push_back(a[i]), disca.push_back(b[i]);
+  for (int i = 1; i <= n; i++) std::cin >> c[i] >> d[i];
 }
 
 int main() {
