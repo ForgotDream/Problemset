@@ -1,70 +1,72 @@
-#include<bits/stdc++.h>
-#define int long long
-using namespace std;
-void read(int &x)
+#include<climits>
+#include<cstdio>
+#include<functional>
+#include<iomanip>
+#include<ios>
+#include<queue>
+#include<cmath>
+#include<set>
+#include<map>
+#include<iostream>
+#include<stack>
+#include<string>
+#include<tuple>
+#include<typeindex>
+#include<utility>
+#include<vector>
+#include<cstring>
+#include<algorithm>
+#include<bitset>
+typedef long long ll;
+typedef long double ldouble;
+typedef unsigned long long ull;
+const int N=(1<<20)+5;
+int n,m,val[N],temp[N];
+ll cnt[25][2];
+inline void Merge(int l,int r,int deep)
 {
-	char ch=getchar();
-	int r=0,w=1;
-	while(!isdigit(ch))w=ch=='-'?-1:1,ch=getchar();
-	while(isdigit(ch))r=(r<<1)+(r<<3)+(ch^48),ch=getchar();
-	x=r*w;
-}
-const int N=1e5+7,mod=1e9+7;
-int f[N],s[N],cnt,p[N];
-map<int,int>mp;
-void init()
-{
-	p[0]=1;
-	for(int i=1;i<=1e5;i++)p[i]=p[i-1]*i%mod;
-}
-int Pow(int x,int y)
-{
-	int ans=1;
-	while(y)
+	if (l>=r) return;
+	int mid=(l+r)/2;
+	Merge(l,mid,deep-1);
+	Merge(mid+1,r,deep-1);
+	int i=l,j=mid+1;
+	while (i<=mid&&j<=r)
 	{
-		if(y&1)ans=ans*x%mod;
-		x=x*x%mod;
-		y>>=1;
+		if (val[i]<val[j])
+			cnt[deep][1]+=r-j+1,i++;
+		else j++;
 	}
-	return ans;
-}
-int C(int n,int m)
-{
-	if(m==0)return 1;
-	if(n<m)return 0;
-	return p[n]*Pow(p[m],mod-2)%mod*Pow(p[n-m],mod-2)%mod;
-}
-bool check(int x)
-{
-	while(x)
+	i=l,j=mid+1;
+	int p=0;
+	while (i<=mid&&j<=r)
 	{
-		if(x%10!=4&&x%10!=7)return false;
-		x/=10;
+		if (val[i]>val[j]) cnt[deep][0]+=mid-i+1,temp[p++]=val[j++];
+		else temp[p++]=val[i++];
 	}
-	return true;
+	for (;i<=mid;temp[p++]=val[i++]);
+	for (;j<=r;temp[p++]=val[j++]);
+	for (int i=l;i<=r;i++)
+		val[i]=temp[i-l];
 }
-main()
+int main ()
 {
-	init();
-	int n,k,t=0;
-	read(n);read(k);
-	for(int i=1,x;i<=n;i++)
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(0);std::cout.tie(0);
+	std::cin>>n;
+	for (int i=1;i<=(1<<n);i++)
+		std::cin>>val[i];
+	Merge(1,1<<n,n);
+	std::cin>>m;
+	while (m--)
 	{
-		read(x);
-		if(check(x))
-		{
-			if(!mp[x])mp[x]=++cnt;
-			s[mp[x]]++;
-		}
-		else t++;
+		int x;
+		std::cin>>x;
+		ll res=0;
+		for (int i=1;i<=x;i++)
+			std::swap(cnt[i][0],cnt[i][1]);
+		for (int i=1;i<=n;i++)
+			res+=cnt[i][0];
+		std::cout<<res<<'\n';
 	}
-	f[0]=1;
-	for(int i=1;i<=cnt;i++)
-	for(int j=cnt;j>=1;j--)
-		f[j]=(f[j]+f[j-1]*s[i]%mod)%mod;
-	int ans=0;
-	for(int i=0;i<=k;i++)
-		ans=(ans+f[i]*C(t,k-i)%mod)%mod;
-	cout<<ans;
 	return 0;
 }
