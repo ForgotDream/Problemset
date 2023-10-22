@@ -1,72 +1,98 @@
-#include<climits>
-#include<cstdio>
-#include<functional>
-#include<iomanip>
-#include<ios>
-#include<queue>
-#include<cmath>
-#include<set>
-#include<map>
-#include<iostream>
-#include<stack>
-#include<string>
-#include<tuple>
-#include<typeindex>
-#include<utility>
-#include<vector>
-#include<cstring>
-#include<algorithm>
-#include<bitset>
-typedef long long ll;
-typedef long double ldouble;
-typedef unsigned long long ull;
-const int N=(1<<20)+5;
-int n,m,val[N],temp[N];
-ll cnt[25][2];
-inline void Merge(int l,int r,int deep)
-{
-	if (l>=r) return;
-	int mid=(l+r)/2;
-	Merge(l,mid,deep-1);
-	Merge(mid+1,r,deep-1);
-	int i=l,j=mid+1;
-	while (i<=mid&&j<=r)
-	{
-		if (val[i]<val[j])
-			cnt[deep][1]+=r-j+1,i++;
-		else j++;
-	}
-	i=l,j=mid+1;
-	int p=0;
-	while (i<=mid&&j<=r)
-	{
-		if (val[i]>val[j]) cnt[deep][0]+=mid-i+1,temp[p++]=val[j++];
-		else temp[p++]=val[i++];
-	}
-	for (;i<=mid;temp[p++]=val[i++]);
-	for (;j<=r;temp[p++]=val[j++]);
-	for (int i=l;i<=r;i++)
-		val[i]=temp[i-l];
-}
-int main ()
-{
-	std::ios_base::sync_with_stdio(false);
-	std::cin.tie(0);std::cout.tie(0);
-	std::cin>>n;
-	for (int i=1;i<=(1<<n);i++)
-		std::cin>>val[i];
-	Merge(1,1<<n,n);
-	std::cin>>m;
-	while (m--)
-	{
-		int x;
-		std::cin>>x;
-		ll res=0;
-		for (int i=1;i<=x;i++)
-			std::swap(cnt[i][0],cnt[i][1]);
-		for (int i=1;i<=n;i++)
-			res+=cnt[i][0];
-		std::cout<<res<<'\n';
-	}
-	return 0;
-}
+template <typename T = int>
+struct FHQTreap {
+  std::mt19937 rnd;
+  struct Node {
+    int lc, rc;
+    int siz, prm;
+    T val;
+  };
+  std::vector<Node> tree;
+  int cnt, root;
+  FHQTreap(int _n = 0) {
+    rnd = std::mt19937(
+        std::chrono::system_clock::now().time_since_epoch().count());
+    tree.resize(_n);
+    cnt = 0, root = 0;
+  };
+  bool empty() { return tree[root].siz == 0; }
+  int size() { return tree[root].siz; }
+  void pushup(int u) {
+    tree[u].siz = tree[tree[u].lc].siz + tree[tree[u].rc].siz + 1;
+  }
+  int init(T val) {
+    if (cnt == tree.size() - 1) tree.resize(std::max(1.5 * tree.size(), 10.));
+    tree[++cnt].val = val;
+    tree[cnt].prm = rnd(), tree[cnt].siz = 1;
+    tree[cnt].lc = tree[cnt].rc = 0;
+    return cnt;
+  }
+  void split(int u, T val, int &l, int &r) {
+    if (!u) return l = r = 0, void();
+    if (tree[u].val <= val) l = u, split(tree[u].rc, val, tree[u].rc, r);
+    else r = u, split(tree[u].lc, val, l, tree[u].lc);
+    pushup(u);
+  }
+  int merge(int l, int r) {
+    if (!l || !r) return l + r;
+    if (tree[l].prm > tree[r].prm) {
+      tree[l].rc = merge(tree[l].rc, r), pushup(l);
+      return l;
+    } else {
+      tree[r].lc = merge(l, tree[r].lc), pushup(r);
+      return r;
+    }
+  }
+  void insert(T val) {
+    int l = 0, r = 0;
+    split(root, val, l, r);
+    root = merge(merge(l, init(val)), r);
+  }
+  void erase(T val) {
+    int l = 0, r = 0, p = 0;
+    split(root, val, l, r);
+    split(l, val - 1, l, p);
+    p = merge(tree[p].lc, tree[p].rc);
+    root = merge(merge(l, p), r);
+  }
+  int getRankByNum(T val) {
+    int l = 0, r = 0, res;
+    split(root, val - 1, l, r);
+    res = tree[l].siz + 1;
+    root = merge(l, r);
+    return res;
+  }
+  int getNumByRank(int u, int rnk) {
+    if (rnk == tree[tree[u].lc].siz + 1) {
+      return u;
+    } else if (rnk > tree[tree[u].lc].siz + 1) {
+      return getNumByRank(tree[u].rc, rnk - tree[tree[u].lc].siz - 1);
+    } else {
+      return getNumByRank(tree[u].lc, rnk);
+    }
+  }
+  T getNumByRank(int rnk) { return tree[getNumByRank(root, rnk)].val; }
+  T getPrecursor(T val) {
+    int l = 0, r = 0;
+    T res;
+    split(root, val, l, r);
+    res = tree[getNumByRank(l, tree[l].siz)].val;
+    root = merge(l, r);
+    return res;
+  }
+  T getSuccessor(T val) {
+    int l = 0, r = 0;
+    T res;
+    split(root, val - 1, l, r);
+    res = tree[getNumByRank(r, 1)].val;
+    root = merge(l, r);
+    return res;
+  }
+  T findNearest(T val) {
+    T prev = getPrecursor(val), succ = getSuccessor(val);
+    if (std::abs(prev - val) <= std::abs(succ - val)) {
+      return prev;
+    } else {
+      return succ;
+    }
+  }
+};
