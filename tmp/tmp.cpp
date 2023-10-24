@@ -8,7 +8,12 @@
 
 using i64 = long long;
 
+constexpr int N = 3e5 + 50;
+int n, m, p[N], a[N], b[N];
 void solve() {
+  std::cin >> n >> m;
+  for (int i = 1; i <= n; i++) std::cin >> p[i];
+  for (int i = 1; i <= m; i++) std::cin >> a[i] >> b[i];
 }
 
 int main() {
