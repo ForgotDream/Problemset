@@ -1,49 +1,68 @@
 #include <bits/stdc++.h>
-#define up(l, r, i) for (int i = l, END##i = r; i <= END##i; ++i)
-#define dn(r, l, i) for (int i = r, END##i = l; i >= END##i; --i)
+#define int long long
+#define inf 1000000000
+#define mp(a, b) \
+  (pair<int, int>) { a, b }
+#define mk(a, b, c) \
+  (hm) { a, b, c }
+#define se second
+#define fi first
 using namespace std;
-typedef long long i64;
-const int INF = 2147483647;
-struct Point {
-  int x, y;
-};
-typedef vector<Point>::iterator Iter;
-bool cmpx(const Point a, const Point b) { return a.x < b.x; }
-bool cmpy(const Point a, const Point b) { return a.y < b.y; }
-double dis(const Point a, const Point b) {
-  return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+int n, m, k, ansl[200005], ansc[200005];
+multiset<pair<int, int> > s;
+struct hm {
+  int x, t, id;
+} a[200005];
+vector<hm> t;
+bool cmp(hm a, hm b) { return a.x == b.x ? a.t < b.t : a.x < b.x; }
+int ask(int x) {
+  int l = 1, r = k, mid;
+  while (l < r) {
+    mid = (l + r) >> 1;
+    if (t[mid].x + t[mid].t >= x) r = mid;
+    else l = mid + 1;
+  }
+  if (t[l].x <= x && t[l].x + t[l].t >= x) return l;
+  return 0;
 }
-void slv(const Iter l, const Iter r, double &d) {
-  if (r - l <= 1) return;
-  vector<Point> Q;
-  Iter t = l + (r - l) / 2;
-  double w = t->x;
-  slv(l, t, d), slv(t, r, d);
-  inplace_merge(l, t, r, cmpy);
-  for (Iter x = l; x != r; ++x)
-    if (abs(w - x->x) <= d) Q.push_back(*x);
-  for (Iter x = Q.begin(), y = x; x != Q.end(); ++x) {
-    while (y != Q.end() && y->y <= x->y + d) ++y;
-    for (Iter z = x + 1; z != y; ++z) d = min(d, dis(*x, *z));
+void clr(int x) {
+  for (; x < k;) {
+    if (t[x + 1].x + t[x + 1].t <= t[x].x + t[x].t) t.erase(t.begin() + x + 1), k--;
+    else break;
   }
 }
-vector<Point> X;
-int n;
-double ans = 1e18;
-int qrd() {
-  int w = 1, c, ret;
-  while ((c = getchar()) > '9' || c < '0') w = (c == '-' ? -1 : 1);
-  ret = c - '0';
-  while ((c = getchar()) >= '0' && c <= '9') ret = ret * 10 + c - '0';
-  return ret * w;
-}
-int main() {
-  n = qrd();
-  up(0, n - 1, i) {
-    int x = qrd(), y = qrd();
-    X.push_back({x, y});
+signed main() {
+  t.push_back(mk(0, 0, 0));
+  cin >> n >> m;
+  for (int i = 1; i <= n; i++)
+    scanf("%lld %lld", &a[i].x, &a[i].t), a[i].id = i, ansl[i] = a[i].t;
+  sort(a + 1, a + n + 1, cmp);
+  for (int i = 1, mx = 0; i <= n; i++) {
+    if (a[i].x + a[i].t > mx) {
+      t.push_back(a[i]);
+      k++;
+      mx = a[i].x + a[i].t;
+    }
   }
-  sort(X.begin(), X.end(), cmpx), slv(X.begin(), X.end(), ans);
-  printf("%.0lf\n", ans * ans);
+  for (int i = 1, l, sz; i <= m; i++) {
+    scanf("%lld %lld", &l, &sz);
+    int p = ask(l);
+    if (p) {
+      ansl[t[p].id] += sz;
+      t[p].t += sz;
+      ansc[t[p].id]++;
+      while (!s.empty()) {
+        auto it = s.lower_bound(mp(t[p].x, -192));
+        if ((it == s.end()) || (t[p].x + t[p].t < (it->fi))) break;
+        ansl[t[p].id] += (it->se);
+        t[p].t += (it->se);
+        ansc[t[p].id]++;
+        s.erase(it);
+      }
+      clr(p);
+    } else
+      s.insert(mp(l, sz));
+  }
+  for (int i = 1; i <= n; i++) printf("%lld %lld\n", ansc[i], ansl[i]);
   return 0;
 }
