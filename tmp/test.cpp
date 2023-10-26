@@ -1,68 +1,97 @@
-#include <bits/stdc++.h>
-#define int long long
-#define inf 1000000000
-#define mp(a, b) \
-  (pair<int, int>) { a, b }
-#define mk(a, b, c) \
-  (hm) { a, b, c }
-#define se second
-#define fi first
+#include <iostream>
+#include <string>
+#define MOD1 39989
+#define MOD2 1000000000
+#define MAXT 40000
 using namespace std;
-int n, m, k, ansl[200005], ansc[200005];
-multiset<pair<int, int> > s;
-struct hm {
-  int x, t, id;
-} a[200005];
-vector<hm> t;
-bool cmp(hm a, hm b) { return a.x == b.x ? a.t < b.t : a.x < b.x; }
-int ask(int x) {
-  int l = 1, r = k, mid;
-  while (l < r) {
-    mid = (l + r) >> 1;
-    if (t[mid].x + t[mid].t >= x) r = mid;
-    else l = mid + 1;
-  }
-  if (t[l].x <= x && t[l].x + t[l].t >= x) return l;
+typedef pair<double, int> pdi;
+
+const double eps = 1e-9;
+
+int cmp(double x, double y) {
+  if (x - y > eps) return 1;
+  if (y - x > eps) return -1;
   return 0;
 }
-void clr(int x) {
-  for (; x < k;) {
-    if (t[x + 1].x + t[x + 1].t <= t[x].x + t[x].t) t.erase(t.begin() + x + 1), k--;
-    else break;
-  }
+
+struct line {
+  double k, b;
+} p[100005];
+
+int s[160005];
+int cnt;
+
+double calc(int id, int d) { return p[id].b + p[id].k * d; }
+
+void add(int x0, int y0, int x1, int y1) {
+  cnt++;
+  if (x0 == x1)  // 特判直线斜率不存在的情况
+    p[cnt].k = 0, p[cnt].b = max(y0, y1);
+  else
+    p[cnt].k = 1.0 * (y1 - y0) / (x1 - x0), p[cnt].b = y0 - p[cnt].k * x0;
 }
-signed main() {
-  t.push_back(mk(0, 0, 0));
-  cin >> n >> m;
-  for (int i = 1; i <= n; i++)
-    scanf("%lld %lld", &a[i].x, &a[i].t), a[i].id = i, ansl[i] = a[i].t;
-  sort(a + 1, a + n + 1, cmp);
-  for (int i = 1, mx = 0; i <= n; i++) {
-    if (a[i].x + a[i].t > mx) {
-      t.push_back(a[i]);
-      k++;
-      mx = a[i].x + a[i].t;
+
+void upd(int root, int cl, int cr, int u) {  // 对线段完全覆盖到的区间进行修改
+  int &v = s[root], mid = (cl + cr) >> 1;
+  int bmid = cmp(calc(u, mid), calc(v, mid));
+  if (bmid == 1 || (!bmid && u < v)) swap(u, v);
+  int bl = cmp(calc(u, cl), calc(v, cl)), br = cmp(calc(u, cr), calc(v, cr));
+  if (bl == 1 || (!bl && u < v)) upd(root << 1, cl, mid, u);
+  if (br == 1 || (!br && u < v)) upd(root << 1 | 1, mid + 1, cr, u);
+}
+
+void update(int root, int cl, int cr, int l, int r,
+            int u) {  // 定位插入线段完全覆盖到的区间
+  if (l <= cl && cr <= r) {
+    upd(root, cl, cr, u);
+    return;
+  }
+  int mid = (cl + cr) >> 1;
+  if (l <= mid) update(root << 1, cl, mid, l, r, u);
+  if (mid < r) update(root << 1 | 1, mid + 1, cr, l, r, u);
+}
+
+pdi pmax(pdi x, pdi y) {  // pair max函数
+  if (cmp(x.first, y.first) == -1)
+    return y;
+  else if (cmp(x.first, y.first) == 1)
+    return x;
+  else
+    return x.second < y.second ? x : y;
+}
+
+pdi query(int root, int l, int r, int d) {  // 查询
+  if (r < d || d < l) return {0, 0};
+  int mid = (l + r) >> 1;
+  double res = calc(s[root], d);
+  if (l == r) return {res, s[root]};
+  return pmax({res, s[root]}, pmax(query(root << 1, l, mid, d),
+                                   query(root << 1 | 1, mid + 1, r, d)));
+}
+
+int main() {
+  ios::sync_with_stdio(false);
+  int n, lastans = 0;
+  cin >> n;
+  while (n--) {
+    int op;
+    cin >> op;
+    if (op == 1) {
+      int x0, y0, x1, y1;
+      cin >> x0 >> y0 >> x1 >> y1;
+      x0 = (x0 + lastans - 1 + MOD1) % MOD1 + 1,
+      x1 = (x1 + lastans - 1 + MOD1) % MOD1 + 1;
+      y0 = (y0 + lastans - 1 + MOD2) % MOD2 + 1,
+      y1 = (y1 + lastans - 1 + MOD2) % MOD2 + 1;
+      if (x0 > x1) swap(x0, x1), swap(y0, y1);
+      add(x0, y0, x1, y1);
+      update(1, 1, MOD1, x0, x1, cnt);
+    } else {
+      int x;
+      cin >> x;
+      x = (x + lastans - 1 + MOD1) % MOD1 + 1;
+      cout << (lastans = query(1, 1, MOD1, x).second) << endl;
     }
   }
-  for (int i = 1, l, sz; i <= m; i++) {
-    scanf("%lld %lld", &l, &sz);
-    int p = ask(l);
-    if (p) {
-      ansl[t[p].id] += sz;
-      t[p].t += sz;
-      ansc[t[p].id]++;
-      while (!s.empty()) {
-        auto it = s.lower_bound(mp(t[p].x, -192));
-        if ((it == s.end()) || (t[p].x + t[p].t < (it->fi))) break;
-        ansl[t[p].id] += (it->se);
-        t[p].t += (it->se);
-        ansc[t[p].id]++;
-        s.erase(it);
-      }
-      clr(p);
-    } else
-      s.insert(mp(l, sz));
-  }
-  for (int i = 1; i <= n; i++) printf("%lld %lld\n", ansc[i], ansl[i]);
   return 0;
 }

@@ -2,19 +2,17 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-10-25
+ * @date    2023-10-26
  */
 #include <iostream>
 
 using i64 = long long;
+using f80 = long double;
 
 constexpr int N = 1e5 + 50;
 int n;
 void solve() {
   std::cin >> n;
-  for (int i = 1; i <= n; i++) {
-    std::cout << i << "\n";
-  }
 }
 
 int main() {
