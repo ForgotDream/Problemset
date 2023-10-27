@@ -1,97 +1,92 @@
-#include <iostream>
-#include <string>
-#define MOD1 39989
-#define MOD2 1000000000
-#define MAXT 40000
-using namespace std;
-typedef pair<double, int> pdi;
-
-const double eps = 1e-9;
-
-int cmp(double x, double y) {
-  if (x - y > eps) return 1;
-  if (y - x > eps) return -1;
-  return 0;
-}
-
-struct line {
-  double k, b;
-} p[100005];
-
-int s[160005];
-int cnt;
-
-double calc(int id, int d) { return p[id].b + p[id].k * d; }
-
-void add(int x0, int y0, int x1, int y1) {
-  cnt++;
-  if (x0 == x1)  // 特判直线斜率不存在的情况
-    p[cnt].k = 0, p[cnt].b = max(y0, y1);
-  else
-    p[cnt].k = 1.0 * (y1 - y0) / (x1 - x0), p[cnt].b = y0 - p[cnt].k * x0;
-}
-
-void upd(int root, int cl, int cr, int u) {  // 对线段完全覆盖到的区间进行修改
-  int &v = s[root], mid = (cl + cr) >> 1;
-  int bmid = cmp(calc(u, mid), calc(v, mid));
-  if (bmid == 1 || (!bmid && u < v)) swap(u, v);
-  int bl = cmp(calc(u, cl), calc(v, cl)), br = cmp(calc(u, cr), calc(v, cr));
-  if (bl == 1 || (!bl && u < v)) upd(root << 1, cl, mid, u);
-  if (br == 1 || (!br && u < v)) upd(root << 1 | 1, mid + 1, cr, u);
-}
-
-void update(int root, int cl, int cr, int l, int r,
-            int u) {  // 定位插入线段完全覆盖到的区间
-  if (l <= cl && cr <= r) {
-    upd(root, cl, cr, u);
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ldouble;
+typedef unsigned long long ull;
+const int N = 1e5 + 5;
+struct DSU {
+  std::stack<std::pair<int, int>, std::vector<std::pair<int, int>>> stk;
+  int tree[N * 2], Size[N * 2];
+  inline void init(int n) {
+    while (stk.size()) stk.pop();
+    for (int i = 1; i <= n; i++) tree[i] = i, Size[i] = 1;
+  }
+  inline int Find(int x) {
+    return x == tree[x] ? x : Find(tree[x]);
+  }
+  inline bool Merge(int x, int y) {
+    x = Find(x);
+    y = Find(y);
+    if (x == y) return false;
+    if (Size[x] > Size[y]) std::swap(x, y);
+    tree[x] = y;
+    Size[y] += Size[x];
+    stk.push(std::pair<int, int>(x, y));
+    return true;
+  }
+  inline int GetTime() { return stk.size(); }
+  inline bool roll() {
+    if (stk.empty()) return false;
+    auto [x, y] = stk.top();
+    stk.pop();
+    tree[x] = x;
+    tree[y] -= Size[x];
+    return true;
+  }
+  inline bool back(int lim) {
+    while (stk.size() > lim)
+      if (!roll()) return false;
+    return true;
+  }
+} dsu;
+int X[N * 2], Y[N * 2];
+int n, m, K;
+std::vector<int> tree[N << 2];
+inline void modify(int k, int l, int r, int L, int R, int cag) {
+  if (L <= l && r <= R) {
+    tree[k].push_back(cag);
     return;
   }
-  int mid = (cl + cr) >> 1;
-  if (l <= mid) update(root << 1, cl, mid, l, r, u);
-  if (mid < r) update(root << 1 | 1, mid + 1, cr, l, r, u);
+  int mid = (l + r) / 2;
+  if (L <= mid) modify(k << 1, l, mid, L, R, cag);
+  if (mid + 1 <= R) modify(k << 1 | 1, mid + 1, r, L, R, cag);
 }
-
-pdi pmax(pdi x, pdi y) {  // pair max函数
-  if (cmp(x.first, y.first) == -1)
-    return y;
-  else if (cmp(x.first, y.first) == 1)
-    return x;
-  else
-    return x.second < y.second ? x : y;
-}
-
-pdi query(int root, int l, int r, int d) {  // 查询
-  if (r < d || d < l) return {0, 0};
-  int mid = (l + r) >> 1;
-  double res = calc(s[root], d);
-  if (l == r) return {res, s[root]};
-  return pmax({res, s[root]}, pmax(query(root << 1, l, mid, d),
-                                   query(root << 1 | 1, mid + 1, r, d)));
-}
-
-int main() {
-  ios::sync_with_stdio(false);
-  int n, lastans = 0;
-  cin >> n;
-  while (n--) {
-    int op;
-    cin >> op;
-    if (op == 1) {
-      int x0, y0, x1, y1;
-      cin >> x0 >> y0 >> x1 >> y1;
-      x0 = (x0 + lastans - 1 + MOD1) % MOD1 + 1,
-      x1 = (x1 + lastans - 1 + MOD1) % MOD1 + 1;
-      y0 = (y0 + lastans - 1 + MOD2) % MOD2 + 1,
-      y1 = (y1 + lastans - 1 + MOD2) % MOD2 + 1;
-      if (x0 > x1) swap(x0, x1), swap(y0, y1);
-      add(x0, y0, x1, y1);
-      update(1, 1, MOD1, x0, x1, cnt);
-    } else {
-      int x;
-      cin >> x;
-      x = (x + lastans - 1 + MOD1) % MOD1 + 1;
-      cout << (lastans = query(1, 1, MOD1, x).second) << endl;
+inline void dfs(int k, int l, int r) {
+  bool flag = true;
+  int lim = dsu.GetTime();
+  for (auto e : tree[k]) {
+    int x = X[e], y = Y[e];
+    int fx = dsu.Find(x), fy = dsu.Find(y);
+    if (fx == fy) {
+      flag = false;
+      for (int i = l; i <= r; i++) std::cout << "No\n";
+      break;
+    }
+    dsu.Merge(x, y + n);
+    dsu.Merge(x + n, y);
+  }
+  if (flag) {
+    if (l == r)
+      std::cout << "Yes\n";
+    else {
+      int mid = (l + r) / 2;
+      dfs(k << 1, l, mid);
+      dfs(k << 1 | 1, mid + 1, r);
     }
   }
+  dsu.back(lim);
+}
+int main() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(0);
+  std::cout.tie(0);
+  std::cin >> n >> m >> K;
+  for (int i = 1; i <= m; i++) {
+    int l, r;
+    std::cin >> X[i] >> Y[i] >> l >> r;
+    l++;
+    if (l <= r) modify(1, 1, K, l, r, i);
+  }
+  dsu.init(n + n);
+  dfs(1, 1, K);
   return 0;
 }

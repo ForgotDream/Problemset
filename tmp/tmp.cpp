@@ -7,12 +7,8 @@
 #include <iostream>
 
 using i64 = long long;
-using f80 = long double;
 
-constexpr int N = 1e5 + 50;
-int n;
 void solve() {
-  std::cin >> n;
 }
 
 int main() {
