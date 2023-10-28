@@ -1,18 +1,14 @@
 /**
- * @file
+ * @file    
  * @author  ForgotDream
- * @brief
+ * @brief   
  * @date    2023-10-28
  */
 #include <iostream>
 
 using i64 = long long;
 
-constexpr int N = 5050;
-int n, m;
 void solve() {
-  std::cin >> n >> m;
-  for (int i = 1; i <= n; i++) std::cin >> n;
 }
 
 int main() {
