@@ -1,0 +1,65 @@
+#include <algorithm>
+#include <iostream>
+#include <stack>
+#include <vector>
+
+using i64 = long long;
+
+constexpr int N = 1e6 + 50;
+int n, typ, a[N], cnt[N], preidx[N], sufidx[N];
+std::stack<int, std::vector<int>> mn, mx;
+int f[N], smn[N], smx[N];
+void solve() {
+  std::cin >> n >> typ;
+  for (int i = 1; i <= n; i++) std::cin >> a[i];
+  
+  for (int i = n; i >= 1; i--) {
+    int pmn = 0, pmx = 0;
+    while (!mn.empty() && a[mn.top()] > a[i]) mn.pop();
+    if (!mn.empty()) pmn = mn.top();
+    mn.push(i);
+    while (!mx.empty() && a[mx.top()] < a[i]) mx.pop();
+    if (!mx.empty()) pmx = mx.top();
+    mx.push(i);
+    // std::cerr << pmn << " " << pmx << "\n";
+    smn[i] = smn[pmn] + 1;
+    smx[i] = smx[pmx] + 1;
+    if (pmx && pmn) {
+      f[i] = n - std::max(pmn, pmx) - smn[pmn] - smx[pmx] + 2;
+      std::cerr << pmx << " " << pmn << "\n";
+    }
+  }
+  for (int i = 1; i <= n; i++) std::cout << f[i] << " \n"[i == n];
+
+  for (int i = 1; i <= n; i++) f[i] = smn[i] = smx[i] = 0;
+  while (!mn.empty()) mn.pop();
+  while (!mx.empty()) mx.pop();
+
+  for (int i = 1; i <= n; i++) {
+    int pmn = 0, pmx = 0;
+    while (!mn.empty() && a[mn.top()] > a[i]) mn.pop();
+    if (!mn.empty()) pmn = mn.top();
+    mn.push(i);
+    while (!mx.empty() && a[mx.top()] < a[i]) mx.pop();
+    if (!mx.empty()) pmx = mx.top();
+    mx.push(i);
+    // std::cerr << pmn << " " << pmx << "\n";
+    smn[i] = smn[pmn] + 1;
+    smx[i] = smx[pmx] + 1;
+    if (pmx && pmn) {
+      f[i] = std::min(pmn, pmx) - smn[pmn] - smx[pmx] + 1;
+    }
+  }
+
+  for (int i = 1; i <= n; i++) std::cout << f[i] << " \n"[i == n];
+}
+
+int main() {
+  // freopen("ex_interval_1.in", "r", stdin);
+  // freopen("tmp.out", "w", stdout);
+  std::cin.tie(nullptr)->sync_with_stdio(false);
+  int t = 1;
+  // std::cin >> t;
+  while (t--) solve();
+  return 0;
+}
