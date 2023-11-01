@@ -1,188 +1,100 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
 
 using namespace std;
 
-// #define int long long
-#define i64 long long
-#define ull unsigned long long
-#define ldb long double
-#define db double
-#define i128 __int128
-#define up(a, b, c) for (int a = (b); a <= (c); a++)
-#define dn(a, b, c) for (int a = (b); a >= (c); a--)
-#define pii pair<int, int>
-#define pdi pair<double, int>
-#define pivi pair<int, vector<int> >
-#define lc k << 1
-#define rc k << 1 | 1
-#define fi first
-#define se second
-#define endl '\n'
-#define i16 short
-#define eps 1e-8
+const long long MOD = 998244353, G = 3;
+int add(int x, int y) { return x + y >= MOD ? x + y - MOD : x + y; }
+int sub(int x, int y) { return x >= y ? x - y : x + MOD - y; }
 
-#pragma region
-struct FastIO {
-  static constexpr signed bufsize = 1 << 18;
-  char inbuf[bufsize], *p1 = inbuf, *p2 = inbuf;
-  char outbuf[bufsize], *pp = outbuf;
-  ~FastIO() { flush(); }
-  inline char gc() {
-    if (p1 == p2) p1 = inbuf, p2 = inbuf + fread(inbuf, 1, bufsize, stdin);
-    return p1 == p2 ? EOF : *p1++;
+long long fast_pow(long long b, long long p) {
+  long long ans = 1;
+  while (p) {
+    if (p & 1) ans = ans * b % MOD;
+    b = b * b % MOD;
+    p >>= 1;
   }
-  template <typename T>
-  inline void read(T &x) {
-    x = 0;
-    T f = 1;
-    char c = gc();
-    while (c < '0' || c > '9') f = ( c == '-' ? -f : f), c = gc();
-    while ('0' <= c && c <= '9') x = x * 10 + c - '0', c = gc();
-    x *= f;
-  }
-  inline void read(char *s) {
-    char c = gc();
-    while (c == ' ' || c == '\n' || c == '\r') c = gc();
-    while (c != ' ' && c != '\n' && c != '\r') *s++ = c, c = gc();
-  }
-  inline void read(char &c) {
-    c = gc();
-    while (c == ' ' || c == '\n' || c == '\r') c = gc();
-  }
-  inline void read(std::string &s) {
-    std::string().swap(s);
-    char c = gc();
-    while (c == ' ' || c == '\n' || c == '\r') c = gc();
-    while (c != ' ' && c != '\n' && c != '\r') s += c, c = gc();
-  }
-  template <typename T = int>
-  inline T read() {
-    T res;
-    read(res);
-    return res;
-  }
-  inline void pc(const char &c) {
-    if (pp - outbuf == bufsize) fwrite(outbuf, 1, bufsize, stdout), pp = outbuf;
-    *pp++ = c;
-  }
-  template <typename T>
-  inline void print(T x) {
-    if (x < 0) x = -x, pc('-');
-    static T sta[35];
-    T top = 0;
-    do sta[top++] = x % 10, x /= 10; while (x);
-    while (top) pc(sta[--top] + '0');
-  }
-  inline void print(const char *s) { for (; *s; ++s) pc(*s); }
-  inline void print(char *s) { for (; *s; ++s) pc(*s); }
-  inline void print(const std::string &s) { for (const auto &c : s) pc(c); }
-  inline void print(const char &c) { pc(c); }
-  inline void flush() { fwrite(outbuf, 1, pp - outbuf, stdout), pp = outbuf; }
-  template <typename T>
-  FastIO &operator>>(T &rhs) { return read(rhs), *this; }
-  FastIO &operator>>(char *rhs) { return read(rhs), *this; }
-  template <typename T>
-  FastIO &operator<<(const T &rhs) { return print(rhs), *this; }
-} fin, fout;
-#pragma endregion
-
-const int N = 1e6 + 100, M = 1e6 + 100;
-const int mod = 998244353;
-const int inf = 1e9 + 7;
-const ull uinf = 1e18 + 14;
-
-int n, id;
-int a[N];
-struct Bit {
-  int tr[M];
-  inline void add(int x, int val) {
-    if (x == 0) return;
-    assert(x > 0);
-    for (; x < n + 10; x += x & (-x)) tr[x] += val;
-  }
-  inline int sum(int x) {
-    int res = 0;
-    assert(x >= 0);
-    for (; x; x -= x & (-x)) res += tr[x];
-    return res;
-  }
-  inline void init() { memset(tr, 0, sizeof tr); }
-} T;
-int s[N], top;
-int Lmin[N], Lmax[N], Rmin[N], Rmax[N];
-int L[N], R[N];
-struct node {
-  int op, x, y, id;
-} p[N << 1];
-int cnt;
-inline bool cmp(const node &aa, const node &bb) {
-  if (aa.x != bb.x) return aa.x < bb.x;
-  else if (aa.op != bb.op) return aa.op < bb.op;
-  return aa.y < bb.y;
+  return ans;
 }
-int ans1[N], ans2[N];
-inline void solve2() {
-  cnt = 0;
-  up(i, 1, n) { p[++cnt] = {0, i, R[i] + 1, 0}; }
-  up(i, 1, n) {
-    if (L[i] < 1) continue;
-    p[++cnt] = {1, L[i], i + 1, i};
+long long INV(long long x) { return fast_pow(x, MOD - 2); }
+int n, m, k;
+
+struct mat {
+  long long num[120][120];
+  long long *operator[](int x) { return num[x]; }
+  const long long *operator[](int x) const { return num[x]; }
+  mat() { memset(num, 0, sizeof(num)); }
+};
+
+mat operator*(mat a, mat b) {
+  mat c;
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
+      for (int k = 1; k <= n; k++) {
+        c[i][j] = add(c[i][j], (long long)a[i][k] * b[k][j] % MOD);
+      }
+    }
   }
-  stable_sort(p + 1, p + 1 + cnt, cmp);
-  up(i, 1, cnt) {
-    if (!p[i].op) T.add(p[i].y, 1);
-    else ans2[p[i].id] += T.sum(p[i].y);
-  }
+  return c;
 }
-signed main() {
-  freopen("interval.in", "r", stdin);
-  freopen("interval.out", "w", stdout);
-  // fin.tie(nullptr)->sync_with_stdio(false);
-  fin >> n >> id;
-  up(i, 1, n) fin >> a[i];
-  top = 0;
-  up(i, 1, n) {
-    while (top && a[s[top]] <= a[i]) top--;
-    Lmax[i] = s[top];
-    s[++top] = i;
+mat operator+(mat a, mat b) {
+  mat c;
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
+      c[i][j] = add(a[i][j], b[i][j]);
+    }
   }
-  top = 0;
-  up(i, 1, n) {
-    while (top && a[s[top]] >= a[i]) top--;
-    Lmin[i] = s[top];
-    s[++top] = i;
+  return c;
+}
+struct MAT {
+  mat X[2][2];
+};
+MAT operator*(MAT a, MAT b) {
+  MAT c;
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      for (int k = 0; k < 2; k++) {
+        c.X[i][j] = c.X[i][j] + (a.X[i][k] * b.X[k][j]);
+      }
+    }
   }
-  up(i, 1, n) L[i] = min(Lmax[i], Lmin[i]);
-  top = 0;
-  s[top] = n + 1;
-  dn(i, n, 1) {
-    while (top && a[s[top]] <= a[i]) top--;
-    Rmax[i] = s[top];
-    s[++top] = i;
+  return c;
+}
+
+int deg[200];
+
+int main() {
+  scanf("%d%d%d", &n, &m, &k);
+  if (k <= 2) {
+    printf("0");
+    return 0;
   }
-  top = 0;
-  s[top] = n + 1;
-  dn(i, n, 1) {
-    while (top && a[s[top]] >= a[i]) top--;
-    Rmin[i] = s[top];
-    s[++top] = i;
+  mat D, E, I;
+  for (int i = 1, a = 0, b = 0; i <= m; i++) {
+    scanf("%d%d", &a, &b);
+    deg[a]++, deg[b]++;
+    E[a][b] = E[b][a] = 1;
   }
-  up(i, 1, n) R[i] = max(Rmax[i], Rmin[i]);
-  solve2();
-  // solve1();
-  cnt = 0;
-  up(i, 1, n) { p[++cnt] = {0, n + 1 - i, n + 1 - L[i] + 1, 0}; }
-  up(i, 1, n) {
-    if (n + 1 - R[i] < 1) continue;
-    p[++cnt] = {1, n + 1 - R[i], n + 1 - i + 1, i};
+  for (int i = 1; i <= n; i++) I[i][i] = 1;
+  for (int i = 1; i <= n; i++) {
+    D[i][i] = sub(1, deg[i]);
   }
-  stable_sort(p + 1, p + 1 + cnt, cmp);
-  T.init();
-  up(i, 1, cnt) {
-    if (!p[i].op) T.add(p[i].y, 1);
-    else ans1[p[i].id] += T.sum(p[i].y);
+  mat SC = E * E;
+  for (int i = 1; i <= n; i++) SC[i][i] = 0;
+  MAT F;
+  F.X[0][1] = D, F.X[1][1] = E, F.X[1][0] = I;
+  MAT P = F;
+  k -= 2;
+  int B = 20;
+  while (!(k & (1 << B))) B--;
+  for (int j = B - 1; j >= 0; j--) {
+    P = P * P;
+    if (k & (1 << j)) P = P * F;
   }
-  up(i, 1, n) fout << ans1[i] << " \n"[i == n];
-  up(i, 1, n) fout << ans2[i] << " \n"[i == n];
-  return 0;
+
+  mat FINAL = SC * P.X[1][1] + E * P.X[0][1];
+  long long ans = 0;
+  for (int i = 1; i <= n; i++) ans = add(ans, FINAL[i][i]);
+  printf("%lld", ans);
 }
