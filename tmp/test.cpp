@@ -1,100 +1,195 @@
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-const long long MOD = 998244353, G = 3;
-int add(int x, int y) { return x + y >= MOD ? x + y - MOD : x + y; }
-int sub(int x, int y) { return x >= y ? x - y : x + MOD - y; }
+#define MAXN 200005
+#define se set<aa>
+#define it iterator
+#define lb lowber_bound
 
-long long fast_pow(long long b, long long p) {
-  long long ans = 1;
-  while (p) {
-    if (p & 1) ans = ans * b % MOD;
-    b = b * b % MOD;
-    p >>= 1;
-  }
-  return ans;
-}
-long long INV(long long x) { return fast_pow(x, MOD - 2); }
-int n, m, k;
-
-struct mat {
-  long long num[120][120];
-  long long *operator[](int x) { return num[x]; }
-  const long long *operator[](int x) const { return num[x]; }
-  mat() { memset(num, 0, sizeof(num)); }
+int n, m, nn, mm, sb;
+map<int, int> p;
+int a[MAXN], f[MAXN], u[MAXN], tt[MAXN];
+int c[MAXN], d[MAXN];
+struct aa {
+  int l, r, v;
 };
+set<aa> s[MAXN];
+struct op {
+  int op, l, r, v;
+} opt[MAXN];
+int mr[MAXN], srz[MAXN], ak;
 
-mat operator*(mat a, mat b) {
-  mat c;
+bool operator<(aa a, aa b) { return a.r < b.r; }
+
+set<aa> odt;
+
+void fenkuai() {
+  sb = sqrt(n);
+  for (int i = 1; i <= n + 1; i++) {
+    if (i % sb == 1) {
+      c[i] = c[i - 1] + 1;
+      d[i] = 1;
+    } else {
+      c[i] = c[i - 1];
+      d[i] = d[i - 1] + 1;
+    }
+  }
+  mm = c[n];
+}
+
+struct kuai {
+  int s[355];
+
+  inline void jia(int x, int y)  // sqrt(n)
+  {
+    if (srz[x] == 0) return;
+    for (int i = srz[x]; i <= mm; i++) s[i] += y;
+  }
+
+  inline int sum(int x) {  // O(1)
+    return s[x];
+  }
+} b[355];
+
+inline int read() {
+  register int x = 0, ch = getchar();
+  while (!isdigit(ch)) ch = getchar();
+  while (isdigit(ch)) x = x * 10 + ch - '0', ch = getchar();
+  return x;
+}
+
+void chonggou(int x) {
+  for (int i = 1; i <= c[n]; i++) memset(b[i].s, 0, sizeof(b[i].s));
+  memset(srz, 0, sizeof(srz));
+  for (int i = x; i <= m && i <= x + sb - 1; i++)
+    if (opt[i].op == 2) srz[opt[i].r + 1]++;
+  srz[1]++;
+  for (int i = 1; i <= n; i++) srz[i] += srz[i - 1];
+  srz[n + 1] = 0;
+  for (int i = 1; i <= n; i++) b[c[i]].s[srz[f[i]]]++;
+
+  for (int i = 1; i <= mm; i++)
+    for (int j = 2; j <= mm; j++) b[i].s[j] += b[i].s[j - 1];
+}
+
+void rd() {
+  scanf("%d%d", &n, &m);
+  for (int i = 1; i <= n; i++) scanf("%d", &a[i]);
+  for (int i = 1; i <= m; i++) {
+    opt[i].op = read();
+    opt[i].l = read();
+    opt[i].r = read();
+
+    if (opt[i].op == 1) {
+      opt[i].v = read();
+    }
+  }
   for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= n; j++) {
-      for (int k = 1; k <= n; k++) {
-        c[i][j] = add(c[i][j], (long long)a[i][k] * b[k][j] % MOD);
+    if (!p.count(a[i])) {
+      nn++;
+      p[a[i]] = nn;
+    }
+    s[p[a[i]]].insert((aa){i, i, p[a[i]]});
+    odt.insert((aa){i, i, p[a[i]]});
+  }
+  for (int i = 1; i <= n * 2; i++) {
+    s[i].insert((aa){n + 1, n + 1, i});
+    s[i].insert((aa){0, 0, i});
+  }
+  fenkuai();
+  for (int i = n; i >= 1; i--) {
+    int t = u[p[a[i]]];
+    if (t) f[i] = t;
+    else f[i] = n + 1;
+    u[p[a[i]]] = i;
+  }
+}
+
+void split(se::it x, int i) {
+  int v = x->v, l = x->l, r = x->r;
+  if (i < l || i >= r) return;
+
+  s[v].erase((aa){l, r, v});
+  s[v].insert((aa){l, i, v});
+  s[v].insert((aa){i + 1, r, v});
+
+  odt.erase(x);
+  odt.insert((aa){l, i, v});
+  odt.insert((aa){i + 1, r, v});
+}
+
+aa qls(int v, int x) {
+  se::it i = s[v].upper_bound((aa){0, x, 0});
+  i--;
+  return (*i);
+}
+
+inline void qf(int x, int y) {
+  if (x == 0) return;
+  b[c[x]].jia(f[x], -1);
+  f[x] = y;
+  b[c[x]].jia(f[x], 1);
+}
+
+void dlt(int l, int r, int v) {
+  s[v].erase((aa){l, r, v});
+  aa ls = qls(v, l);
+  aa rs = *s[v].lower_bound((aa){0, r, 0});
+  qf(r, r + 1);
+  qf(ls.r, rs.l);
+}
+
+void jlt(int l, int r, int v) {
+  aa ls = qls(v, l);
+  aa rs = *s[v].lower_bound((aa){0, r, 0});
+  s[v].insert((aa){l, r, v});
+  qf(ls.r, l);
+  qf(r, rs.l);
+}
+
+void assign(int l, int r, int v) {
+  se::it x = odt.lower_bound((aa){0, l - 1, 0});
+  split(x, l - 1);
+  se::it y = odt.lower_bound((aa){0, r, 0});
+  split(y, r);
+
+  x = odt.lower_bound((aa){0, l, 0});
+  y = odt.lower_bound((aa){0, r + 1, 0});
+
+  for (se::it i = x; i != y;) {
+    se::it j = i;
+    i++;
+    dlt(j->l, j->r, j->v);
+    odt.erase(j);
+  }
+
+  odt.insert((aa){l, r, v});
+  jlt(l, r, v);
+}
+
+signed main() {
+  rd();
+  for (int i = 1; i <= m; i++) {
+    if (i % sb == 1) chonggou(i);
+    int l = opt[i].l, r = opt[i].r, v = opt[i].v, op = opt[i].op;
+    if (op == 1) {
+      if (!p.count(v)) {
+        nn++;
+        p[v] = nn;
       }
-    }
-  }
-  return c;
-}
-mat operator+(mat a, mat b) {
-  mat c;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= n; j++) {
-      c[i][j] = add(a[i][j], b[i][j]);
-    }
-  }
-  return c;
-}
-struct MAT {
-  mat X[2][2];
-};
-MAT operator*(MAT a, MAT b) {
-  MAT c;
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < 2; j++) {
-      for (int k = 0; k < 2; k++) {
-        c.X[i][j] = c.X[i][j] + (a.X[i][k] * b.X[k][j]);
+      assign(l, r, p[v]);
+    } else {
+      int ans = r - l + 1;
+      if (c[l] != c[r]) {
+        int t = srz[r];
+        for (int j = c[l] + 1; j <= c[r] - 1; j++) ans -= b[j].sum(t);
+        for (int j = l; c[l] == c[j]; j++) ans -= (f[j] <= r);
+        for (int j = r; c[r] == c[j]; j--) ans -= (f[j] <= r);
+      } else {
+        for (int j = l; j <= r; j++) ans -= (f[j] <= r);
       }
+      printf("%d\n", ans);
     }
   }
-  return c;
-}
-
-int deg[200];
-
-int main() {
-  scanf("%d%d%d", &n, &m, &k);
-  if (k <= 2) {
-    printf("0");
-    return 0;
-  }
-  mat D, E, I;
-  for (int i = 1, a = 0, b = 0; i <= m; i++) {
-    scanf("%d%d", &a, &b);
-    deg[a]++, deg[b]++;
-    E[a][b] = E[b][a] = 1;
-  }
-  for (int i = 1; i <= n; i++) I[i][i] = 1;
-  for (int i = 1; i <= n; i++) {
-    D[i][i] = sub(1, deg[i]);
-  }
-  mat SC = E * E;
-  for (int i = 1; i <= n; i++) SC[i][i] = 0;
-  MAT F;
-  F.X[0][1] = D, F.X[1][1] = E, F.X[1][0] = I;
-  MAT P = F;
-  k -= 2;
-  int B = 20;
-  while (!(k & (1 << B))) B--;
-  for (int j = B - 1; j >= 0; j--) {
-    P = P * P;
-    if (k & (1 << j)) P = P * F;
-  }
-
-  mat FINAL = SC * P.X[1][1] + E * P.X[0][1];
-  long long ans = 0;
-  for (int i = 1; i <= n; i++) ans = add(ans, FINAL[i][i]);
-  printf("%lld", ans);
+  return 0;
 }
