@@ -1,11 +1,11 @@
 /**
- * @file    
+ * @file    CF1156D 0-1-Tree.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   DSU
  * @date    2023-11-08
  */
 #include <iostream>
-#include <vector>
+#include <numeric>
 
 #pragma region
 namespace FastIO {
@@ -80,14 +80,39 @@ FastIO::os fout;
 
 using i64 = long long;
 
-int n, m;
+constexpr int N = 2e5 + 50;
+int n, siz[N][2];
+struct DSU {
+  int fa[N];
+  DSU() { std::iota(fa, fa + N, 0); }
+  int find(int u) { return u == fa[u] ? u : fa[u] = find(fa[u]); }
+  bool merge(int u, int v) {
+    u = find(u), v = find(v);
+    if (u == v) return false;
+    fa[u] = v;
+    return true;
+  }
+} dsu[2];
 void solve() {
-  fin >> n >> m;
+  fin >> n;
+  for (int i = 1, u, v, w; i < n; i++) {
+    fin >> u >> v >> w;
+    dsu[w].merge(u, v);
+  }
+  for (int i = 1; i <= n; i++) {
+    siz[dsu[0].find(i)][0]++;
+    siz[dsu[1].find(i)][1]++;
+  }
+  i64 ans = 0;
+  for (int i = 1; i <= n; i++) {
+    ans += 1ll * (siz[dsu[0].find(i)][0]) * (siz[dsu[1].find(i)][1]) - 1;
+  }
+  fout << ans << "\n";
 }
 
 int main() {
   int t = 1;
-  fin >> t;
+  // fin >> t;
   while (t--) solve();
   return 0;
 }
