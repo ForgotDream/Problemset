@@ -1,10 +1,13 @@
 /**
- * @file    
+ * @file    CF533B Work Group.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   DP
  * @date    2023-11-08
  */
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <vector>
 
 #pragma region
 namespace FastIO {
@@ -20,7 +23,7 @@ struct is {
     x = 0;
     T f = 1;
     char c = gc();
-    while (c < '0' || c > '9') f = (c == '-' ? -f : f), c = gc();
+    while (c < '0' || c > '9') f = ( c == '-' ? -f : f), c = gc();
     while ('0' <= c && c <= '9') x = x * 10 + c - '0', c = gc();
     x *= f;
   }
@@ -80,14 +83,33 @@ FastIO::os fout;
 using i64 = long long;
 
 constexpr int N = 2e5 + 50;
-int
+int n, fa[N], s[N];
+std::vector<int> adj[N];
+i64 f[N][2];
+void dfs(int u) {
+  f[u][0] = 0, f[u][1] = -1e9;
+  for (auto v : adj[u]) {
+    dfs(v);
+    i64 p = f[u][0], q = f[u][1];
+    f[u][0] = std::max(f[v][0] + p, f[v][1] + q);
+    f[u][1] = std::max(f[v][1] + p, f[v][0] + q);
+  }
+  f[u][1] = std::max(f[u][1], f[u][0] + s[u]);
+}
 void solve() {
+  fin >> n;
+  for (int i = 1; i <= n; i++) {
+    fin >> fa[i] >> s[i];
+    if (~fa[i]) adj[fa[i]].push_back(i);
+  }
+  dfs(1);
+  fout << f[1][1] << "\n";
 }
 
 int main() {
   // std::cin.tie(nullptr)->sync_with_stdio(false);
   int t = 1;
-  fin >> t;
+  // fin >> t;
   while (t--) solve();
   return 0;
 }

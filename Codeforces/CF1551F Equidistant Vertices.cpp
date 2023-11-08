@@ -1,10 +1,12 @@
 /**
- * @file    
+ * @file    CF1551F Equidistant Vertices.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   DP
  * @date    2023-11-08
  */
+#include <cstring>
 #include <iostream>
+#include <vector>
 
 #pragma region
 namespace FastIO {
@@ -46,7 +48,9 @@ struct is {
     return res;
   }
   template <typename T>
-  is &operator>>(T &rhs) { return read(rhs), *this; }
+  is &operator>>(T &rhs) {
+    return read(rhs), *this;
+  }
   is &operator>>(char *rhs) { return read(rhs), *this; }
 };
 struct os {
@@ -61,16 +65,25 @@ struct os {
     if (x < 0) x = -x, pc('-');
     static T sta[35];
     T top = 0;
-    do sta[top++] = x % 10, x /= 10; while (x);
+    do sta[top++] = x % 10, x /= 10;
+    while (x);
     while (top) pc(sta[--top] + '0');
   }
-  inline void print(const char *s) { for (; *s; ++s) pc(*s); }
-  inline void print(char *s) { for (; *s; ++s) pc(*s); }
-  inline void print(const std::string &s) { for (const auto &c : s) pc(c); }
+  inline void print(const char *s) {
+    for (; *s; ++s) pc(*s);
+  }
+  inline void print(char *s) {
+    for (; *s; ++s) pc(*s);
+  }
+  inline void print(const std::string &s) {
+    for (const auto &c : s) pc(c);
+  }
   inline void print(const char &c) { pc(c); }
   inline void flush() { fwrite(outbuf, 1, pp - outbuf, stdout), pp = outbuf; }
   template <typename T>
-  os &operator<<(const T &rhs) { return print(rhs), *this; }
+  os &operator<<(const T &rhs) {
+    return print(rhs), *this;
+  }
 };
 }  // namespace FastIO
 FastIO::is fin;
@@ -79,9 +92,39 @@ FastIO::os fout;
 
 using i64 = long long;
 
-constexpr int N = 2e5 + 50;
-int
+constexpr int N = 105, mod = 1e9 + 7;
+int n, k;
+std::vector<int> adj[N];
+i64 f[N], cnt;
+void dfs(int u, int frm, int d) {
+  if (d == 0) return cnt++, void();
+  for (auto v : adj[u]) {
+    if (v == frm) continue;
+    dfs(v, u, d - 1);
+  }
+}
 void solve() {
+  fin >> n >> k;
+  for (int i = 1; i <= n; i++) adj[i].clear();
+  for (int i = 1, u, v; i < n; i++) {
+    fin >> u >> v;
+    adj[u].push_back(v), adj[v].push_back(u);
+  }
+  if (k == 2) return fout << n * (n - 1) / 2 << "\n", void();
+  i64 ans = 0;
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= n; j++) {
+      for (int t = 1; t <= n; t++) f[t] = 0;
+      f[0] = 1;
+      for (auto v : adj[j]) {
+        cnt = 0;
+        dfs(v, j, i - 1);
+        for (int t = k; t >= 1; t--) f[t] = (f[t] + f[t - 1] * cnt) % mod;
+      }
+      ans = (ans + f[k]) % mod;
+    }
+  }
+  fout << ans << "\n";
 }
 
 int main() {

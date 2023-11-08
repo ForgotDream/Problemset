@@ -1,10 +1,12 @@
 /**
- * @file    
+ * @file    CF1746D Paths on the Tree.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   Greedy
  * @date    2023-11-08
  */
+#include <algorithm>
 #include <iostream>
+#include <vector>
 
 #pragma region
 namespace FastIO {
@@ -20,7 +22,7 @@ struct is {
     x = 0;
     T f = 1;
     char c = gc();
-    while (c < '0' || c > '9') f = (c == '-' ? -f : f), c = gc();
+    while (c < '0' || c > '9') f = ( c == '-' ? -f : f), c = gc();
     while ('0' <= c && c <= '9') x = x * 10 + c - '0', c = gc();
     x *= f;
   }
@@ -80,8 +82,32 @@ FastIO::os fout;
 using i64 = long long;
 
 constexpr int N = 2e5 + 50;
-int
+int n, k, s[N];
+std::vector<int> adj[N];
+i64 ans;
+inline int son(int u) { return adj[u].size(); }
+inline void init() {
+  ans = 0;
+  for (int i = 1; i <= n; i++) adj[i].clear();
+}
+i64 dfs(int u, int p) {
+  ans += 1ll * p * s[u];
+  if (!son(u)) return s[u];
+  int avg = p / son(u), rst = p % son(u);
+  std::vector<i64> d;
+  for (auto v : adj[u]) d.push_back(dfs(v, avg));
+  std::sort(d.begin(), d.end(), std::greater<>());
+  auto it = d.begin();
+  while (rst) ans += *it++, rst--;
+  return *it + s[u];
+}
 void solve() {
+  fin >> n >> k;
+  init();
+  for (int i = 2, p; i <= n; i++) fin >> p, adj[p].push_back(i);
+  for (int i = 1; i <= n; i++) fin >> s[i];
+  dfs(1, k);
+  fout << ans << "\n";
 }
 
 int main() {

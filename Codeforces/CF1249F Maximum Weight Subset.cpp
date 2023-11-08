@@ -1,10 +1,12 @@
 /**
- * @file    
+ * @file    CF1249F Maximum Weight Subset.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   DP
  * @date    2023-11-08
  */
 #include <iostream>
+#include <queue>
+#include <vector>
 
 #pragma region
 namespace FastIO {
@@ -20,7 +22,7 @@ struct is {
     x = 0;
     T f = 1;
     char c = gc();
-    while (c < '0' || c > '9') f = (c == '-' ? -f : f), c = gc();
+    while (c < '0' || c > '9') f = ( c == '-' ? -f : f), c = gc();
     while ('0' <= c && c <= '9') x = x * 10 + c - '0', c = gc();
     x *= f;
   }
@@ -79,15 +81,53 @@ FastIO::os fout;
 
 using i64 = long long;
 
-constexpr int N = 2e5 + 50;
-int
+constexpr int N = 250;
+int n, k, a[N], p;
+std::vector<int> adj[N];
+void dfs(int u, int frm, int dis) {
+  if (dis > k) return;
+  a[u] -= p;
+  for (auto v : adj[u]) {
+    if (v == frm) continue;
+    dfs(v, u, dis + 1);
+  }
+}
+int dfn[N], idfn[N], clk;
+void bfs() {
+  std::queue<int> q;
+  q.push(1);
+  while (!q.empty()) {
+    int u = q.front();
+    q.pop(), idfn[dfn[u] = ++clk] = u;
+    for (auto v : adj[u]) {
+      if (dfn[v]) continue;
+      q.push(v);
+    }
+  }
+}
 void solve() {
+  fin >> n >> k;
+  for (int i = 1; i <= n; i++) fin >> a[i];
+  for (int i = 1, u, v; i < n; i++) {
+    fin >> u >> v;
+    adj[u].push_back(v), adj[v].push_back(u);
+  }
+  bfs();
+  int ans = 0;
+  for (int i = n; i; i--) {
+    int u = idfn[i];
+    p = a[u];
+    if (p <= 0) continue;
+    // fout << p << "\n";
+    ans += p, dfs(u, 0, 0);
+  }
+  fout << ans << "\n";
 }
 
 int main() {
   // std::cin.tie(nullptr)->sync_with_stdio(false);
   int t = 1;
-  fin >> t;
+  // fin >> t;
   while (t--) solve();
   return 0;
 }

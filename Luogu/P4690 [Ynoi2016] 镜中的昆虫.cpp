@@ -1,7 +1,7 @@
 /**
- * @file    
+ * @file    P4690 [Ynoi2016] 镜中的昆虫.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   Sqrt + 颜色段均摊
  * @date    2023-11-05
  */
 #include <cmath>
@@ -78,7 +78,7 @@ struct FastIO {
 
 using i64 = long long;
 
-constexpr int N = 2e5 + 50, M = 500;
+constexpr int N = 2e5 + 50, M = 350;
 int n, m, a[N];
 std::map<int, int> colMap;
 int colCnt, f[N], lst[N];
@@ -123,7 +123,9 @@ void rebuild(int u) {
 inline void modify(int u, int val) {
   if (!u) return;
   b[bln[u]].modify(f[u], -1);
+  // std::cout << bln[u] << " " << f[u] << " " << posBln[f[u]] << "\n";
   f[u] = val;
+  // std::cout << bln[u] << " " << f[u] << " " << posBln[f[u]] << "\n";
   b[bln[u]].modify(f[u], 1);
 }
 }  // namespace SQRT
@@ -147,8 +149,8 @@ inline void delcol(int l, int r, int val) {
 inline void addcol(int l, int r, int val) {
   Node lp = *std::prev(col[val].upper_bound({l, 0, val}));
   Node rp = *col[val].lower_bound({r, 0, val});
-  SQRT::modify(lp.r, l), SQRT::modify(r, rp.l);
   col[val].emplace(l, r, val);
+  SQRT::modify(lp.r, l), SQRT::modify(r, rp.l);
 }
 auto split(int pos) {
   auto it = tr.lower_bound({pos, 0, 0});
@@ -190,13 +192,17 @@ void solve() {
   }
   for (int i = n; i; i--) {
     int &d = lst[colMap[a[i]]];
-    if (d) f[colMap[a[i]]] = d;
-    else f[colMap[a[i]]] = n + 1;
+    if (d) f[i] = d;
+    else f[i] = n + 1;
     d = i;
   }
   for (int i = 1; i <= m; i++) {
     if (i % SQRT::blk == 1) SQRT::rebuild(i);
     auto [opt, l, r, val] = SQRT::q[i];
+    // for (int j = 1; j <= n; j++) std::cout << f[j] << " \n"[j == n];
+    // for (int j = 1; j <= n; j++) std::cout << posBln[j] << " \n"[j == n];
+    // for (auto [l, v, val] : ODT::tr) std::cout << "#" << l << " " << r << " " << val << "\n";
+    // std::cout << "\n";
     if (opt == 1) {
       if (colMap.find(val) == colMap.end()) colMap[val] = ++colCnt;
       ODT::assign(l, r, colMap[val]);
@@ -204,10 +210,10 @@ void solve() {
       using SQRT::bln;
       int ans = r - l + 1;
       if (bln[l] == bln[r]) {
-        for (int j = l; j <= r; j++) ans -= f[j] <= r;
+        for (int j = l; j <= r; j++) ans -= (f[j] <= r);
       } else {
-        for (int j = l; j <= SQRT::r[bln[l]]; j++) ans -= f[j] <= r;
-        for (int j = SQRT::l[bln[r]]; j <= r; j++) ans -= f[j] <= r;
+        for (int j = l; j <= SQRT::r[bln[l]]; j++) ans -= (f[j] <= r);
+        for (int j = SQRT::l[bln[r]]; j <= r; j++) ans -= (f[j] <= r);
         for (int j = bln[l] + 1; j < bln[r]; j++) ans -= SQRT::b[j].query(r);
       }
       fout << ans << "\n";
