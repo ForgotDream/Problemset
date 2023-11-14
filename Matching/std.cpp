@@ -1,66 +1,40 @@
-/**
- * @file
- * @author  ForgotDream
- * @brief
- * @date    2023-10-05
- */
-#include <cassert>
-#include <cstring>
-#include <iostream>
-#include <vector>
-#include <tuple>
+#include <bits/stdc++.h>
 
-using i64 = long long;
-using ti3 = std::tuple<int, int, int>;
+using i64 = int64_t;
 
-constexpr int N = 2e5 + 50, K = 30;
-int n, m;
-std::vector<int> adj[N];
-ti3 q[N];
-bool used[N];
-int bln[N], val[N], cnt;
-void dfs(int u) {
-  bln[u] = cnt, val[cnt] += (u > n);
-  for (auto v : adj[u]) {
-    if (bln[v]) continue;
-    dfs(v);
+constexpr int N = 1e5 + 50, M = 205, LIM = 200, mod = 998244353;
+int n, w[N], q;
+i64 f[N][M], g[N][M];
+void init() {
+  f[0][0] = 1;
+  for (int i = 1; i <= n; i++) {
+    for (int j = 0; j <= LIM; j++) {
+      f[i][j] = f[i - 1][j];
+      if (j >= w[i]) (f[i][j] += f[i - 1][j - w[i]]) %= mod;
+    }
+  }
+  g[n + 1][0] = 1;
+  for (int i = n; i >= 1; i--) {
+    for (int j = 0; j <= LIM; j++) {
+      g[i][j] = g[i + 1][j];
+      if (j >= w[i]) (g[i][j] += g[i + 1][j - w[i]]) %= mod;
+    }
   }
 }
 void solve() {
-  std::cin >> n >> m;
-  for (int i = 1, u, v, w; i <= m; i++) {
-    std::cin >> u >> v >> w;
-    q[i] = std::tuple(u, v, w);
+  std::cin >> n;
+  for (int i = 1; i <= n; i++) std::cin >> w[i];
+  init();
+  std::cin >> q;
+  for (int l, r, m; q; q--) {
+    std::cin >> l >> r >> m;
+    i64 tmp = 0;
+    for (int i = 1; i < m; i++) (tmp += f[l - 1][i] * g[r + 1][m - i] % mod) %= mod;
+    for (int i = 1; i < m; i++) (tmp += (f[r][i] - f[l - 1][i]) * g[r + 1][m - i] % mod) %= mod;
+    // for (int i = 1; i < m; i++) (tmp += f[r][i] * g[r + 1][m - i] % mod) %= mod;
+    std::cout << (f[n][m] - f[r][m] - g[l][m] - tmp + mod) % mod << "\n";
+    std::cout << f[r][m] << " " << g[l][m] << " " << f[n][m] << " " << tmp << "\n";
   }
-  i64 sum = 0;
-  for (int _ = 0; _ < K; _++) {
-    for (int i = 1; i <= cnt; i++) val[i] = 0, used[i] = false;
-    for (int i = 1; i <= 2 * n; i++) bln[i] = 0, adj[i].clear();
-    for (int i = 1; i <= m; i++) {
-      auto [u, v, w] = q[i];
-      if (w & (1ll << _)) {
-        adj[u].push_back(v + n), adj[v].push_back(u + n);
-        adj[u + n].push_back(v), adj[v + n].push_back(u);
-      } else {
-        adj[u].push_back(v), adj[v].push_back(u);
-        adj[u + n].push_back(v + n), adj[v + n].push_back(u + n);
-      }
-    }
-    cnt = 0;
-    for (int i = 1; i <= 2 * n; i++) {
-      if (!bln[i]) cnt++, dfs(i);
-    }
-    for (int i = 1; i <= n; i++) {
-      if (bln[i] == bln[i + n]) {
-        std::cout << -1 << "\n";
-        return;
-      }
-      if (used[bln[i]] || used[bln[i + n]]) continue;
-      sum += (1ll << _) * std::min(val[bln[i]], val[bln[i + n]]);
-      used[bln[i]] = used[bln[i + n]] = true;
-    }
-  }
-  std::cout << sum << "\n";
 }
 
 int main() {

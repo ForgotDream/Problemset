@@ -1,43 +1,28 @@
-#include <cmath>
-#include <iostream>
+#include <bits/stdc++.h>
 
-using i64 = long long;
-using i128 = __int128;
+using i64 = int64_t;
 
-i64 n, x, k;
-int mdep;
-int dep(i64 num) { return 64 - __builtin_clzll(num); }
-i64 calc(i64 u, i64 k) {
-  if (k < 0) return 0;
-  int d = dep(u);
-  if (d + k < mdep) {
-    return 1ll << k;
-  } else if (d + k == mdep) {
-    i64 nxt = u << k;
-    return std::max(std::min(n, nxt + (1ll << k) - 1) - nxt + 1, 0ll);
-  } else {
-    return 0;
-  }
-}
+constexpr int N = 1e5 + 50, M = 205, mod = 998244353;
+int n, w[N], q;
+i64 f[M];
 void solve() {
-  std::cin >> n >> x >> k;
-  mdep = dep(n);
-  if (!k) {
-    std::cout << 1 << "\n";
-    return;
+  std::cin >> n;
+  for (int i = 1; i <= n; i++) std::cin >> w[i];
+  std::cin >> q;
+  for (int l, r, m; q; q--) {
+    std::cin >> l >> r >> m;
+    memset(f, 0, sizeof(f)), f[0] = 1;
+    for (int j = l; j <= r; j++) {
+      for (int k = m; k >= w[j]; k--) (f[k] += f[k - w[j]]) %= mod;
+    }
+    std::cout << f[m] << "\n";
   }
-  i64 ans = calc(x, k);
-  while ((x >> 1) && k) {
-    ans += calc(x >> 1, k - 1) - calc(x, k - 2);
-    x >>= 1, k--;
-  }
-  std::cout << ans << "\n";
 }
 
 int main() {
   std::cin.tie(nullptr)->sync_with_stdio(false);
   int t = 1;
-  std::cin >> t;
+  // std::cin >> t;
   while (t--) solve();
   return 0;
 }

@@ -1,166 +1,179 @@
-//#define ice
-#pragma GCC optimize(3)
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("unroll-loops")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
-#include<bits/stdc++.h>
-#define rint register int
+#include "bits/stdc++.h"
 using namespace std;
-inline int read(){
-	int res=0;char c=getchar(),f=1;
-	while(c<48||c>57){if(c=='-')f=0;c=getchar();}
-	while(c>=48&&c<=57)res=(res<<3)+(res<<1)+(c&15),c=getchar();
-	return f?res:-res;
+const int Len = 2.5e5 + 5;
+#define ull unsigned long long
+ull n,q;
+inline ull read() {
+    char ch = getchar();
+    ull x = 0, f = 1;
+    while (ch < '0' || ch > '9') ch = getchar();
+    while ('0' <= ch && ch <= '9') {
+        x = x * 10 + ch - '0';
+        ch = getchar();
+    }
+    return x * f;
 }
-
-const int N=1e5+5,M=170,S=320;
-
-int n,m,a[N],sz,vsz,mxv;
-int k,L[M],R[M],bel[N];
-int l,r,x,y,op,lb,rb;
-
-int fa[N],rt[M][N];
-inline int find(int x){return fa[x]==x?x:fa[x]=find(fa[x]);}
-int cnt[M][N],sumc[M][N],sums[M][S];
-
-void build(int p){
-	for(rint i=L[p];i<=R[p];++i){
-		if(!rt[p][a[i]])rt[p][a[i]]=i;
-		else fa[i]=rt[p][a[i]];
-		++cnt[p][a[i]];
+void write(ull x) {
+    if (x > 9)
+        write(x / 10);
+    putchar(x % 10 + '0');
+}
+struct info
+{
+	ull s,sx,sy,sxy;
+	info(){s = sx = sy = sxy = 0;}
+	info(ull S,ull SX,ull SY,ull SXY){s = S , sx = SX , sy = SY , sxy = SXY;}
+	inline void clr(){s = sx = sy = sxy = 0;}
+	inline void output(){printf("%llu %llu %llu %llu\n",s,sx,sy,sxy);}
+}inf[Len << 2];
+struct tag
+{
+	ull cx,cy,ax,ay,axy,c;
+	tag(){cx = cy = ax = ay = axy = c = 0;}
+	tag(ull CX,ull CY,ull AX,ull AY,ull AXY,ull C){cx = CX , cy = CY , ax = AX , ay = AY , axy = AXY , c = C;}
+	inline void clr(){cx = cy = ax = ay = axy = c = 0;}
+	inline bool empty(){return !(cx || cy || ax || ay || axy || c);}
+	inline void output(){printf("%llu %llu %llu %llu %llu %llu\n",cx,cy,ax,ay,axy,c);}
+}tg[Len << 2];
+//需要实现 O + T -> O,T + T -> T,O + O -> O
+//重点在于 T + T -> T 
+//若 c_x,c_y 都存在，则当前的标记维护的是 cx,cy 的信息，只需要将信息叠加到 c 上即可
+//若 c_x 存在，则当前 ay,c 会被影响， 
+//若 c_y 存在，则当前 ax,c 会被影响，
+//若都不存在，含义就是暴力更新 
+//每次结束后下传一个 axy = 1 的 tag
+//emmmm。
+inline info merge(info x,info y){return info(x.s + y.s , x.sx + y.sx , x.sy + y.sy , x.sxy + y.sxy);}	
+inline tag merge(tag x,tag y)//x -> y
+{ 
+	if(y.cx && y.cy) y.c += x.axy * y.cx * y.cy + x.ax * y.cx + x.ay * y.cy + x.c;
+	else if(y.cx) 
+	{
+		y.ay += x.axy * y.cx + x.ay;
+		y.c += x.c + x.ax * y.cx;
+	}
+	else if(y.cy)
+	{
+		y.ax += x.axy * y.cy + x.ax;
+		y.c += x.c + x.ay * y.cy;
+	}
+	else 
+	{
+		y.axy += x.axy;
+		y.ax += x.ax;
+		y.ay += x.ay;
+		y.c += x.c;
+	}
+	if(x.cx) y.cx = x.cx;
+	if(x.cy) y.cy = x.cy;
+	return y;
+}
+inline info merge(info x,tag y,int len)
+{
+	x.s += y.axy * x.sxy + y.ax * x.sx + y.ay * x.sy + y.c * len;
+	if(y.cx && y.cy)
+	{
+		x.sxy = len * y.cx * y.cy;
+		x.sx = len * y.cx;
+		x.sy = len * y.cy;
+	}
+	else if(y.cx)
+	{
+		x.sxy = x.sy * y.cx;
+		x.sx = len * y.cx;
+	}
+	else if(y.cy)
+	{
+		x.sxy = x.sx * y.cy;
+		x.sy = len * y.cy;
+	}
+	return x;
+}
+#define ls(p) (p << 1)
+#define rs(p) (p << 1 | 1)
+inline void push_up(int p){inf[p] = merge(inf[ls(p)] , inf[rs(p)]);}
+inline void push_down(int p,int l,int r)
+{
+	if(!tg[p].empty())
+	{
+		int mid = (l + r) >> 1;int l1 = (mid - l + 1) , l2 = (r - mid);
+		tg[ls(p)] = merge(tg[p] , tg[ls(p)]) , tg[rs(p)] = merge(tg[p] , tg[rs(p)]);
+		inf[ls(p)] = merge(inf[ls(p)] , tg[p] , l1) , inf[rs(p)] = merge(inf[rs(p)] , tg[p] , l2);
+		tg[p].clr();
+		return;
 	}
 }
-
-int sta[N];
-/* void update(int p,int l,int r,int x,int y){
-	rint tmp=0,l0=L[p],r0=R[p],top=0;
-	rt[p][x]=rt[p][y]=0;
-	for(rint i=l0;i<=r0;++i){
-		a[i]=a[find(i)];
-		if(a[i]==x||a[i]==y)sta[++top]=i;
+void update(int p,int l,int r,int nl,int nr,tag t)
+{
+	if(nl <= l && nr >= r) 
+	{
+		tg[p] = merge(t , tg[p]);
+		inf[p] = merge(inf[p] , t , r - l + 1);
+		//printf("#%d %d:\n",l,r);
+		//tg[p].output();
+		//inf[p].output();
+		return;
 	}
-	for(rint i=l;i<=r;++i)if(a[i]==x)a[i]=y,++tmp;
-	for(rint i=1;i<=top;++i)fa[sta[i]]=sta[i];
-	for(rint i=1,t,w;i<=top;++i){
-		t=sta[i],w=a[t];
-		if(!rt[p][w])rt[p][w]=t;
-		else fa[t]=rt[p][w];
-	}
-	cnt[p][x]-=tmp,cnt[p][y]+=tmp;
-	for(rint i=p;i<=k;++i){
-		sumc[i][x]-=tmp,sumc[i][y]+=tmp;
-		if(bel[x]!=bel[y])
-			sums[i][bel[x]]-=tmp,sums[i][bel[y]]+=tmp;
-	}
-} */
-void update(int p,int l,int r,int x,int y){
-	rint tmp=0,l0=L[p],r0=R[p],top=0;
-	rt[p][x]=rt[p][y]=0;
-	for(rint i=l0;i<=r0;++i)a[i]=a[find(i)];
-	for(rint i=l;i<=r;++i)if(a[i]==x)a[i]=y,++tmp;
-  for(rint i=l0;i<=r0;++i)fa[i]=i;
-  for(rint i=l0;i<=r0;++i){
-    if(!rt[p][a[i]])rt[p][a[i]]=i;
-    else fa[i]=rt[p][a[i]];
-  }
-	cnt[p][x]-=tmp,cnt[p][y]+=tmp;
-	for(rint i=p;i<=k;++i){
-		sumc[i][x]-=tmp,sumc[i][y]+=tmp;
-		if(bel[x]!=bel[y])
-			sums[i][bel[x]]-=tmp,sums[i][bel[y]]+=tmp;
-	}
+	push_down(p , l , r);
+	int mid = (l + r) >> 1;
+	if(nl <= mid) update(ls(p) , l , mid , nl , nr , t);
+	if(nr > mid) update(rs(p) , mid + 1 , r , nl , nr , t);
+	push_up(p);
 }
-
-int c[N],s[S];
-int main(){
-#ifdef ice
-	freopen("1.in","r",stdin);
-	freopen("1.out","w",stdout);
-#endif
-	n=read(),m=read();
-	sz=600,vsz=317,mxv=1e5;
-	k=(n-1)/sz+1;
-	for(rint i=1;i<=n;++i)a[i]=read(),fa[i]=i;
-	for(rint i=1;i<=mxv;++i)bel[i]=(i-1)/vsz+1;
-	for(rint i=1;i<=k;++i){
-		L[i]=(i-1)*sz+1,R[i]=min(i*sz,n);
-		build(i);
-		for(rint j=1;j<=vsz;++j)
-			sums[i][j]=sums[i-1][j];
-		for(rint j=1;j<=mxv;++j)
-			sumc[i][j]=sumc[i-1][j]+cnt[i][j];
-		for(rint j=L[i];j<=R[i];++j)
-			++sums[i][bel[a[j]]];
+ull query(int p,int l,int r,int nl,int nr)
+{
+	if(nl <= l && nr >= r) 
+	{
+		/*if(l == 2 && r == 2)
+		{
+			printf("?%d %d:\n",l,r);
+			tg[p].output();
+			inf[p].output();
+		}*/
+		return inf[p].s;
 	}
-	while(m--){
-		op=read();
-		if(op==1){
-			l=read(),r=read(),x=read(),y=read();
-			if(x==y)continue;
-			lb=(l-1)/sz+1,rb=(r-1)/sz+1;
-			if(lb==rb)update(lb,l,r,x,y);
-			else{
-				update(lb,l,R[lb],x,y);
-				update(rb,L[rb],r,x,y);
-				rint tmp,tmps=0;
-				for(rint i=lb+1;i<rb;++i){
-					if(rt[i][x]){
-						if(!rt[i][y])rt[i][y]=rt[i][x],a[rt[i][x]]=y;
-						else fa[rt[i][x]]=rt[i][y];
-						rt[i][x]=0,tmp=cnt[i][x],tmps+=tmp,
-						cnt[i][y]+=tmp,cnt[i][x]=0;
-					}
-					sumc[i][x]-=tmps,sumc[i][y]+=tmps;
-					if(bel[x]!=bel[y])
-						sums[i][bel[x]]-=tmps,sums[i][bel[y]]+=tmps;
-				}
-				for(rint i=rb;i<=k;++i){
-					sumc[i][x]-=tmps,sumc[i][y]+=tmps;
-					if(bel[x]!=bel[y])
-						sums[i][bel[x]]-=tmps,sums[i][bel[y]]+=tmps;
-				}
-			}
-		}else{
-			l=read(),r=read(),x=read();
-			lb=(l-1)/sz+1,rb=(r-1)/sz+1;
-			if(lb==rb){
-				for(rint i=l;i<=r;++i)
-					a[i]=a[find(i)],++c[a[i]],++s[bel[a[i]]];
-				rint vl,vr,tmp=0;
-				for(rint i=1;i<=vsz;++i){
-					tmp+=s[i];
-					if(tmp>=x){tmp-=s[i],vl=(i-1)*vsz+1,vr=i*vsz;break;}
-				}
-				for(rint i=vl;i<=vr;++i){
-					tmp+=c[i];
-					if(tmp>=x){printf("%d\n",i);break;}
-				}
-				for(rint i=l;i<=r;++i)
-					--c[a[i]],--s[bel[a[i]]];
-			}
-			else{
-				for(rint i=l;i<=R[lb];++i){
-					a[i]=a[find(i)];
-					++c[a[i]],++s[bel[a[i]]];
-				}
-				for(rint i=L[rb];i<=r;++i){
-					a[i]=a[find(i)];
-					++c[a[i]],++s[bel[a[i]]];
-				}
-				rint vl,vr,tmp=0;
-				for(rint i=1;i<=vsz;++i){
-					tmp+=s[i]+sums[rb-1][i]-sums[lb][i];
-					if(tmp>=x){tmp-=s[i]+sums[rb-1][i]-sums[lb][i],vl=(i-1)*vsz+1,vr=i*vsz;break;}
-				}
-				for(rint i=vl;i<=vr;++i){
-					tmp+=c[i]+sumc[rb-1][i]-sumc[lb][i];
-					if(tmp>=x){printf("%d\n",i);break;}
-				}
-				for(rint i=l;i<=R[lb];++i)
-					--c[a[i]],--s[bel[a[i]]];
-				for(rint i=L[rb];i<=r;++i)
-					--c[a[i]],--s[bel[a[i]]];
-			}
-		}
-	}return 0;
+	push_down(p , l , r);
+	int mid = (l + r) >> 1;ull res = 0;
+	if(nl <= mid) res += query(ls(p) , l , mid , nl , nr);
+	if(nr > mid) res += query(rs(p) , mid + 1 , r , nl , nr);
+	return res;
+}
+ull a[Len],b[Len],stk[Len][2],top[2];
+struct Node
+{
+	ull l,id;
+	Node(){l = id = 0;}
+	Node(ull L,ull ID){l = L , id = ID;}
+}Qs[Len];
+vector<Node> vec[Len];
+ull Pt[Len];ull sz[Len];
+signed main()
+{
+	freopen("match.in","r",stdin);
+	freopen("match.out","w",stdout);
+	int TP = read();
+	n = read();
+	for(int i = 1 ; i <= n ; i ++) a[i] = read();
+	for(int i = 1 ; i <= n ; i ++) b[i] = read();
+	q = read();
+	for(int i = 1 ; i <= q ; i ++)
+	{
+		Qs[i].l = read() , Qs[i].id = read();
+		sz[Qs[i].id] ++;
+	}
+	for(int i = 1 ; i <= n ; i ++) vec[i].reserve(sz[i]);
+	for(int i = 1 ; i <= q ; i ++) vec[Qs[i].id].push_back(Node(Qs[i].l , i));
+	for(int i = 1 ; i <= n ; i ++)
+	{
+		while(top[0] > 0 && a[stk[top[0]][0]] < a[i]) top[0] --;
+		update(1 , 1 , n , stk[top[0]][0] + 1 , i , tag(a[i] , 0 , 0 , 0 , 0 , 0));
+		stk[++ top[0]][0] = i;
+		while(top[1] > 0 && b[stk[top[1]][1]] < b[i]) top[1] --;
+		update(1 , 1 , n , stk[top[1]][1] + 1 , i , tag(0 , b[i] , 0 , 0 , 0 , 0));
+		stk[++ top[1]][1] = i;
+		update(1 , 1 , n , 1 , i , tag(0 , 0 , 0 , 0 , 1 , 0));
+		int Sz = (int)vec[i].size();for(int j = 0 ; j < Sz ; j ++) Pt[vec[i][j].id] = query(1 , 1 , n , vec[i][j].l , i);	
+	} 
+	for(int i = 1 ; i <= q ; i ++) write(Pt[i]) , putchar('\n');
+	return 0;
 }
