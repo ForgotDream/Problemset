@@ -1,195 +1,166 @@
-#include <bits/stdc++.h>
+//#define ice
+#pragma GCC optimize(3)
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+#include<bits/stdc++.h>
+#define rint register int
 using namespace std;
+inline int read(){
+	int res=0;char c=getchar(),f=1;
+	while(c<48||c>57){if(c=='-')f=0;c=getchar();}
+	while(c>=48&&c<=57)res=(res<<3)+(res<<1)+(c&15),c=getchar();
+	return f?res:-res;
+}
 
-#define MAXN 200005
-#define se set<aa>
-#define it iterator
-#define lb lowber_bound
+const int N=1e5+5,M=170,S=320;
 
-int n, m, nn, mm, sb;
-map<int, int> p;
-int a[MAXN], f[MAXN], u[MAXN], tt[MAXN];
-int c[MAXN], d[MAXN];
-struct aa {
-  int l, r, v;
-};
-set<aa> s[MAXN];
-struct op {
-  int op, l, r, v;
-} opt[MAXN];
-int mr[MAXN], srz[MAXN], ak;
+int n,m,a[N],sz,vsz,mxv;
+int k,L[M],R[M],bel[N];
+int l,r,x,y,op,lb,rb;
 
-bool operator<(aa a, aa b) { return a.r < b.r; }
+int fa[N],rt[M][N];
+inline int find(int x){return fa[x]==x?x:fa[x]=find(fa[x]);}
+int cnt[M][N],sumc[M][N],sums[M][S];
 
-set<aa> odt;
+void build(int p){
+	for(rint i=L[p];i<=R[p];++i){
+		if(!rt[p][a[i]])rt[p][a[i]]=i;
+		else fa[i]=rt[p][a[i]];
+		++cnt[p][a[i]];
+	}
+}
 
-void fenkuai() {
-  sb = sqrt(n);
-  for (int i = 1; i <= n + 1; i++) {
-    if (i % sb == 1) {
-      c[i] = c[i - 1] + 1;
-      d[i] = 1;
-    } else {
-      c[i] = c[i - 1];
-      d[i] = d[i - 1] + 1;
-    }
+int sta[N];
+/* void update(int p,int l,int r,int x,int y){
+	rint tmp=0,l0=L[p],r0=R[p],top=0;
+	rt[p][x]=rt[p][y]=0;
+	for(rint i=l0;i<=r0;++i){
+		a[i]=a[find(i)];
+		if(a[i]==x||a[i]==y)sta[++top]=i;
+	}
+	for(rint i=l;i<=r;++i)if(a[i]==x)a[i]=y,++tmp;
+	for(rint i=1;i<=top;++i)fa[sta[i]]=sta[i];
+	for(rint i=1,t,w;i<=top;++i){
+		t=sta[i],w=a[t];
+		if(!rt[p][w])rt[p][w]=t;
+		else fa[t]=rt[p][w];
+	}
+	cnt[p][x]-=tmp,cnt[p][y]+=tmp;
+	for(rint i=p;i<=k;++i){
+		sumc[i][x]-=tmp,sumc[i][y]+=tmp;
+		if(bel[x]!=bel[y])
+			sums[i][bel[x]]-=tmp,sums[i][bel[y]]+=tmp;
+	}
+} */
+void update(int p,int l,int r,int x,int y){
+	rint tmp=0,l0=L[p],r0=R[p],top=0;
+	rt[p][x]=rt[p][y]=0;
+	for(rint i=l0;i<=r0;++i)a[i]=a[find(i)];
+	for(rint i=l;i<=r;++i)if(a[i]==x)a[i]=y,++tmp;
+  for(rint i=l0;i<=r0;++i)fa[i]=i;
+  for(rint i=l0;i<=r0;++i){
+    if(!rt[p][a[i]])rt[p][a[i]]=i;
+    else fa[i]=rt[p][a[i]];
   }
-  mm = c[n];
+	cnt[p][x]-=tmp,cnt[p][y]+=tmp;
+	for(rint i=p;i<=k;++i){
+		sumc[i][x]-=tmp,sumc[i][y]+=tmp;
+		if(bel[x]!=bel[y])
+			sums[i][bel[x]]-=tmp,sums[i][bel[y]]+=tmp;
+	}
 }
 
-struct kuai {
-  int s[355];
-
-  inline void jia(int x, int y)  // sqrt(n)
-  {
-    if (srz[x] == 0) return;
-    for (int i = srz[x]; i <= mm; i++) s[i] += y;
-  }
-
-  inline int sum(int x) {  // O(1)
-    return s[x];
-  }
-} b[355];
-
-inline int read() {
-  register int x = 0, ch = getchar();
-  while (!isdigit(ch)) ch = getchar();
-  while (isdigit(ch)) x = x * 10 + ch - '0', ch = getchar();
-  return x;
-}
-
-void chonggou(int x) {
-  for (int i = 1; i <= c[n]; i++) memset(b[i].s, 0, sizeof(b[i].s));
-  memset(srz, 0, sizeof(srz));
-  for (int i = x; i <= m && i <= x + sb - 1; i++)
-    if (opt[i].op == 2) srz[opt[i].r + 1]++;
-  srz[1]++;
-  for (int i = 1; i <= n; i++) srz[i] += srz[i - 1];
-  srz[n + 1] = 0;
-  for (int i = 1; i <= n; i++) b[c[i]].s[srz[f[i]]]++;
-
-  for (int i = 1; i <= mm; i++)
-    for (int j = 2; j <= mm; j++) b[i].s[j] += b[i].s[j - 1];
-}
-
-void rd() {
-  scanf("%d%d", &n, &m);
-  for (int i = 1; i <= n; i++) scanf("%d", &a[i]);
-  for (int i = 1; i <= m; i++) {
-    opt[i].op = read();
-    opt[i].l = read();
-    opt[i].r = read();
-
-    if (opt[i].op == 1) {
-      opt[i].v = read();
-    }
-  }
-  for (int i = 1; i <= n; i++) {
-    if (!p.count(a[i])) {
-      nn++;
-      p[a[i]] = nn;
-    }
-    s[p[a[i]]].insert((aa){i, i, p[a[i]]});
-    odt.insert((aa){i, i, p[a[i]]});
-  }
-  for (int i = 1; i <= n * 2; i++) {
-    s[i].insert((aa){n + 1, n + 1, i});
-    s[i].insert((aa){0, 0, i});
-  }
-  fenkuai();
-  for (int i = n; i >= 1; i--) {
-    int t = u[p[a[i]]];
-    if (t) f[i] = t;
-    else f[i] = n + 1;
-    u[p[a[i]]] = i;
-  }
-}
-
-void split(se::it x, int i) {
-  int v = x->v, l = x->l, r = x->r;
-  if (i < l || i >= r) return;
-
-  s[v].erase((aa){l, r, v});
-  s[v].insert((aa){l, i, v});
-  s[v].insert((aa){i + 1, r, v});
-
-  odt.erase(x);
-  odt.insert((aa){l, i, v});
-  odt.insert((aa){i + 1, r, v});
-}
-
-aa qls(int v, int x) {
-  se::it i = s[v].upper_bound((aa){0, x, 0});
-  i--;
-  return (*i);
-}
-
-inline void qf(int x, int y) {
-  if (x == 0) return;
-  b[c[x]].jia(f[x], -1);
-  f[x] = y;
-  b[c[x]].jia(f[x], 1);
-}
-
-void dlt(int l, int r, int v) {
-  s[v].erase((aa){l, r, v});
-  aa ls = qls(v, l);
-  aa rs = *s[v].lower_bound((aa){0, r, 0});
-  qf(r, r + 1);
-  qf(ls.r, rs.l);
-}
-
-void jlt(int l, int r, int v) {
-  aa ls = qls(v, l);
-  aa rs = *s[v].lower_bound((aa){0, r, 0});
-  s[v].insert((aa){l, r, v});
-  qf(ls.r, l);
-  qf(r, rs.l);
-}
-
-void assign(int l, int r, int v) {
-  se::it x = odt.lower_bound((aa){0, l - 1, 0});
-  split(x, l - 1);
-  se::it y = odt.lower_bound((aa){0, r, 0});
-  split(y, r);
-
-  x = odt.lower_bound((aa){0, l, 0});
-  y = odt.lower_bound((aa){0, r + 1, 0});
-
-  for (se::it i = x; i != y;) {
-    se::it j = i;
-    i++;
-    dlt(j->l, j->r, j->v);
-    odt.erase(j);
-  }
-
-  odt.insert((aa){l, r, v});
-  jlt(l, r, v);
-}
-
-signed main() {
-  rd();
-  for (int i = 1; i <= m; i++) {
-    if (i % sb == 1) chonggou(i);
-    int l = opt[i].l, r = opt[i].r, v = opt[i].v, op = opt[i].op;
-    if (op == 1) {
-      if (!p.count(v)) {
-        nn++;
-        p[v] = nn;
-      }
-      assign(l, r, p[v]);
-    } else {
-      int ans = r - l + 1;
-      if (c[l] != c[r]) {
-        int t = srz[r];
-        for (int j = c[l] + 1; j <= c[r] - 1; j++) ans -= b[j].sum(t);
-        for (int j = l; c[l] == c[j]; j++) ans -= (f[j] <= r);
-        for (int j = r; c[r] == c[j]; j--) ans -= (f[j] <= r);
-      } else {
-        for (int j = l; j <= r; j++) ans -= (f[j] <= r);
-      }
-      printf("%d\n", ans);
-    }
-  }
-  return 0;
+int c[N],s[S];
+int main(){
+#ifdef ice
+	freopen("1.in","r",stdin);
+	freopen("1.out","w",stdout);
+#endif
+	n=read(),m=read();
+	sz=600,vsz=317,mxv=1e5;
+	k=(n-1)/sz+1;
+	for(rint i=1;i<=n;++i)a[i]=read(),fa[i]=i;
+	for(rint i=1;i<=mxv;++i)bel[i]=(i-1)/vsz+1;
+	for(rint i=1;i<=k;++i){
+		L[i]=(i-1)*sz+1,R[i]=min(i*sz,n);
+		build(i);
+		for(rint j=1;j<=vsz;++j)
+			sums[i][j]=sums[i-1][j];
+		for(rint j=1;j<=mxv;++j)
+			sumc[i][j]=sumc[i-1][j]+cnt[i][j];
+		for(rint j=L[i];j<=R[i];++j)
+			++sums[i][bel[a[j]]];
+	}
+	while(m--){
+		op=read();
+		if(op==1){
+			l=read(),r=read(),x=read(),y=read();
+			if(x==y)continue;
+			lb=(l-1)/sz+1,rb=(r-1)/sz+1;
+			if(lb==rb)update(lb,l,r,x,y);
+			else{
+				update(lb,l,R[lb],x,y);
+				update(rb,L[rb],r,x,y);
+				rint tmp,tmps=0;
+				for(rint i=lb+1;i<rb;++i){
+					if(rt[i][x]){
+						if(!rt[i][y])rt[i][y]=rt[i][x],a[rt[i][x]]=y;
+						else fa[rt[i][x]]=rt[i][y];
+						rt[i][x]=0,tmp=cnt[i][x],tmps+=tmp,
+						cnt[i][y]+=tmp,cnt[i][x]=0;
+					}
+					sumc[i][x]-=tmps,sumc[i][y]+=tmps;
+					if(bel[x]!=bel[y])
+						sums[i][bel[x]]-=tmps,sums[i][bel[y]]+=tmps;
+				}
+				for(rint i=rb;i<=k;++i){
+					sumc[i][x]-=tmps,sumc[i][y]+=tmps;
+					if(bel[x]!=bel[y])
+						sums[i][bel[x]]-=tmps,sums[i][bel[y]]+=tmps;
+				}
+			}
+		}else{
+			l=read(),r=read(),x=read();
+			lb=(l-1)/sz+1,rb=(r-1)/sz+1;
+			if(lb==rb){
+				for(rint i=l;i<=r;++i)
+					a[i]=a[find(i)],++c[a[i]],++s[bel[a[i]]];
+				rint vl,vr,tmp=0;
+				for(rint i=1;i<=vsz;++i){
+					tmp+=s[i];
+					if(tmp>=x){tmp-=s[i],vl=(i-1)*vsz+1,vr=i*vsz;break;}
+				}
+				for(rint i=vl;i<=vr;++i){
+					tmp+=c[i];
+					if(tmp>=x){printf("%d\n",i);break;}
+				}
+				for(rint i=l;i<=r;++i)
+					--c[a[i]],--s[bel[a[i]]];
+			}
+			else{
+				for(rint i=l;i<=R[lb];++i){
+					a[i]=a[find(i)];
+					++c[a[i]],++s[bel[a[i]]];
+				}
+				for(rint i=L[rb];i<=r;++i){
+					a[i]=a[find(i)];
+					++c[a[i]],++s[bel[a[i]]];
+				}
+				rint vl,vr,tmp=0;
+				for(rint i=1;i<=vsz;++i){
+					tmp+=s[i]+sums[rb-1][i]-sums[lb][i];
+					if(tmp>=x){tmp-=s[i]+sums[rb-1][i]-sums[lb][i],vl=(i-1)*vsz+1,vr=i*vsz;break;}
+				}
+				for(rint i=vl;i<=vr;++i){
+					tmp+=c[i]+sumc[rb-1][i]-sumc[lb][i];
+					if(tmp>=x){printf("%d\n",i);break;}
+				}
+				for(rint i=l;i<=R[lb];++i)
+					--c[a[i]],--s[bel[a[i]]];
+				for(rint i=L[rb];i<=r;++i)
+					--c[a[i]],--s[bel[a[i]]];
+			}
+		}
+	}return 0;
 }
