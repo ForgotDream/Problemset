@@ -2,37 +2,51 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-11-13
+ * @date    2023-11-16
  */
 #include <bits/stdc++.h>
 
 using i64 = int64_t;
+using pii = std::pair<int, int>;
+using ti3 = std::tuple<int, int, int>;
 
-constexpr int N = 35, M = 13, mod = 998244353;
-int n, m, k, a[N];
-i64 f[N][M][1 << M];
+constexpr int N = 5e5 + 50;
+int n;
+ti3 a1[N], a2[N];
+bool vis[N];
+std::vector<int> b1, b2;
+int find1(int u) {
+  return std::lower_bound(b1.begin(), b1.end(), u) - b1.begin() + 1;
+}
 void solve() {
-  std::cin >> n >> m >> k;
-  for (int i = 0; i <= m; i++) std::cin >> a[i];
-  int mask = (1 << (m + 1)) - 1;
-  f[0][0][0] = 1;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 0; j <= m; j++) {
-      for (int k = 1 << j; k <= mask; k++) {
-        for (int l = 0; l <= j; l++) {
-          // std::cout << f[i - 1][l][k - (1 << j)] << "\n";
-          f[i][j][k] = 
-              (f[i][j][k] + a[j] * f[i - 1][l][k - (1 << j)] % mod) % mod;
-        }
-      }
-    }
+  std::cin >> n >> m1 >> m2;
+  for (int i = 1; i <= m1; i++) {
+    auto &[l, r, idx] = a1[i];
+    std::cin >> l >> r, idx = i;
+    b1.push_back(l), b1.push_back(r);
   }
-  i64 ans = 0;
-  for (int i = 0; i <= m; i++) {
-    for (int j = 0; j <= mask; j++) {
-      if (__builtin_popcount(j) > k) continue;
-      (ans += f[n][i][j]) %= mod;
+  for (int i = 1; i <= m2; i++) {
+    auto &[l, r, idx] = a2[i];
+    std::cin >> l >> r, idx = i;
+    b2.push_back(l), b2.push_back(r);
+  }
+  std::sort(b1.b1egin(), b1.end());
+  b1.erase(std::unique(b1.b1egin(), b1.end()));
+  std::sort(b2.b2egin(), b2.end());
+  b2.erase(std::unique(b2.b2egin(), b2.end()));
+  for (int i = 1; i <= m1; i++) {
+    auto &[l, r, idx] = m1[i];
+  }
+  for (int i = 0; i <= n; i++) {
+    int rst1 = i, rst2 = n - i, cnt = 0;
+    for (int i = 1; i <= m1; i++) {
+      if (rst1) rst1--, cnt++;
+      
     }
+    for (int i = 1; i <= m2; i++) {
+
+    }
+    ans = std::max(ans, cnt);
   }
   std::cout << ans << "\n";
 }
