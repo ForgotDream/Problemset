@@ -1,41 +1,28 @@
-#include <bits/stdc++.h>
-
-using i64 = int64_t;
-
-constexpr int N = 15, M = 105, mod = 1e9 + 7;
-int n, p[M], a[M][N];
-i64 f[M][1 << N];
-void solve() {
-  std::cin >> n;
-  std::cin.get();
-  for (int i = 1; i <= 100; i++) p[i] = 0;
-  for (int i = 0; i < n; i++) {
-    std::string s;
-    std::getline(std::cin, s);
-    std::stringstream ss(s);
-    int u;
-    while (ss >> u) a[u][++p[u]] = i;
-  }
-  int mask = (1 << n) - 1;
-  memset(f, 0, sizeof(f)), f[0][0] = 1;
-  for (int i = 1; i <= 100; i++) {
-    for (int j = 0; j <= mask; j++) {
-      f[i][j] = f[i - 1][j];
-      for (int k = 1; k <= p[i]; k++) {
-        int u = a[i][k];
-        if (!(j & (1 << u))) continue;
-        f[i][j] = (f[i][j] + f[i - 1][j ^ (1 << u)]) % mod;
-      }
-    }
-  }
-  std::cout << f[100][mask] << "\n";
-}
-
+#include <cstdio>
+#include <iostream>
+#define FOR(i, a, b) for (int i = a; i <= b; i++)
+#define FOS(i, a, b) for (int i = a; i >= b; i--)
+#define N 60
+#define M 1400
+using namespace std;
+int s[N][N], f[N][M], maxl[N][M], ans, n, m, x;
 int main() {
-  std::cin.tie(nullptr)->sync_with_stdio(false);
-  int t = 1;
-  std::cin >> t;
-  while (t--) solve();
+  scanf("%d%d", &n, &m);
+  FOR(j, 1, n)
+  FOS(i, n, j) scanf("%d", &x), s[i][j] = s[i][j - 1] + x;
+  FOR(i, 1, n) {
+    FOS(j, i, 1)
+    FOS(k, min(j + i * (i - 1) / 2, m), j * (j + 1) / 2) {
+      f[j][k] = maxl[j - 1][k - j] + s[i][j];
+      maxl[j][k] = max(maxl[j + 1][k], f[j][k]);
+      ans = max(ans, f[j][k]);
+    }
+    FOR(k, i * (i - 1) / 2 + 1, i * (i + 1) / 2)
+    FOS(j, k - i * (i - 1) / 2 - 1, 0)
+    maxl[j][k] = max(maxl[j + 1][k], f[j][k]);
+    FOR(k, 1, i * (i + 1) / 2)
+    maxl[0][k] = max(maxl[1][k], maxl[0][k]);
+  }
+  printf("%d", ans);
   return 0;
 }
-
