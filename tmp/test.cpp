@@ -1,116 +1,75 @@
-#include <iostream>  
-#include <cstdio>  
-#include <cstring>  
-#include <algorithm>  
-#include <queue>  
-  
-using namespace std;  
-const int Maxn = 0x3f3f3f3f;  
-const int N = 1005, M = 6005, L = 1 << 10;  
-int lst[N], f[N][L], nxt[M], to[M], cst[M], g[L], c[12];   
-int n, m, k, T, Cn; bool vis[N];  
-queue<int> Q;  
-  
-template <class T> inline T Min(const T a, const T b) {return a < b? a : b;}  
-template <class T> inline void CkMin(T &a, const T b) {if (a > b) a = b;}  
-  
-struct point  
-{  
-    int col, id;  
-    #define col(x) a[x].col  
-    #define id(x) a[x].id  
-}a[12];  
-  
-inline bool cmp(const point x, const point y) {return x.col < y.col;}  
-  
-inline int get()  
-{  
-    char ch; bool f = false; int res = 0;  
-    while (((ch = getchar()) < '0' || ch > '9') && ch != '-');  
-    if (ch == '-') f = true;  
-     else res = ch - '0';  
-    while ((ch = getchar()) >='0' && ch <= '9')  
-        res = (res << 3) + (res << 1) + ch - '0';  
-    return f? ~res + 1 : res;  
-}  
-  
-inline void put(int x)  
-{  
-    if (x < 0)  
-      x = ~x + 1, putchar('-');  
-    if (x > 9) put(x / 10);  
-    putchar(x % 10 + 48);  
-}  
-  
-inline void add(const int x, const int y, const int z)  
-{  
-    nxt[++T] = lst[x]; lst[x] = T; to[T] = y; cst[T] = z;  
-    nxt[++T] = lst[y]; lst[y] = T; to[T] = x; cst[T] = z;  
-}  
-  
-inline void SPFA(const int I)  
-{  
-    int x, y;  
-    while (!Q.empty())  
-    {  
-        x = Q.front(); vis[x] = false; Q.pop();  
-        for (int i = lst[x]; i; i = nxt[i])  
-         if (f[y = to[i]][I] > f[x][I] + cst[i])  
-         {  
-            f[y][I] = f[x][I] + cst[i];  
-            if (!vis[y]) vis[y] = true, Q.push(y);  
-         }  
-    }  
-}  
-  
-inline int solve(const int cnt)  
-{  
-    int Cm = 1 << cnt;  
-    for (int i = 1; i < Cm; ++i)  
-    {  
-        for (int j = 1; j <= n; ++j)  
-        {  
-            for (int k = (i - 1) & i; k; k = (k - 1) & i)  
-            // 表示枚举子集：k不断减一就不会遗漏  
-            // (k - 1) & i 表示状态 k 中包含的关键点总状态 i 中一定包含    
-             CkMin(f[j][i], f[j][k] + f[j][i - k]);  
-            if (f[j][i] != Maxn) vis[j] = true, Q.push(j);  
-        }  
-        SPFA(i);  
-    }  
-    int res = Maxn;  
-    for (int i = 1; i <= n; ++i) CkMin(res, f[i][Cm - 1]);  
-    return res;  
-}  
-  
-int main()  
-{   
-    n = get(); m = get(); k = get(); int x, y;  
-    for (int i = 1; i <= m; ++i)  
-    {  
-        x = get(); y = get();   
-        add(x, y, get());  
-    }  
-    for (int i = 1; i <= k; ++i)   
-        col(i) = get(), id(i) = get();  
-    sort(a + 1, a + k + 1, cmp);  
-    for (int i = 1; i <= k; ++i)  
-    {  
-        if (col(i) != col(i - 1)) Cn++; c[i] = Cn;  
-    }  
-    for (int i = 1; i <= k; ++i) col(i) = c[i]; //离散化 
-    Cn = (1 << Cn);  
-    memset(g, Maxn, sizeof(g));  
-    for (int i = 1; i < Cn; ++i)  
-    {  
-        memset(f, Maxn, sizeof(f));  
-        int cnt = 0;   
-        for (int j = 1; j <= k; ++j)   
-         if ((1 << col(j) - 1) & i) f[id(j)][1 << cnt++] = 0;  
-        g[i] = solve(cnt);  
-     }   
-    for (int i = 1; i < Cn; ++i)  
-     for (int j = (i - 1) & i; j; j = (j - 1) & i)  
-      CkMin(g[i], g[j] + g[i - j]);  
-    return put(g[Cn - 1]), 0;  
-}  
+typedef pair<int,int> pii;
+typedef long long ll;
+#define N 100010
+#define M 1000100
+int n,a[N],m,f[N][20],lg[N];
+pii q[M];
+vector<int> vec[M];
+inline int Query(int l,int r){
+	int k=lg[r-l+1];
+	return min(f[l][k],f[r-(1<<k)+1][k]);
+}
+struct BIT{
+	int b[N];
+	inline int lowbit(int x){
+		return x&(-x);
+	}
+	inline void Add(int x){
+		while(x<=n){
+			++b[x];
+			x+=lowbit(x);
+		}
+	}
+	inline int Ask(int x){
+		int ans=0;
+		while(x){
+			ans+=b[x];
+			x-=lowbit(x);
+		}
+		return ans;
+	}
+}B; 
+int main(){
+	n=read(),m=read();
+	for(int i=1;i<=n;++i){
+		a[i]=m+1;
+	}
+	for(int i=1;i<=m;++i){
+		int opt=read();
+		q[i]={-1,-1};
+		if(opt==1){
+			int x=read();
+			a[x]=min(a[x],i);
+		}
+		else{
+			q[i].first=read(),q[i].second=read();
+		}
+	}
+	for(int i=2;i<=n;++i){
+		lg[i]=lg[i>>1]+1;
+	}
+	for(int i=1;i<=n;++i){
+		f[i][0]=a[i];
+	}
+	for(int j=1;j<=18;++j){
+		for(int i=1;i+(1<<j)-1<=n;++i){
+			f[i][j]=min(f[i][j-1],f[i+(1<<j-1)][j-1]);
+		}
+	}
+	for(int i=1;i<=n;++i){
+		B.Add(i);
+		int las=0;
+		for(int j=1;j<=n;j+=i){
+			vec[las=max(las,Query(j,min(j+i-1,n)))].push_back(i);
+		}
+	}
+	for(int i=1;i<=m;++i){
+		for(auto x:vec[i]){
+			B.Add(x);
+		}
+		if(~q[i].first){
+			printf("%d\n",B.Ask(q[i].second)-B.Ask(q[i].first-1));
+		}
+	}
+	return 0;
+}

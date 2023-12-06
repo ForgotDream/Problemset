@@ -2,13 +2,12 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-11-29
+ * @date    2023-12-06
  */
 #include <bits/stdc++.h>
 
 using i64 = int64_t;
 
-constexpr int one() { return 1; }
 void solve() {
 }
 
