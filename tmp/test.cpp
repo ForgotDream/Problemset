@@ -1,82 +1,59 @@
-#include <bits/stdc++.h>
+#include<algorithm>
+#include<cstdio>
+#define ll long long
+#define mod 1000000007
+#define Maxn 305
 using namespace std;
-typedef long long ll;
-int read() {
-	char ch = getchar();
-	int x = 0, pd = 0;
-	while (ch < '0' || ch > '9') pd |= ch == '-', ch = getchar();
-	while ('0' <= ch && ch <= '9') x = x * 10 + (ch ^ 48), ch = getchar();
-	return pd ? -x : x;
+ll powM(ll a,int t=mod-2)
+{
+  ll ans=1;
+  while(t){
+    if (t&1)ans=ans*a%mod;
+    a=a*a%mod;t>>=1;
+  }return ans;
 }
-const int maxn = 100005;
-int n, m, a[maxn];
-#define ls (o << 1)
-#define rs (o << 1 | 1)
-#define lson ls,l,mid
-#define rson rs,mid+1,r
-bool lm[maxn << 2][4], rm[maxn << 2][4];
-ll s[maxn << 2][4];
-void pushup(int o, int l, int r) {
-	int mid = (l + r) >> 1;
-	if (rm[ls][0] && lm[rs][0]) {
-		if (a[mid] >= a[mid + 1]) {
-			lm[o][0] = lm[ls][0], rm[o][0] = rm[rs][1];
-			s[o][0] = s[ls][0] + s[rs][1];
-		} else{
-			lm[o][0] = lm[ls][2], rm[o][0] = rm[rs][0];
-			s[o][0] = s[ls][2] + s[rs][0];
-		}
-	} else lm[o][0] = lm[ls][0], rm[o][0] = rm[rs][0], s[o][0] = s[ls][0] + s[rs][0];
-
-	if (rm[ls][1] && lm[rs][0]) {
-		if (a[mid] >= a[mid + 1]) {
-			rm[o][1] = rm[rs][1];
-			s[o][1] = s[ls][1] + s[rs][1];
-		} else {
-			rm[o][1] = rm[rs][0];
-			s[o][1] = s[ls][3] + s[rs][0];
-		}
-	} else rm[o][1] = rm[rs][0], s[o][1] = s[ls][1] + s[rs][0];
-
-	if (rm[ls][0] && lm[rs][2]) {
-		if (a[mid] >= a[mid + 1]) {
-			lm[o][2] = lm[ls][0];
-			s[o][2] = s[ls][0] + s[rs][3];
-		} else {
-			lm[o][2] = lm[ls][2];
-			s[o][2] = s[ls][2] + s[rs][2];
-		}
-	} else lm[o][2] = lm[ls][0], s[o][2] = s[ls][0] + s[rs][2];
-
-	if (rm[ls][1] && lm[rs][2]) {
-		if (a[mid] >= a[mid + 1]) s[o][3] = s[ls][1] + s[rs][3];
-		else s[o][3] = s[ls][3] + s[rs][2];
-	} else s[o][3] = s[ls][1] + s[rs][2];
+int n,m;
+ll *a[Maxn],_a[Maxn][Maxn];
+ll det(ll **a)
+{
+  ll ans=1;bool tr=0;
+  for (int j=1;j<n;j++){
+    for (int i=j;i<n;i++)
+      if (a[i][j]){
+        if (i!=j){
+          swap(a[i],a[j]);
+          tr=!tr;
+        }break;
+      }
+    if (a[j][j]==0)return 0;
+    ans=ans*a[j][j]%mod;
+    ll t=powM(a[j][j]);
+    for (int k=j;k<n;k++)a[j][k]=t*a[j][k]%mod;
+    for (int i=j+1;i<n;i++){
+      t=mod-a[i][j];
+      for (int k=j;k<n;k++)
+        a[i][k]=(a[i][k]+t*a[j][k])%mod;
+    }
+  }return tr? (mod-ans)%mod : ans;
 }
-void build(int o, int l, int r) {
-	if (l == r) {
-		s[o][0] = a[l] = read();
-		lm[o][0] = rm[o][0] = 1;
-		return;
-	}
-	int mid = (l + r) >> 1;
-	build(lson), build(rson), pushup(o, l, r);
-}
-void upd(int o, int l, int r, int x) {
-	if (l == r) { s[o][0] = a[l]; return; }
-	int mid = (l + r) >> 1;
-	if (x <= mid) upd(lson, x);
-	else upd(rson, x);
-	pushup(o, l, r);
-}
-int main() {
-	n = read();
-	build(1, 1, n);
-	m = read();
-	while (m--) {
-		int x = read(), y = read();
-		a[x] = y, upd(1, 1, n, x);
-		printf("%lld\n", s[1][0]);
-	}
-	return 0;
+int op;
+int main()
+{
+  scanf("%d%d%d",&n,&m,&op);
+  for (int i=1;i<=n;i++)a[i]=_a[i];
+  for (int i=1,f,t,w;i<=m;i++){
+    scanf("%d%d%d",&f,&t,&w);
+    if (f==n)f=1;else if (f==1)f=n;
+    if (t==n)t=1;else if (t==1)t=n;
+    if (op==1){
+      a[f][t]=(a[f][t]-w+mod)%mod;
+      a[t][t]=(a[t][t]+w)%mod;
+    }else {
+      a[f][t]=(a[f][t]-w+mod)%mod;
+      a[t][t]=(a[t][t]+w)%mod;
+      a[t][f]=(a[t][f]-w+mod)%mod;
+      a[f][f]=(a[f][f]+w)%mod;
+    }
+  }printf("%lld",det(a));
+  return 0;
 }
