@@ -14,6 +14,7 @@ int main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
   compile();
+  int cnt = 0;
   while (true) {
     system("./g > tmp.in");
     system("./checker < tmp.in > checker.out");
@@ -21,7 +22,12 @@ int main() {
     system("./std < tmp.in > std.out");
     auto ted = std::chrono::system_clock::now().time_since_epoch().count();
     std::cerr << "Used Time: " << (ted - tbe) / 1e9 << "\n";
-    if (system("diff std.out checker.out")) break;
+    if (system("diff std.out checker.out")) {
+      std::cerr << "WA: " << ++cnt << "\n";
+      break;
+    } else {
+      std::cerr << "AC: " << ++cnt << "\n";
+    }
   }
   // system("pause");
   return 0;

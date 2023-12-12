@@ -1,40 +1,34 @@
 #include <bits/stdc++.h>
 
-using i64 = int64_t;
+using i64 = long long;
 
-constexpr int N = 1e5 + 50, M = 205, LIM = 200, mod = 998244353;
-int n, w[N], q;
-i64 f[N][M], g[N][M];
-void init() {
-  f[0][0] = 1;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 0; j <= LIM; j++) {
-      f[i][j] = f[i - 1][j];
-      if (j >= w[i]) (f[i][j] += f[i - 1][j - w[i]]) %= mod;
-    }
+constexpr int N = 5050;
+int n, T;
+struct Node {
+  int t, f, p;
+  friend bool operator<(const Node &lhs, const Node &rhs) {
+    return lhs.f < rhs.f;
   }
-  g[n + 1][0] = 1;
-  for (int i = n; i >= 1; i--) {
-    for (int j = 0; j <= LIM; j++) {
-      g[i][j] = g[i + 1][j];
-      if (j >= w[i]) (g[i][j] += g[i + 1][j - w[i]]) %= mod;
-    }
-  }
-}
+} a[N];
+i64 f[N][N];
+int q[N][N], h[N], t[N];
+inline i64 nijou(i64 u) { return u * u; }
 void solve() {
-  std::cin >> n;
-  for (int i = 1; i <= n; i++) std::cin >> w[i];
-  init();
-  std::cin >> q;
-  for (int l, r, m; q; q--) {
-    std::cin >> l >> r >> m;
-    i64 tmp = 0;
-    for (int i = 1; i < m; i++) (tmp += f[l - 1][i] * g[r + 1][m - i] % mod) %= mod;
-    for (int i = 1; i < m; i++) (tmp += (f[r][i] - f[l - 1][i]) * g[r + 1][m - i] % mod) %= mod;
-    // for (int i = 1; i < m; i++) (tmp += f[r][i] * g[r + 1][m - i] % mod) %= mod;
-    std::cout << (f[n][m] - f[r][m] - g[l][m] - tmp + mod) % mod << "\n";
-    std::cout << f[r][m] << " " << g[l][m] << " " << f[n][m] << " " << tmp << "\n";
+  std::cin >> n >> T;
+  for (int i = 1; i <= n; i++) std::cin >> a[i].t >> a[i].f >> a[i].p;
+  std::sort(a + 1, a + n + 1);
+  for (int i = 1; i <= n; i++) {
+    for (int j = a[i].t; j <= T; j++) {
+      f[i][j] = a[i].p;
+      for (int k = 1; k < i; k++) {
+        f[i][j] = std::max(f[i][j], 
+                           f[k][j - a[i].t] + a[i].p - nijou(a[i].f - a[k].f));
+      }
+    }
   }
+  i64 mx = 0;
+  for (int i = 1; i <= n; i++) mx = std::max(mx, f[i][T]);
+  std::cout << mx << "\n";
 }
 
 int main() {
