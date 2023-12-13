@@ -1,42 +1,27 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#define int long long
+using namespace std;
 
-using i64 = long long;
+int n, T, ans, f[5010][5010];
+struct lmy{int t, p, f;};
+lmy a[5010];
 
-constexpr int N = 5050;
-int n, T;
-struct Node {
-  int t, f, p;
-  friend bool operator<(const Node &lhs, const Node &rhs) {
-    return lhs.f < rhs.f;
-  }
-} a[N];
-i64 ans;
-inline i64 nijou(i64 u) { return u * u; }
-void dfs(int idx, int pre, int cost, i64 cur) {
-  if (cost > T) return;
-  if (idx == n) {
-    ans = std::max(ans, cur);
-    return;
-  }
-  for (int i = idx + 1; i <= n; i++) {
-    dfs(i, pre, cost, cur);
-    if (cost + a[i].t > T) continue;
-    i64 d = pre ? nijou(a[i].f - a[pre].f) : 0;
-    dfs(i, i, cost + a[i].t, cur + a[i].p - d);
-  }
-}
-void solve() {
-  std::cin >> n >> T;
-  for (int i = 1; i <= n; i++) std::cin >> a[i].t >> a[i].f >> a[i].p;
-  std::sort(a + 1, a + n + 1);
-  dfs(0, 0, 0, 0);
-  std::cout << ans << "\n";
-}
+inline void cmax(int &a, int b) {a = a > b ? a : b;}
+inline int power(int x) {return x * x;}
 
-int main() {
-  std::cin.tie(nullptr)->sync_with_stdio(false);
-  int t = 1;
-  // std::cin >> t;
-  while (t--) solve();
-  return 0;
+signed main()
+{
+  ios::sync_with_stdio(false),cin.tie(nullptr);
+  cin >> n >> T;
+  assert(n <= 800);
+  for(int i = 1; i <= n; ++i) cin >> a[i].t >> a[i].p >> a[i].f;
+  sort(a + 1, a + n + 1, [](lmy a, lmy b){return a.f < b.f;});
+  memset(f, 0xcf, sizeof f);
+  for(int i = 1; i <= n; ++i) f[i][a[i].t] = a[i].p;
+  for(int i = 1; i <= n; ++i) for(int j = T; j >= a[i].t; --j)
+  {
+  	for(int k = 1; k < i; ++k) cmax(f[i][j], f[k][j - a[i].t] - power(a[k].f) + 2 * a[i].f * a[k].f - power(a[i].f) + a[i].p);
+  }
+  for(int i = 1; i <= n; ++i) for(int j = 0; j <= T; ++j) cmax(ans, f[i][j]);
+  cout << ans << '\n';
 }

@@ -2,10 +2,10 @@
 
 using i64 = long long;
 
-int n = 10, T = 100;
+int n = 5, T = 50;
 std::random_device rd;
 std::mt19937 rng(rd());
-std::uniform_int_distribution ui(1, 20);
+std::uniform_int_distribution ui(1, 15);
 void solve() {
   std::cout << n << " " << T << "\n";
   for (int i = 1; i <= n; i++) std::cout << ui(rng) << " " << ui(rng) << " " << ui(rng) << "\n";
