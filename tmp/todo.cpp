@@ -2,98 +2,87 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-12-09
+ * @date    2023-12-14
  */
 #include <bits/stdc++.h>
 
-using i64 = int64_t;
+using i64 = long long;
 
-constexpr int N = 35, M = 2e3 + 50, mod = 998244353;
-int n, m, c[M];
-i64 a[N][N];
-int u[M], v[M], w[M];
-std::vector<int> b[M];
-inline i64 fastPow(i64 base, i64 exp, i64 mod) {
-  i64 res = 1;
-  for (; exp; exp >>= 1) {
-    if (exp & 1) (res *= base) %= mod;
-    (base *= base) %= mod;
+constexpr int N = 1e5 + 50;
+int n, m, k = 1e5, a[N];
+int pre[N];
+struct SegTree {
+  struct Node {
+    int lc, rc, sum, rt;
+  } tree[N << 5];
+  int cnt;
+  inline int &lc(int u) { return tree[u].lc; }
+  inline int &rc(int u) { return tree[u].rc; }
+  inline int clone(int u) {
+    tree[++cnt] = tree[u];
+    return cnt;
   }
-  return res;
-}
-inline i64 getInv(i64 u) { return fastPow(u, mod - 2, mod); }
-i64 det(i64 a[N][N]) {
-  i64 res = 1, flg = 1;
-  for (int i = 1; i < n; i++) {
-    int p = -1;
-    for (int j = i; j < n; j++) {
-      if (a[j][i]) {
-        p = j;
-        break;
-      }
-    }
-    if (p == -1) return 0;
-    if (i != p) std::swap(a[i], a[p]), flg = -flg;
-    res = res * a[i][i] % mod;
-    i64 inv = getInv(a[i][i]);
-    for (int j = i + 1; j < n; j++) a[i][j] = a[i][j] * inv % mod;
-    for (int j = i + 1; j < n; j++) {
-      if (!a[j][i]) continue;
-      for (int k = i + 1; k < n; k++) {
-        a[j][k] = (a[j][k] - a[j][i] * a[i][k] % mod + mod) % mod;
-      }
-    }
+  inline void pushup(int u) { tree[u].sum = tree[lc(u)].sum + tree[rc(u)].sum; }
+};
+struct SegTree2 : SegTree {
+  void modify(int tar, int s, int t, int &u, int v) {
+    u = clone(v);
+    if (s == t) return tree[u].sum++, void();
+    int mid = (s + t) >> 1;
+    if (mid >= tar) modify(tar, s, mid, lc(u), lc(v));
+    else modify(tar, mid + 1, t, rc(u), rc(v));
+    pushup(u);
   }
-  return res;
-}
-int prime[M], mu[M], cnt;
-bool isNotPrime[N];
-void getMu(int n) {
-  mu[1] = 1;
-  for (int i = 2; i <= n; i++) {
-    if (!isNotPrime[i]) prime[++cnt] = i, mu[i] = -1;
-    for (int j = 1; j <= cnt && i * prime[j]; j++) {
-      isNotPrime[i * prime[j]] = true;
-      mu[i * prime[j]] = mu[i] * -1;
-      if (i % prime[j] == 0) {
-        mu[i * prime[j]] = 0;
-        break;
-      }
-    }
+  int query(int l, int r, int s, int t, int u, int v) {
+    if (l <= s && t <= r) return tree[u].sum - tree[v].sum;
+    int mid = (s + t) >> 1, res = 0;
+    if (mid >= l) res += query(l, r, s, mid, lc(u), lc(v));
+    if (mid < r) res += query(l, r, mid + 1, t, rc(u), rc(v));
+    return res;
   }
-}
+} s2;
+struct SegTree1 : SegTree {
+  void modify(int tar, int s, int t, int &u, int v, int val) {
+    u = clone(v);
+    if (s == t) {
+      tree[u].sum++;
+      std::cerr << tar << " " << val << "\n";
+      s2.modify(val, 0, n, tree[u].rt, tree[v].rt);
+      return;
+    }
+    int mid = (s + t) >> 1;
+    if (mid >= tar) modify(tar, s, mid, lc(u), lc(v), val);
+    else modify(tar, mid + 1, t, rc(u), rc(v), val);
+    pushup(u);
+  }
+  int querySum(int l, int r, int s, int t, int u, int v) {
+    if (l <= s && t <= r) return tree[u].sum - tree[v].sum;
+    int mid = (s + t) >> 1, res = 0;
+    if (mid >= l) res += querySum(l, r, s, mid, lc(u), lc(v));
+    if (mid < r) res += querySum(l, r, mid + 1, t, rc(u), rc(v));
+    return res;
+  }
+  int queryCnt(int l, int r, int s, int t, int u, int v, int ll, int rr) {
+    if (l <= s && t <= r) return s2.query(ll, rr, 0, n, tree[u].rt, tree[v].rt);
+    int mid = (s + t) >> 1, res = 0;
+    if (mid >= l) res += queryCnt(l, r, s, mid, lc(u), lc(v), ll, rr);
+    if (mid < r) res += queryCnt(l, r, mid + 1, t, rc(u), rc(v), ll, rr);
+    return res;
+  }
+} s1;
+int rt[N];
 void solve() {
   std::cin >> n >> m;
-  int mx = 0;
-  for (int i = 1; i <= m; i++) {
-    std::cin >> u[i] >> v[i] >> w[i];
-    mx = std::max(mx, w[i]), c[w[i]]++;
-    b[w[i]].push_back(i);
+  for (int i = 1; i <= n; i++) {
+    std::cin >> a[i];
+    s1.modify(a[i], 1, k, rt[i], rt[i - 1], pre[a[i]]);
+    pre[a[i]] = i;
   }
-  getMu(mx);
-  for (int i = mx; i; i--) {
-    for (int j = 2 * i; j <= mx; j += i) c[i] += -mu[j / i] * c[j];
-    for (int j = 2 * i; j <= mx; j += i) {
-      if (c[i] == c[j]) {
-        c[i] = 0;
-        break;
-      }
-    }
+  for (int l, r, a, b; m; m--) {
+    std::cin >> l >> r >> a >> b;
+    std::cout << s1.querySum(a, b, 1, k, rt[r], rt[l - 1]) << " "
+              << s1.queryCnt(a, b, 1, k, rt[r], rt[l - 1], 0, l - 1) << "\n";
   }
-  for (int i = 1; i <= mx; i++) std::cerr << mu[i] << " " << c[i] << "\n";
-  i64 ans = 0;
-  for (int i = 1; i <= mx; i++) {
-    if (c[i] < n - 1) continue;
-    memset(a, 0, sizeof(a));
-    for (int j = i; j <= mx; j += i) {
-      for (auto k : b[j]) {
-        a[u[k]][u[k]] += w[k], a[v[k]][v[k]] += w[k];
-        a[u[k]][v[k]] -= w[k], a[v[k]][u[k]] -= w[k];
-      }
-    }
-    ans += i * det(a);
-  }
-  std::cout << ans << "\n";
 }
 
 int main() {
