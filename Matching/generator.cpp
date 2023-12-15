@@ -2,13 +2,13 @@
 
 using i64 = long long;
 
-int n = 5, T = 50;
+int n = 2000;
 std::random_device rd;
 std::mt19937 rng(rd());
-std::uniform_int_distribution ui(1, 15);
+std::uniform_int_distribution ui(1, n);
 void solve() {
-  std::cout << n << " " << T << "\n";
-  for (int i = 1; i <= n; i++) std::cout << ui(rng) << " " << ui(rng) << " " << ui(rng) << "\n";
+  std::cout << n << " " << ui(rng) << " " << ui(rng) << " " << ui(rng) << " " << ui(rng) << "\n";
+  for (int i = 1; i <= n; i++) std::cout << ui(rng) << " \n"[i == n];
 }
 
 int main() {

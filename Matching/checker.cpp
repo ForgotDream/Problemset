@@ -2,32 +2,25 @@
 
 using i64 = long long;
 
-constexpr int N = 5050;
-int n, T;
-struct Node {
-  int t, f, p;
-  friend bool operator<(const Node &lhs, const Node &rhs) {
-    return lhs.f < rhs.f;
-  }
-} a[N];
-i64 f[N][N];
-int p[N];
-inline i64 nijou(i64 u) { return u * u; }
+constexpr int N = 2e5 + 50;
+i64 n, k, m, c, d, a[N], b[N];
+i64 calc() {
+  std::copy(a + 1, a + n + 1, b + 1);
+  std::nth_element(b + 1, b + k, b + n + 1);
+  return b[k];
+}
 void solve() {
-  std::cin >> n >> T;
-  for (int i = 1; i <= n; i++) std::cin >> a[i].t >> a[i].f >> a[i].p;
-  std::iota(p + 1, p + n + 1, 1);
-  i64 ans = 0;
-  do {
-    i64 cur = a[p[1]].p, cost = a[p[1]].t;
-    if (cost > T) break;
-    ans = std::max(ans, cur);
-    for (int i = 2; i <= n; i++) {
-      cost += a[p[i]].t, cur += a[p[i]].p - nijou(a[p[i]].f - a[p[i - 1]].f);
-      if (cost > T) break;
-      ans = std::max(ans, cur);
-    }
-  } while(std::next_permutation(p + 1, p + n + 1));
+  std::cin >> n >> k >> m >> c >> d;
+  k = n - k + 1;
+  for (int i = 1; i <= n; i++) std::cin >> a[i];
+  for (int i = 1; i <= m; i++) a[i] += c + (i - 1) * d;
+  i64 ans = calc();
+  for (int i = m + 1; i <= n; i++) {
+    a[i - m] -= c;
+    a[i] += c + m * d;
+    for (int j = i - m + 1; j <= i; j++) a[j] -= d;
+    ans = std::max(ans, calc());
+  }
   std::cout << ans << "\n";
 }
 

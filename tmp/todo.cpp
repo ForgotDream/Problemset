@@ -2,86 +2,76 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-12-14
+ * @date    2023-12-15
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
-constexpr int N = 1e5 + 50;
-int n, m, k = 1e5, a[N];
-int pre[N];
-struct SegTree {
-  struct Node {
-    int lc, rc, sum, rt;
-  } tree[N << 5];
-  int cnt;
-  inline int &lc(int u) { return tree[u].lc; }
-  inline int &rc(int u) { return tree[u].rc; }
-  inline int clone(int u) {
-    tree[++cnt] = tree[u];
-    return cnt;
-  }
-  inline void pushup(int u) { tree[u].sum = tree[lc(u)].sum + tree[rc(u)].sum; }
+constexpr int N = 2e5 + 50;
+int n, m, q, a[N];
+struct Edge {
+  int u, v, w;
+  bool operator<(const Edge &rhs) { return w < rhs.w; }
 };
-struct SegTree2 : SegTree {
-  void modify(int tar, int s, int t, int &u, int v) {
-    u = clone(v);
-    if (s == t) return tree[u].sum++, void();
-    int mid = (s + t) >> 1;
-    if (mid >= tar) modify(tar, s, mid, lc(u), lc(v));
-    else modify(tar, mid + 1, t, rc(u), rc(v));
-    pushup(u);
+std::vector<Edge> edges;
+struct DSU {
+  int fa[N];
+  DSU() { std::iota(fa, fa + N, 0); }
+  int find(int u) { return u == fa[u] ? u : fa[u] = find(u); }
+  bool merge(int u, int v) {
+    u = find(u), v = find(v);
+    if (u == v) return false;
+    fa[u] = v;
+    return true;
   }
-  int query(int l, int r, int s, int t, int u, int v) {
-    if (l <= s && t <= r) return tree[u].sum - tree[v].sum;
-    int mid = (s + t) >> 1, res = 0;
-    if (mid >= l) res += query(l, r, s, mid, lc(u), lc(v));
-    if (mid < r) res += query(l, r, mid + 1, t, rc(u), rc(v));
-    return res;
+} dsu;
+std::vector<int> adj[N];
+int val[N];
+int dfn[N], clk, st[20][N];
+void dfs(int u, int frm) {
+  st[0][dfn[u] = ++clk] = frm;
+  for (auto v : adj[u]) {
+    if (v == frm) continue;
+    dfs(v, u);
   }
-} s2;
-struct SegTree1 : SegTree {
-  void modify(int tar, int s, int t, int &u, int v, int val) {
-    u = clone(v);
-    if (s == t) {
-      tree[u].sum++;
-      std::cerr << tar << " " << val << "\n";
-      s2.modify(val, 0, n, tree[u].rt, tree[v].rt);
-      return;
+}
+inline int cmp(int u, int v) { return dfn[u] < dfn[v] ? u : v; }
+void init() {
+  for (int i = 1; i <= std::__lg(m); i++) {
+    for (int j = 1; j <= m - (1 << i) + 1; j++) {
+      st[i][j] = cmp(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
     }
-    int mid = (s + t) >> 1;
-    if (mid >= tar) modify(tar, s, mid, lc(u), lc(v), val);
-    else modify(tar, mid + 1, t, rc(u), rc(v), val);
-    pushup(u);
   }
-  int querySum(int l, int r, int s, int t, int u, int v) {
-    if (l <= s && t <= r) return tree[u].sum - tree[v].sum;
-    int mid = (s + t) >> 1, res = 0;
-    if (mid >= l) res += querySum(l, r, s, mid, lc(u), lc(v));
-    if (mid < r) res += querySum(l, r, mid + 1, t, rc(u), rc(v));
-    return res;
-  }
-  int queryCnt(int l, int r, int s, int t, int u, int v, int ll, int rr) {
-    if (l <= s && t <= r) return s2.query(ll, rr, 0, n, tree[u].rt, tree[v].rt);
-    int mid = (s + t) >> 1, res = 0;
-    if (mid >= l) res += queryCnt(l, r, s, mid, lc(u), lc(v), ll, rr);
-    if (mid < r) res += queryCnt(l, r, mid + 1, t, rc(u), rc(v), ll, rr);
-    return res;
-  }
-} s1;
-int rt[N];
+}
+inline int getLCA(int u, int v) {
+  if (u == v) return u;
+  u = dfn[u], v = dfn[v];
+  if (u > v) std::swap(u, v);
+  int d = std::__lg(v - u++);
+  return cmp(st[d][u], st[d][v - (1 << d) + 1]);
+}
 void solve() {
-  std::cin >> n >> m;
-  for (int i = 1; i <= n; i++) {
-    std::cin >> a[i];
-    s1.modify(a[i], 1, k, rt[i], rt[i - 1], pre[a[i]]);
-    pre[a[i]] = i;
+  std::cin >> n >> m >> q;
+  for (int i = 1; i <= n; i++) std::cin >> a[i];
+  edges.resize(m);
+  for (auto &[u, v, w] : edges) std::cin >> u >> v >> w;
+  std::sort(edges.begin(), edges.end());
+  int cnt = n;
+  for (auto [u, v, w] : edges) {
+    int fu = dsu.find(u), fv = dsu.find(v);
+    if (fu != fv) {
+      cnt++;
+      dsu.fa[fu] = dsu.fa[fv] = cnt;
+      adj[fu].push_back(cnt), adj[fv].push_back(cnt);
+      adj[cnt].push_back(fu), adj[cnt].push_back(fv);
+      val[cnt] = w;
+    }
+    if (cnt == 2 * n - 1) break;
   }
-  for (int l, r, a, b; m; m--) {
-    std::cin >> l >> r >> a >> b;
-    std::cout << s1.querySum(a, b, 1, k, rt[r], rt[l - 1]) << " "
-              << s1.queryCnt(a, b, 1, k, rt[r], rt[l - 1], 0, l - 1) << "\n";
+  m = 2 * n - 1;
+  for (int v, x, k; q; q--) {
+    std::cin >> v >> x >> k;
   }
 }
 
