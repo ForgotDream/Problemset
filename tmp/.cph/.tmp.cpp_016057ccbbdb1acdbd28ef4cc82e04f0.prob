@@ -1,1 +1,1 @@
-{"name":"Local: tmp","url":"/mnt/hgfs/Problemset/tmp/tmp.cpp","tests":[{"id":1698235667761,"input":"4 6\n10 2\n15 0\n6 1\n0 1\n110 10\n1 1\n6 0\n15 10\n14 100\n12 2","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/mnt/hgfs/Problemset/tmp/tmp.cpp","group":"local","local":true}
+{"name":"Local: tmp","url":"/mnt/hgfs/Problemset/tmp/tmp.cpp","tests":[],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/mnt/hgfs/Problemset/tmp/tmp.cpp","group":"local","local":true}
