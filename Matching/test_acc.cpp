@@ -22,7 +22,7 @@ int main() {
     system("./std < tmp.in > std.out");
     auto ted = std::chrono::system_clock::now().time_since_epoch().count();
     std::cerr << "Used Time: " << (ted - tbe) / 1e9 << "\n";
-    if (system("diff std.out checker.out")) {
+    if (system("diff std.out checker.out -b")) {
       std::cerr << "WA: " << ++cnt << "\n";
       break;
     } else {

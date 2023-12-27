@@ -1,87 +1,66 @@
-#include <bits/stdc++.h>
-
-using i64 = long long;
-
-constexpr int N = 2e5 + 50;
-struct FHQ {
-  std::random_device rd;
-  std::mt19937 rng;
-  struct Node {
-    int lc, rc, prm, siz;
-    i64 val, sum, tag;
-  } tree[N];
-  int cnt, rt;
-  FHQ() { rng = std::mt19937(rd()); }
-  inline int &lc(int u) { return tree[u].lc; }
-  inline int &rc(int u) { return tree[u].rc; }
-  inline void pushup(int u) {
-    tree[u].siz = tree[lc(u)].siz + tree[rc(u)].siz + 1;
-    tree[u].sum = tree[lc(u)].sum + tree[rc(u)].sum + tree[u].val;
-  }
-  inline void pushdown(int u) {
-    if (!tree[u].tag) return;
-    if (lc(u)) tagging(lc(u), tree[u].tag);
-    if (rc(u)) tagging(rc(u), tree[u].tag);
-    tree[u].tag = 0;
-  }
-  inline void tagging(int u, int val) {
-    tree[u].sum += tree[u].siz * val;
-    tree[u].val += val, tree[u].tag += val;
-  }
-  inline int init(i64 val) {
-    cnt++, lc(cnt) = rc(cnt) = 0, tree[cnt].prm = rng(), tree[cnt].siz = 1;
-    tree[cnt].val = tree[cnt].sum = val, tree[cnt].tag = 0;
-    return cnt;
-  }
-  void split(int u, i64 val, int &l, int &r) {
-    if (!u) return l = r = 0, void();
-    pushdown(u);
-    if (tree[u].val <= val) l = u, split(rc(u), val, rc(u), r);
-    else r = u, split(lc(u), val, l, lc(u));
-    pushup(u);
-  }
-  int merge(int l, int r) {
-    if (!l || !r) return l + r;
-    if (tree[l].prm > tree[r].prm) return pushdown(l), rc(l) = merge(rc(l), r), pushup(l), l;
-    else return pushdown(r), lc(r) = merge(l, lc(r)), pushup(r), r;
-  }
-  void insert(i64 val) {
-    int p0, p1;
-    split(rt, val, p0, p1);
-    rt = merge(p0, merge(init(val), p1));
-  }
-  void erase(i64 val) {
-    int p0, p1, p2;
-    split(rt, val, p0, p2);
-    split(p0, val - 1, p0, p1);
-    p1 = merge(lc(p1), rc(p1));
-    rt = merge(p0, merge(p1, p2));
-  }
-  int rnk1(int u, i64 val) {
-    if (!u) return 0;
-    pushdown(u);
-    if (tree[u].val <= val) return tree[lc(u)].siz + 1 + rnk1(rc(u), val);
-    else return rnk1(lc(u), val);
-  }
-  int rnk2(int u, i64 val) {
-    if (!u) return 0;
-    pushdown(u);
-    if (tree[u].val < val) return tree[lc(u)].siz + 1 + rnk2(rc(u), val);
-    else return rnk2(lc(u), val);
-  }
-} fhq;
-std::vector<int> a = {1, 2, 5, 8, 6};
-void solve() {
-  for (auto i : a) fhq.insert(i);
-  std::cerr << fhq.rnk1(fhq.rt, 5) << " " << fhq.rnk2(fhq.rt, 5) << "\n";
-  fhq.tagging(fhq.rt, 1);
-  std::cerr << fhq.rnk1(fhq.rt, 5) << " " << fhq.rnk2(fhq.rt, 5) << "\n";
+#include<cstdio>
+#include<vector>
+const int M=2e5+5;
+int n,m,dfc,d[M],f[M],dfn[M],siz[M],son[M],top[M];
+int BIT[M];int opt[M],x[M],y[M],ans[M];
+std::vector<int>G[M],id[M];
+void DFS1(int u){
+	dfn[u]=++dfc;d[u]=d[f[u]]+1;siz[u]=1;
+	for(int&v:G[u]){
+		DFS1(v);siz[u]+=siz[v];
+		if(siz[v]>siz[son[u]])son[u]=v;
+	}
 }
-
-int main() {
-  std::cin.tie(nullptr)->sync_with_stdio(false);
-  int t = 1;
-  // std::cin >> t;
-  while (t--) solve();
-  return 0;
+void DFS2(int u,int tp){
+	top[u]=tp;if(!son[u])return;DFS2(son[u],tp);
+	for(int&v:G[u])if(v!=son[u])DFS2(v,v);
+}
+inline int LCA(int u,int v){
+	while(top[u]^top[v]){
+		if(d[top[u]]>d[top[v]])u=f[top[u]];
+		else v=f[top[v]];
+	}
+	return d[u]>d[v]?v:u;
+}
+inline int dis(const int&u,const int&v){
+	return d[u]+d[v]-(d[LCA(u,v)]<<1)+1;
+}
+inline void Add(int x,const int&val){
+	for(;x<=n;x+=1<<__builtin_ctz(x))BIT[x]+=val;
+}
+inline int Query(int x){
+	int ans=0;
+	for(;x>=1;x-=1<<__builtin_ctz(x))ans+=BIT[x];
+	return ans;
+}
+inline int Q(const int&x,const int&y){
+	int lca=LCA(x,y);
+	return Query(dfn[x])+Query(dfn[y])-Query(dfn[lca])-Query(dfn[f[lca]]);
+}
+signed main(){
+	register int i,k;
+	scanf("%d",&n);
+	for(i=1;i<=n;++i)scanf("%d",f+i),G[f[i]].push_back(i);
+	for(i=1;f[i];i=f[i]);
+	DFS1(i);DFS2(i,i);
+	scanf("%d",&m);
+	for(i=1;i<=m;++i){
+		scanf("%d",opt+i);
+		if(opt[i]==1){
+			scanf("%d%d%d",x+i,y+i,&k);
+			if(k<i)id[i-k-1].push_back(i);
+		}
+		if(opt[i]==2){
+			scanf("%d",x+i);
+		}
+	}
+	for(i=1;i<=m;++i){
+		if(opt[i]==2){
+			Add(dfn[x[i]],1);Add(dfn[x[i]]+siz[x[i]],-1);
+		}
+		for(int&v:id[i])ans[v]=Q(x[v],y[v]);
+		if(opt[i]==1){
+			printf("%d %d\n",dis(x[i],y[i]),ans[i]);
+		}
+	}
 }

@@ -1,115 +1,179 @@
-/**
- * @file    
- * @author  ForgotDream
- * @brief   
- * @date    2023-12-15
- */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
-constexpr int N = 4e5 + 50;
-i64 n, k, m, c, d, a[N];
+constexpr int N = 2e5 + 50, mod = 1e9 + 7;
+int n, m;
+
 struct FHQ {
   std::random_device rd;
   std::mt19937 rng;
-  struct Node {
-    int lc, rc, prm, siz;
-    i64 val, sum, tag;
-  } tree[N];
+  int lc[N], rc[N], prm[N], siz[N];
+  int val[N], sum[N], add[N], ass[N];
+  bool rev[N];
+  FHQ() : rng(std::mt19937(rd())) { ass[0] = -1; }
   int cnt, rt;
-  FHQ() { rng = std::mt19937(rd()); }
-  inline int &lc(int u) { return tree[u].lc; }
-  inline int &rc(int u) { return tree[u].rc; }
-  inline void pushup(int u) {
-    tree[u].siz = tree[lc(u)].siz + tree[rc(u)].siz + 1;
-    tree[u].sum = tree[lc(u)].sum + tree[rc(u)].sum + tree[u].val;
-  }
-  inline void pushdown(int u) {
-    if (!tree[u].tag) return;
-    if (lc(u)) tagging(lc(u), tree[u].tag);
-    if (rc(u)) tagging(rc(u), tree[u].tag);
-    tree[u].tag = 0;
-  }
-  inline void tagging(int u, int val) {
-    tree[u].sum += tree[u].siz * val;
-    tree[u].val += val, tree[u].tag += val;
-  }
-  inline int init(i64 val) {
-    cnt++, lc(cnt) = rc(cnt) = 0, tree[cnt].prm = rng(), tree[cnt].siz = 1;
-    tree[cnt].val = tree[cnt].sum = val, tree[cnt].tag = 0;
+  int stk[N], top;
+  inline int init(int v) {
+    cnt++, lc[cnt] = rc[cnt] = 0, prm[cnt] = rng(), siz[cnt] = 1;
+    val[cnt] = sum[cnt] = v;
+    ass[cnt] = -1, add[cnt] = 0, rev[cnt] = false;
     return cnt;
   }
-  void split(int u, i64 val, int &l, int &r) {
+  inline int clone(int u) {
+    cnt++, lc[cnt] = lc[u], rc[cnt] = rc[u], prm[cnt] = prm[u], siz[cnt] = siz[u];
+    val[cnt] = val[u], sum[cnt] = sum[u];
+    ass[cnt] = ass[u], add[cnt] = add[u], rev[cnt] = rev[u];
+    return cnt;
+  }
+  inline void tagAss(int u, int v) {
+    if (!u) return;
+    val[u] = v, sum[u] = 1ll * siz[u] * v % mod, ass[u] = v;
+  }
+  inline void tagAdd(int u, int v) {
+    if (!u) return;
+    val[u] += v, sum[u] = (sum[u] + 1ll * siz[u] * v % mod) % mod;
+    add[u] = (add[u] + v) % mod;
+  }
+  inline void tagRev(int u) { 
+    if (!u) return;
+    std::swap(lc[u], rc[u]), rev[u] ^= true; 
+  }
+  inline void pushup(int u) {
+    siz[u] = siz[lc[u]] + siz[rc[u]] + 1;
+    sum[u] = (1ll * sum[lc[u]] + sum[rc[u]] + val[u]) % mod;
+  }
+  inline void pushdown(int u) {
+    if (rev[u] || add[u] || ~ass[u]) {
+      if (lc[u]) lc[u] = clone(lc[u]);
+      if (rc[u]) rc[u] = clone(rc[u]);
+    }
+    if (~ass[u]) tagAss(lc[u], ass[u]), tagAss(rc[u], ass[u]), ass[u] = -1;
+    if (add[u]) tagAdd(lc[u], add[u]), tagAdd(rc[u], add[u]), add[u] = 0;
+    if (rev[u]) tagRev(lc[u]), tagRev(rc[u]), rev[u] = false;
+  }
+  void split(int u, int idx, int &l, int &r) {
     if (!u) return l = r = 0, void();
     pushdown(u);
-    if (tree[u].val <= val) l = u, split(rc(u), val, rc(u), r);
-    else r = u, split(lc(u), val, l, lc(u));
-    pushup(u);
+    if (siz[lc[u]] < idx) {
+      l = clone(u), split(rc[l], idx - siz[lc[u]] - 1, rc[l], r);
+      pushup(l);
+    } else {
+      r = clone(u), split(lc[r], idx, l, lc[r]);
+      pushup(r);
+    }
   }
   int merge(int l, int r) {
     if (!l || !r) return l + r;
-    if (tree[l].prm > tree[r].prm) return pushdown(l), rc(l) = merge(rc(l), r), pushup(l), l;
-    else return pushdown(r), lc(r) = merge(l, lc(r)), pushup(r), r;
+    if (prm[l] > prm[r]) {
+      pushdown(l), l = clone(l), rc[l] = merge(rc[l], r), pushup(l);
+      return l;
+    } else {
+      pushdown(r), r = clone(r), lc[r] = merge(l, lc[r]), pushup(r);
+      return r;
+    }
   }
-  void insert(i64 val) {
-    int p0, p1;
-    split(rt, val, p0, p1);
-    rt = merge(p0, merge(init(val), p1));
+  inline void copy(int l1, int r1, int l2, int r2) {
+    bool flg = false;
+    if (l1 > l2) std::swap(l1, l2), std::swap(r1, r2), flg = true;
+    int p0, p1, p2, p3, p4;
+    split(rt, r2, p3, p4);
+    split(p3, l2 - 1, p2, p3);
+    split(p2, r1, p1, p2);
+    split(p1, l1 - 1, p0, p1);
+    if (!flg) p3 = clone(p1);
+    else p1 = clone(p3);
+    rt = merge(p0, merge(p1, merge(p2, merge(p3, p4))));
   }
-  void erase(i64 val) {
+  inline void swap(int l1, int r1, int l2, int r2) {
+    if (l1 > l2) std::swap(l1, l2), std::swap(r1, r2);
+    int p0, p1, p2, p3, p4;
+    split(rt, r2, p3, p4);
+    split(p3, l2 - 1, p2, p3);
+    split(p2, r1, p1, p2);
+    split(p1, l1 - 1, p0, p1);
+    rt = merge(p0, merge(p3, merge(p2, merge(p1, p4))));
+  }
+  inline void assign(int l, int r, int v) {
     int p0, p1, p2;
-    split(rt, val, p0, p2);
-    split(p0, val - 1, p0, p1);
-    p1 = merge(lc(p1), rc(p1));
+    split(rt, r, p1, p2);
+    split(p1, l - 1, p0, p1);
+    p1 = clone(p1), tagAss(p1, v);
     rt = merge(p0, merge(p1, p2));
   }
-  int rnk1(int u, i64 val) {
-    if (!u) return 0;
-    pushdown(u);
-    if (tree[u].val <= val) return tree[lc(u)].siz + 1 + rnk1(rc(u), val);
-    else return rnk1(lc(u), val);
+  inline void modify(int l, int r, int v) {
+    int p0, p1, p2;
+    split(rt, r, p1, p2);
+    split(p1, l - 1, p0, p1);
+    p1 = clone(p1), tagAdd(p1, v);
+    rt = merge(p0, merge(p1, p2));
+  }
+  inline void reverse(int l, int r) {
+    int p0, p1, p2;
+    split(rt, r, p1, p2);
+    split(p1, l - 1, p0, p1);
+    p1 = clone(p1), tagRev(p1);
+    rt = merge(p0, merge(p1, p2));
+  }
+  inline int query(int l, int r) {
+    int p0, p1, p2;
+    split(rt, r, p1, p2);
+    split(p1, l - 1, p0, p1);
+    int res = sum[p1];
+    rt = merge(p0, merge(p1, p2));
+    return res;
   }
   void traverse(int u) {
     if (!u) return;
     pushdown(u);
-    traverse(lc(u)), std::cerr << tree[u].val << " ", traverse(rc(u));
+    traverse(lc[u]), stk[++top] = val[u], traverse(rc[u]);
   }
-} t1, t2;
-int check1(i64 u) {
-  int k1 = t1.rnk1(t1.rt, u), k2 = t2.rnk1(t2.rt, u);
-  return k1 + k2;
-}
-i64 chk() {
-  i64 lo = 0, hi = 1e15, res = 0;
-  while (lo <= hi) {
-    i64 mid = (lo + hi) >> 1;
-    if (check1(mid) >= k) {
-      hi = mid - 1;
-      res = mid;
+  void build(int s, int t, int &u) {
+    if (s > t) return;
+    int mid = (s + t) >> 1;
+    u = init(stk[mid]);
+    build(s, mid - 1, lc[u]), build(mid + 1, t, rc[u]);
+    pushup(u);
+  }
+} fhq;
+
+void solve() {
+  std::cin >> n >> m;
+  for (int i = 1; i <= n; i++) std::cin >> fhq.stk[i];
+  fhq.build(1, n, fhq.rt);
+
+  // std::cerr << "shaber\n";
+
+  for (int opt, l1, r1, l2, r2, v; m; m--) {
+    std::cin >> opt >> l1 >> r1;
+    std::cerr << opt << "\n";
+
+    if (opt == 1) {
+      std::cout << fhq.query(l1, r1) << "\n";
+    } else if (opt == 2) {
+      std::cin >> v;
+      fhq.assign(l1, r1, v);
+    } else if (opt == 3) {
+      std::cin >> v;
+      fhq.modify(l1, r1, v);
+    } else if (opt == 4) {
+      std::cin >> l2 >> r2;
+      fhq.copy(l1, r1, l2, r2);
+    } else if (opt == 5) {
+      std::cin >> l2 >> r2;
+      fhq.swap(l1, r1, l2, r2);
     } else {
-      lo = mid + 1;
+      fhq.reverse(l1, r1);
+    }
+
+    if (fhq.cnt >= 5e4) {
+      fhq.top = 0, fhq.traverse(fhq.rt), fhq.cnt = 0;
+      fhq.build(1, fhq.top, fhq.rt);
     }
   }
-  return res;
-}
-void solve() {
-  std::cin >> n >> k >> m >> c >> d;
-  k = n - k + 1;
-  for (int i = 1; i <= n; i++) std::cin >> a[i];
-  for (int i = 1; i <= m; i++) t1.insert(a[i] + c + (i - 1) * d);
-  for (int i = m + 1; i <= n; i++) t2.insert(a[i]);
-  i64 ans = chk();
-  for (int i = m + 1; i <= n; i++) {
-    t1.erase(a[i - m] + c), t2.insert(a[i - m]);
-    t1.insert(a[i] + c + m * d), t2.erase(a[i]);
-    t1.tagging(t1.rt, -d);
-    // std::cerr << chk() << "\n";
-    // std::cerr << check1(35) << " " << check2(35) << " " << k << "\n";
-    // t1.traverse(t1.rt), t2.traverse(t2.rt), std::cerr << "\n";
-    ans = std::max(ans, chk());
-  }
-  std::cout << ans << "\n";
+
+  fhq.top = 0, fhq.traverse(fhq.rt);
+  for (int i = 1; i <= n; i++) std::cout << fhq.stk[i] << " \n"[i == n];
 }
 
 int main() {
