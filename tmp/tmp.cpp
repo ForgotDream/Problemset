@@ -8,7 +8,14 @@
 
 using i64 = long long;
 
+constexpr int N = 1e5 + 50;
+int n, m, a[N];
+
 void solve() {
+  std::cin >> n >> m;
+  for (int i = 1, u, v; i <= m; i++) {
+    std::cin >> u >> v;
+  }
 }
 
 int main() {
