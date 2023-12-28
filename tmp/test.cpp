@@ -1,94 +1,104 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-const int mod = 201314;
-
-int n, m;
-vector<int> to[50005];
-int deep[50005];
-
-const int siz = 500;
-int belong[50005];
-int query[105][50005];
-int block[105];
-
-int first[100005];
-int st[200005][18];
-int lg2[100005];
-int cnt = 0;
-
-void dfs_init(int now) {
-  st[++cnt][0] = deep[now];
-  first[now] = cnt;
-  for (auto next : to[now]) {
-    deep[next] = deep[now] + 1;
-    dfs_init(next);
-    st[++cnt][0] = deep[now];
-  }
+int read() {
+	char cc = getchar(); int cn = 0, flus = 1;
+	while(cc < '0' || cc > '9') {  if( cc == '-' ) flus = -flus;  cc = getchar();  }
+	while(cc >= '0' && cc <= '9')  cn = cn * 10 + cc - '0', cc = getchar();
+	return cn * flus;
 }
-
-int bin[50005];
-void dfs1(int now) {
-  for (auto next : to[now]) dfs1(next), bin[now] += bin[next];
+#define rep( i, s, t ) for( int i = s; i <= t; ++ i )
+#define ls(x) t[x].son[0]
+#define rs(x) t[x].son[1]
+const int N =  150000 + 5; 
+const int inf = 1234567890;
+struct E {
+	int from, to, a, b;
+} e[N];
+struct LCT {
+	int son[2], fa, mx, id;
+	bool mark;
+} t[N];
+int n, m, Idnum, ans, w[N], st[N];
+bool cmp( E x, E y ) {
+	return ( x.a == y.a ) ? x.b < y.b : x.a < y.a ;
 }
-void dfs2(int now, int dist) {
-  for (auto next : to[now]) dfs2(next, dist + bin[now]);
-  bin[now] += dist;
+bool isroot( int x ) {
+	return ( ls(t[x].fa) != x ) && ( rs(t[x].fa) != x );
 }
-
-void init() {
-  dfs_init(1);
-  for (int i = 1; i <= n; i++) {
-    belong[i] = i / siz + 1;
-    if (belong[i] - belong[i - 1]) block[belong[i]] = i;
-  }
-  for (int i = 2; i <= (n << 1); i++) lg2[i] = lg2[i >> 1] + 1;
-  for (int t = 1; t <= 17; t++)
-    for (int i = 1; i <= (n << 1) - (1 << t); i++)
-      st[i][t] = min(st[i][t - 1], st[i + (1 << (t - 1))][t - 1]);
+void pushup( int x ) {
+	t[x].mx = w[x], t[x].id = x;
+	if( ls(x) && t[ls(x)].mx > t[x].mx ) t[x].mx = t[ls(x)].mx, t[x].id = t[ls(x)].id;
+	if( rs(x) && t[rs(x)].mx > t[x].mx ) t[x].mx = t[rs(x)].mx, t[x].id = t[rs(x)].id;
 }
-
-int LCA(int A, int B) {
-  A = first[A];
-  B = first[B];
-  if (A > B) swap(A, B);
-  int ln = lg2[B - A + 1];
-  return min(st[A][ln], st[B - (1 << ln) + 1][ln]);
+void rotate( int x ) {
+	int f = t[x].fa, ff = t[f].fa, qwq = ( rs(f) == x );
+	t[x].fa = ff;
+	if( !isroot(f) ) t[ff].son[rs(ff) == f] = x;
+	t[f].son[qwq] = t[x].son[qwq ^ 1], t[t[x].son[qwq ^ 1]].fa = f;
+	t[x].son[qwq ^ 1] = f, t[f].fa = x;
+	pushup(f), pushup(x);
 }
-
-int main() {
-  cin >> n >> m;
-  deep[1] = 1;
-  for (int i = 2; i <= n; i++) {
-    int v;
-    cin >> v;
-    v++;
-    to[v].push_back(i);
-  }
-  init();
-  belong[0] = 0;
-  belong[n + 1] = belong[n] + 1;
-  block[0] = 0;
-  block[belong[n + 1]] = n + 1;
-  for (int i = 1; i <= belong[n]; i++) {
-    memset(bin, 0, sizeof(bin));
-    for (int j = block[i]; belong[j] == i; j++) bin[j]++;
-    dfs1(1);
-    dfs2(1, 0);
-    for (int j = 1; j <= n; j++) query[i][j] = bin[j];
-  }
-  while (m--) {
-    int l, r, x;
-    cin >> l >> r >> x;
-    l++;
-    r++;
-    x++;
-    int bl = belong[l - 1] + 1;
-    int br = belong[r + 1] - 1;
-    long long ans = 0;
-    for (; belong[l] != bl and l <= r; l++) ans += LCA(l, x);
-    for (; belong[r] != br and r >= l; r--) ans += LCA(r, x);
-    for (int i = bl; i <= br; i++) ans += query[i][x];
-    cout << ans % mod << "\n";
-  }
-  return 0;
+void pushmark( int x ) {
+	if( t[x].mark ) {
+		t[x].mark = 0, t[ls(x)].mark ^= 1, t[rs(x)].mark ^= 1,
+		swap( ls(x), rs(x) );
+	}
+} 
+void Splay( int x ) {
+	int top = 0, now = x; st[++top] = now;
+	while( !isroot(now) ) st[++top] = ( now = t[now].fa );
+	while( top ) pushmark( st[top--] );
+	while( !isroot(x) ) {
+		int f = t[x].fa, ff = t[f].fa;
+		if( !isroot(f) ) ( ( rs(ff) == f ) ^ ( rs(f) == x ) ) ? rotate(x) : rotate(f) ;
+		rotate(x);
+	}
+}
+void access( int x ) {
+	for( int y = 0; x; y = x, x = t[y].fa )
+		Splay(x), t[x].son[1] = y, pushup(x);
+}
+void makeroot( int x ) {
+	access(x), Splay(x), t[x].mark ^= 1, pushmark(x);
+}
+int findroot( int x ) {
+	access(x), Splay(x), pushmark(x);
+	while( ls(x) ) pushmark( x = ls(x) );
+	return x;
+}
+void split( int x, int y ) {
+	makeroot(x), access(y), Splay(y);
+}
+void link( int x, int y ) {
+	makeroot(x);
+	if( findroot(y) != x ) t[x].fa = y;
+}
+bool check( int x, int y ) {
+	makeroot(x);
+	return findroot(y) != x;
+}
+signed main()
+{
+	n = read(), m = read(), ans = inf;
+	rep( i, 1, m ) e[i].from = read(), e[i].to = read(), e[i].a = read(), e[i].b = read();
+	sort( e + 1, e + m + 1, cmp );
+	rep( i, 1, m ) {
+		w[i + n] = e[i].b;
+		if( e[i].from == e[i].to ) continue;
+		if( check( e[i].from, e[i].to ) ) link( e[i].from, i + n ), link( i + n, e[i].to );
+		else {
+			split( e[i].from, e[i].to );
+			int now = t[e[i].to].id, maxb = t[e[i].to].mx;
+      // std::cerr << now << " " << maxb << "\n";
+			if( maxb <= e[i].b ) continue;
+			Splay( now ), t[ls(now)].fa = t[rs(now)].fa = 0;
+			link( e[i].from, i + n ), link( i + n, e[i].to );
+		} 
+		if( !check( 1, n ) ) {
+			split( 1, n ); ans = min( ans, t[n].mx + e[i].a );
+		}
+	}
+	if( ans == inf ) puts("-1");
+	else printf("%d\n", ans);
+	return 0;
 }
