@@ -1,104 +1,141 @@
-#include<bits/stdc++.h>
+#include <cmath>
+#include <ctime>
+#include <vector>
+#include <cctype>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#define rint int
 using namespace std;
-int read() {
-	char cc = getchar(); int cn = 0, flus = 1;
-	while(cc < '0' || cc > '9') {  if( cc == '-' ) flus = -flus;  cc = getchar();  }
-	while(cc >= '0' && cc <= '9')  cn = cn * 10 + cc - '0', cc = getchar();
-	return cn * flus;
-}
-#define rep( i, s, t ) for( int i = s; i <= t; ++ i )
-#define ls(x) t[x].son[0]
-#define rs(x) t[x].son[1]
-const int N =  150000 + 5; 
-const int inf = 1234567890;
-struct E {
-	int from, to, a, b;
-} e[N];
-struct LCT {
-	int son[2], fa, mx, id;
-	bool mark;
-} t[N];
-int n, m, Idnum, ans, w[N], st[N];
-bool cmp( E x, E y ) {
-	return ( x.a == y.a ) ? x.b < y.b : x.a < y.a ;
-}
-bool isroot( int x ) {
-	return ( ls(t[x].fa) != x ) && ( rs(t[x].fa) != x );
-}
-void pushup( int x ) {
-	t[x].mx = w[x], t[x].id = x;
-	if( ls(x) && t[ls(x)].mx > t[x].mx ) t[x].mx = t[ls(x)].mx, t[x].id = t[ls(x)].id;
-	if( rs(x) && t[rs(x)].mx > t[x].mx ) t[x].mx = t[rs(x)].mx, t[x].id = t[rs(x)].id;
-}
-void rotate( int x ) {
-	int f = t[x].fa, ff = t[f].fa, qwq = ( rs(f) == x );
-	t[x].fa = ff;
-	if( !isroot(f) ) t[ff].son[rs(ff) == f] = x;
-	t[f].son[qwq] = t[x].son[qwq ^ 1], t[t[x].son[qwq ^ 1]].fa = f;
-	t[x].son[qwq ^ 1] = f, t[f].fa = x;
-	pushup(f), pushup(x);
-}
-void pushmark( int x ) {
-	if( t[x].mark ) {
-		t[x].mark = 0, t[ls(x)].mark ^= 1, t[rs(x)].mark ^= 1,
-		swap( ls(x), rs(x) );
+typedef long long ll;
+
+const int maxn = 1.5e5 + 10;
+const int inf = 0x3f3f3f3f;
+int n, q, A, maxsiz, tsiz, rt, cnt, head[maxn], v[maxn], Fa[maxn];
+int dep[maxn], dis[maxn], siz[maxn], son[maxn], top[maxn], fa[maxn];
+bool vis[maxn];
+ll lastans;
+
+struct Edge {
+	int to, nxt, val;
+}e[maxn << 1];
+
+struct Node {
+	int v; ll sum;
+	bool operator < (const Node &B) const {
+		return v < B.v;
 	}
-} 
-void Splay( int x ) {
-	int top = 0, now = x; st[++top] = now;
-	while( !isroot(now) ) st[++top] = ( now = t[now].fa );
-	while( top ) pushmark( st[top--] );
-	while( !isroot(x) ) {
-		int f = t[x].fa, ff = t[f].fa;
-		if( !isroot(f) ) ( ( rs(ff) == f ) ^ ( rs(f) == x ) ) ? rotate(x) : rotate(f) ;
-		rotate(x);
+};
+vector < Node > vec[2][maxn];
+
+template <typename T> T read(T x = 0, bool f = 0, char ch = getchar()) {
+	for(;!isdigit(ch);ch = getchar()) f = ch == '-';
+	for(; isdigit(ch);ch = getchar()) x = (x << 3) + (x << 1) + (ch & 15);
+	return f ? -x : x ;
+}
+
+void add(rint x, rint y, rint z) {
+	e[++cnt] = (Edge){y, head[x], z}, head[x] = cnt;
+}
+
+void dfs1(rint x, rint prt) {
+	fa[x] = prt, dep[x] = dep[prt] + 1, siz[x] = 1;
+	for(rint i = head[x], y;i;i = e[i].nxt) {
+		if((y = e[i].to) == prt) continue;
+		dis[y] = dis[x] + e[i].val;
+		dfs1(y, x);
+		siz[x] += siz[y];
+		if(!son[x] || siz[y] > siz[son[x]]) son[x] = y;
 	}
 }
-void access( int x ) {
-	for( int y = 0; x; y = x, x = t[y].fa )
-		Splay(x), t[x].son[1] = y, pushup(x);
+
+void dfs2(rint x, rint tp) {
+	top[x] = tp;
+	if(son[x]) dfs2(son[x], tp);
+	for(rint i = head[x], y;i;i = e[i].nxt) {
+		if((y = e[i].to) != fa[x] && y != son[x]) dfs2(y, y);
+	}
 }
-void makeroot( int x ) {
-	access(x), Splay(x), t[x].mark ^= 1, pushmark(x);
+
+int Dis(rint a, rint b) {
+	rint x = a, y = b;
+	while(top[x] != top[y]) {
+		if(dep[top[x]] < dep[top[y]]) swap(x, y);
+		x = fa[top[x]];
+	}
+	x = dep[x] < dep[y] ? x : y;
+	return dis[a] + dis[b] - dis[x] * 2;
 }
-int findroot( int x ) {
-	access(x), Splay(x), pushmark(x);
-	while( ls(x) ) pushmark( x = ls(x) );
-	return x;
+
+void getrt(rint x, rint prt) {
+	siz[x] = 1;
+	rint maxs = 0;
+	for(rint i = head[x], y;i;i = e[i].nxt) {
+		if(vis[y = e[i].to] || y == prt) continue;
+		getrt(y, x);
+		siz[x] += siz[y];
+		maxs = max(maxs, siz[y]);
+	}
+	maxs = max(maxs, tsiz - siz[x]);
+	if(maxs < maxsiz) maxsiz = maxs, rt = x;
 }
-void split( int x, int y ) {
-	makeroot(x), access(y), Splay(y);
+
+void dfs(rint x, rint prt, rint sum) {
+	siz[x] = 1;
+	vec[0][rt].push_back((Node){v[x], sum});
+	if(Fa[rt]) vec[1][rt].push_back((Node){v[x], Dis(x, Fa[rt])});
+	for(rint i = head[x], y;i;i = e[i].nxt) {
+		if(vis[y = e[i].to] || y == prt) continue;
+		dfs(y, x, sum + e[i].val);
+		siz[x] += siz[y];
+	}
 }
-void link( int x, int y ) {
-	makeroot(x);
-	if( findroot(y) != x ) t[x].fa = y;
+
+void solve(rint x) {
+	vis[x] = 1, dfs(x, 0, 0);
+	for(rint i = head[x], y;i;i = e[i].nxt) {
+		if(vis[y = e[i].to]) continue;
+		tsiz = siz[y], maxsiz = inf, getrt(y, x);
+		Fa[rt] = x;
+		solve(rt);
+	}
 }
-bool check( int x, int y ) {
-	makeroot(x);
-	return findroot(y) != x;
+
+ll query(rint opt, rint x, rint l, rint r, ll &ss) {
+	rint lef = lower_bound(vec[opt][x].begin(), vec[opt][x].end(), (Node){l, 0}) - vec[opt][x].begin() - 1;
+	rint rig = upper_bound(vec[opt][x].begin(), vec[opt][x].end(), (Node){r, 0}) - vec[opt][x].begin() - 1;
+	ss = rig - lef;
+	ll ans = 0;
+	if(rig >= 0 && rig < (int) vec[opt][x].size()) ans += vec[opt][x][rig].sum;
+	if(lef >= 0 && lef < (int) vec[opt][x].size()) ans -= vec[opt][x][lef].sum;
+	return ans;
 }
-signed main()
-{
-	n = read(), m = read(), ans = inf;
-	rep( i, 1, m ) e[i].from = read(), e[i].to = read(), e[i].a = read(), e[i].b = read();
-	sort( e + 1, e + m + 1, cmp );
-	rep( i, 1, m ) {
-		w[i + n] = e[i].b;
-		if( e[i].from == e[i].to ) continue;
-		if( check( e[i].from, e[i].to ) ) link( e[i].from, i + n ), link( i + n, e[i].to );
-		else {
-			split( e[i].from, e[i].to );
-			int now = t[e[i].to].id, maxb = t[e[i].to].mx;
-      // std::cerr << now << " " << maxb << "\n";
-			if( maxb <= e[i].b ) continue;
-			Splay( now ), t[ls(now)].fa = t[rs(now)].fa = 0;
-			link( e[i].from, i + n ), link( i + n, e[i].to );
-		} 
-		if( !check( 1, n ) ) {
-			split( 1, n ); ans = min( ans, t[n].mx + e[i].a );
+
+int main() {
+	n = read<int>(), q = read<int>(), A = read<int>();
+	for(rint i = 1;i <= n; ++i) v[i] = read<int>();
+	for(rint i = 1, x, y, z;i < n; ++i) {
+		x = read<int>(), y = read<int>(), z = read<int>();
+		add(x, y, z), add(y, x, z);
+	}
+	dfs1(1, 0), dfs2(1, 1);
+	tsiz = n, maxsiz = inf, getrt(1, 0), solve(rt);
+	for(rint i = 1;i <= n; ++i) {
+		sort(vec[0][i].begin(), vec[0][i].end());
+		sort(vec[1][i].begin(), vec[1][i].end());
+		for(rint j = 1;j < (int)vec[0][i].size(); ++j) vec[0][i][j].sum += vec[0][i][j - 1].sum;
+		for(rint j = 1;j < (int)vec[1][i].size(); ++j) vec[1][i][j].sum += vec[1][i][j - 1].sum;
+	}
+	for(rint i = 1, x, l, r;i <= q; ++i) {
+		x = read<int>(), l = (read<ll>() + lastans) % A, r = (read<ll>() + lastans) % A;
+		l > r ? swap(l, r) : void();
+		ll s1, s2;
+		lastans = query(0, x, l, r, s1);
+		for(rint now = x;Fa[now];now = Fa[now]) {
+			lastans += query(0, Fa[now], l, r, s2) - query(1, now, l, r, s1);
+			lastans += (s2 - s1) * Dis(x, Fa[now]);
 		}
+		printf("%lld\n", lastans);
 	}
-	if( ans == inf ) puts("-1");
-	else printf("%d\n", ans);
 	return 0;
 }
