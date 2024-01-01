@@ -1,84 +1,75 @@
-/**
+/*
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-12-15
+ * @date    2023-12-30
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
 constexpr int N = 2e5 + 50;
-int n, m, q, a[N];
-struct Edge {
-  int u, v, w;
-  bool operator<(const Edge &rhs) { return w < rhs.w; }
-};
-std::vector<Edge> edges;
-struct DSU {
-  int fa[N];
-  DSU() { std::iota(fa, fa + N, 0); }
-  int find(int u) { return u == fa[u] ? u : fa[u] = find(u); }
-  bool merge(int u, int v) {
-    u = find(u), v = find(v);
-    if (u == v) return false;
-    fa[u] = v;
-    return true;
+
+struct LCT {
+  int fa[N], ch[N][2], sum[N], val[N], rev[N];
+  int &lc(int u) { return ch[u][0]; }
+  int &rc(int u) { return ch[u][1]; }
+  bool isRoot(int u) { return lc(fa[u]) != u && rc(fa[u]) != u; }
+  int d(int u) { return rc(fa[u]) == u; }
+  void pushup(int u) { sum[u] = sum[lc(u)] + sum[rc(u)] + val[u]; }
+  void pushdown(int u) {
+    if (!rev[u]) return;
+    tagging(lc(u)), tagging(rc(u));
+    rev[u] = false;
   }
-} dsu;
-std::vector<int> adj[N];
-int val[N];
-int dfn[N], clk, st[20][N];
-void dfs(int u, int frm) {
-  st[0][dfn[u] = ++clk] = frm;
-  for (auto v : adj[u]) {
-    if (v == frm) continue;
-    dfs(v, u);
+  void tagging(int u) {
+    if (!u) return;
+    std::swap(lc(u), rc(u)), rev[u] ^= true;
   }
-}
-inline int cmp(int u, int v) { return dfn[u] < dfn[v] ? u : v; }
-void init() {
-  for (int i = 1; i <= std::__lg(m); i++) {
-    for (int j = 1; j <= m - (1 << i) + 1; j++) {
-      st[i][j] = cmp(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+  void rotate(int u) {
+    int f = fa[u], g = fa[f], k = d(u);
+    if (!isRoot(f)) ch[g][d(f)] = u, fa[u] = g;
+    ch[f][k] = ch[u][k ^ 1], ch[u][k ^ 1] && (fa[ch[u][k ^ 1]] = f);
+    ch[u][k ^ 1] = f, fa[f] = u;
+    pushup(f), pushup(u);
+  }
+  void update(int u) {
+    if (fa[u]) update(fa[u]);
+    pushdown(u);
+  }
+  void splay(int u) {
+    update(u);
+    for (int f = fa[u]; !isRoot(u); rotate(u), f = fa[u]) {
+      if (!isRoot(f)) rotate(d(u) == d(f) ? u : f);
     }
   }
-}
-inline int getLCA(int u, int v) {
-  if (u == v) return u;
-  u = dfn[u], v = dfn[v];
-  if (u > v) std::swap(u, v);
-  int d = std::__lg(v - u++);
-  return cmp(st[d][u], st[d][v - (1 << d) + 1]);
-}
+  void access(int u) {
+    for (int c = 0; u; c = u, u = fa[u]) splay(u), rc(u) = c, pushup(u);
+  }
+  void makeRoot(int u) { access(u), splay(u), tagging(u); }
+  int findRoot(int u) {
+    access(u), splay(u);
+    while (lc(u)) pushdown(u), u = lc(u);
+    return u;
+  }
+  void link(int u, int v) { makeRoot(u), fa[u] = v; }
+  void split(int u, int v) { makeRoot(u), access(v), splay(v); }
+  void cut(int u, int v) {
+    split(u, v);
+    if (lc(v) != u || rc(u)) return;
+    fa[u] = lc(v) = 0, pushup(v);
+  }
+} lct;
+
 void solve() {
-  std::cin >> n >> m >> q;
-  for (int i = 1; i <= n; i++) std::cin >> a[i];
-  edges.resize(m);
-  for (auto &[u, v, w] : edges) std::cin >> u >> v >> w;
-  std::sort(edges.begin(), edges.end());
-  int cnt = n;
-  for (auto [u, v, w] : edges) {
-    int fu = dsu.find(u), fv = dsu.find(v);
-    if (fu != fv) {
-      cnt++;
-      dsu.fa[fu] = dsu.fa[fv] = cnt;
-      adj[fu].push_back(cnt), adj[fv].push_back(cnt);
-      adj[cnt].push_back(fu), adj[cnt].push_back(fv);
-      val[cnt] = w;
-    }
-    if (cnt == 2 * n - 1) break;
-  }
-  m = 2 * n - 1;
-  for (int v, x, k; q; q--) {
-    std::cin >> v >> x >> k;
-  }
 }
 
 int main() {
   std::cin.tie(nullptr)->sync_with_stdio(false);
+
   int t = 1;
   // std::cin >> t;
   while (t--) solve();
+
   return 0;
 }
