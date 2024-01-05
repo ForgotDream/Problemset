@@ -8,8 +8,6 @@
 
 using i64 = long long;
 
-constexpr int N = 1e5 + 50;
-
 void solve() {
 }
 
