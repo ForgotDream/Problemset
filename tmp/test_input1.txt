@@ -1,0 +1,11 @@
+5
+9 13
+accdcdaaa
+11 18
+cacdacabdaa
+5 22
+bcacd
+5 24
+aacaa
+7 20
+bacacca

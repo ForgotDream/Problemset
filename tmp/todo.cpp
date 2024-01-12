@@ -2,69 +2,93 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2023-12-30
+ * @date    2024-01-10
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
-constexpr int N = 2e5 + 50;
+constexpr int N = 505;
 
-struct LCT {
-  int fa[N], ch[N][2], sum[N], val[N], rev[N];
-  int &lc(int u) { return ch[u][0]; }
-  int &rc(int u) { return ch[u][1]; }
-  bool isRoot(int u) { return lc(fa[u]) != u && rc(fa[u]) != u; }
-  int d(int u) { return rc(fa[u]) == u; }
-  void pushup(int u) { sum[u] = sum[lc(u)] + sum[rc(u)] + val[u]; }
-  void pushdown(int u) {
-    if (!rev[u]) return;
-    tagging(lc(u)), tagging(rc(u));
-    rev[u] = false;
+struct Dinic {
+  struct Edge {
+    int u, v, cap, flow;
+    Edge() = default;
+    Edge(int _u, int _v, int _c) : u(_u), v(_v), cap(_c), flow(0) {}
+  };
+  std::vector<Edge> edges;
+  std::vector<int> adj[N];
+  int s, t, dis[N], cur[N];
+  bool vis[N];
+  void addEdge(int u, int v, int cap) {
+    edges.emplace_back(u, v, cap);
+    edges.emplace_back(v, u, 0);
+    adj[u].push_back(edges.size() - 2);
+    adj[v].push_back(edges.size() - 1);
   }
-  void tagging(int u) {
-    if (!u) return;
-    std::swap(lc(u), rc(u)), rev[u] ^= true;
-  }
-  void rotate(int u) {
-    int f = fa[u], g = fa[f], k = d(u);
-    if (!isRoot(f)) ch[g][d(f)] = u, fa[u] = g;
-    ch[f][k] = ch[u][k ^ 1], ch[u][k ^ 1] && (fa[ch[u][k ^ 1]] = f);
-    ch[u][k ^ 1] = f, fa[f] = u;
-    pushup(f), pushup(u);
-  }
-  void update(int u) {
-    if (fa[u]) update(fa[u]);
-    pushdown(u);
-  }
-  void splay(int u) {
-    update(u);
-    for (int f = fa[u]; !isRoot(u); rotate(u), f = fa[u]) {
-      if (!isRoot(f)) rotate(d(u) == d(f) ? u : f);
+  bool bfs() {
+    memset(vis, 0, sizeof(vis));
+    std::queue<int> q;
+    q.push(s), dis[s] = 0, vis[s] = true;
+    while (!q.empty()) {
+      int u = q.front();
+      q.pop();
+      for (auto i : adj[u]) {
+        auto [_, v, cap, flow] = edges[i];
+        if (!vis[v] && flow < cap) {
+          dis[v] = dis[u] + 1, vis[v] = true;
+          q.push(v);
+        }
+      }
     }
+    return vis[t];
   }
-  void access(int u) {
-    for (int c = 0; u; c = u, u = fa[u]) splay(u), rc(u) = c, pushup(u);
+  int dfs(int u, int lim) {
+    if (u == t || !lim) return lim;
+    int res = 0;
+    for (int &i = cur[u]; i < adj[i].size(); i++) {
+      auto &[_, v, cap, flow] = edges[adj[u][i]];
+      int f;
+      if (!vis[v] && dis[v] == dis[u] + 1 && 
+          (f = dfs(v, std::min(cap - flow, lim)))) {
+        flow += f, res += f;
+        edges[adj[u][i] ^ 1].flow -= f, lim -= f;
+      }
+    }
+    return res;
   }
-  void makeRoot(int u) { access(u), splay(u), tagging(u); }
-  int findRoot(int u) {
-    access(u), splay(u);
-    while (lc(u)) pushdown(u), u = lc(u);
-    return u;
+  int maxFlow(int s, int t) {
+    this->s = s, this->t = t;
+    int res = 0;
+    while (bfs()) {
+      memset(cur, 0, sizeof(0));
+      memset(vis, false, sizeof(vis));
+      res += maxFlow(s, 1e9);
+    }
+    return res;
   }
-  void link(int u, int v) { makeRoot(u), fa[u] = v; }
-  void split(int u, int v) { makeRoot(u), access(v), splay(v); }
-  void cut(int u, int v) {
-    split(u, v);
-    if (lc(v) != u || rc(u)) return;
-    fa[u] = lc(v) = 0, pushup(v);
-  }
-} lct;
+} dinic;
 
-void solve() {
+std::vector<int> adj[N];
+
+int n, m;
+
+void build(int l, int r) {
+  if (l >= r) return;
+  int mid = (l + r) >> 1;
 }
 
-int main() {
+void solve() {
+  std::cin >> n >> m;
+  for (int i = 0, u, v, cap; i < m; i++) {
+    std::cin >> u >> v >> cap;
+    dinic.addEdge(u, v, cap);
+  }
+
+  build(0, m - 1);
+}
+
+signed main() {
   std::cin.tie(nullptr)->sync_with_stdio(false);
 
   int t = 1;
