@@ -1,131 +1,111 @@
-#include <algorithm>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <set>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
-#define MAX 200000
-inline int read() {
-  int x = 0, t = 1;
-  char ch = getchar();
-  while ((ch < '0' || ch > '9') && ch != '-')
-    ch = getchar();
-  if (ch == '-')
-    t = -1, ch = getchar();
-  while (ch <= '9' && ch >= '0')
-    x = x * 10 + ch - 48, ch = getchar();
-  return x * t;
+#define I inline int
+#define V inline void
+#define P pair<int, int>
+#define ll long long int
+#define FOR(i, a, b) for (int i = a; i <= b; i++)
+const int N = 2e5 + 1, INF = 0x3f3f3f3f;
+V cmin(int &x, int y) {
+  if (y - x >> 31)
+    x = y;
 }
-char ss[MAX];
-int nd[MAX], n, tot;
-int ans[MAX];
-int c[MAX];
-int dfn[MAX], low[MAX], tim;
-int ql[MAX], qr[MAX];
-inline int lowbit(int x) { return x & (-x); }
-void Modify(int x, int w) {
-  while (x <= tim)
-    c[x] += w, x += lowbit(x);
+namespace SAM {
+int ch[N][26], fa[N], len[N], tot = 1, last = 1;
+V cpy(int x, int y) { FOR(i, 0, 25) ch[x][i] = ch[y][i]; }
+I ins(int x) {
+  int p(last), np, q, nq;
+  len[np = last = ++tot] = len[p] + 1;
+  while (p && !ch[p][x])
+    ch[p][x] = np, p = fa[p];
+  if (!p)
+    return fa[np] = 1, last;
+  if (len[q = ch[p][x]] == len[p] + 1)
+    return fa[np] = q, last;
+  cpy(nq = ++tot, q), len[nq] = len[p] + 1, fa[nq] = fa[q], fa[q] = fa[np] = nq;
+  while (p && ch[p][x] == q)
+    ch[p][x] = nq, p = fa[p];
+  return last;
 }
-int getsum(int x) {
-  int ret = 0;
-  while (x)
-    ret += c[x], x -= lowbit(x);
-  return ret;
+} // namespace SAM
+namespace seg {
+ll c[N], d[N];
+I lowbit(int x) { return x & -x; }
+V add(int x, int y) {
+  for (ll w = x * y; x < N; x += lowbit(x))
+    c[x] += y, d[x] += w;
 }
-struct Node {
-  int vis[26];
-  int Vis[26];
-  int fail, fa;
-  int lt;
-} t[MAX];
-struct Question {
-  int x, y, id, ans;
-} q[MAX];
-bool operator<(Question a, Question b) { return a.y < b.y; }
-void GetFail() {
-  queue<int> Q;
-  for (int i = 0; i < 26; ++i)
-    if (t[0].vis[i])
-      Q.push(t[0].vis[i]);
-  while (!Q.empty()) {
-    int u = Q.front();
-    Q.pop();
-    for (int i = 0; i < 26; ++i)
-      if (t[u].vis[i])
-        t[t[u].vis[i]].fail = t[t[u].fail].vis[i], Q.push(t[u].vis[i]);
-      else
-        t[u].vis[i] = t[t[u].fail].vis[i];
+ll ask(int x) {
+  ll out = 0, tmp = 0;
+  for (int p = x; p; p ^= lowbit(p))
+    out += c[p], tmp += d[p];
+  return out * (x + 1) - tmp;
+}
+ll ask(int l, int r) { return ask(r) - ask(l - 1); }
+V add(int l, int r, int x) { add(l, x), add(r + 1, -x); }
+} // namespace seg
+namespace LCT {
+int fa[N], ch[N][2], last[N], tag[N], len[N], val[N];
+I id(int x) { return x == ch[fa[x]][1]; }
+I nrt(int x) { return x == ch[fa[x]][id(x)]; }
+V upd(int x) {
+  val[x] = len[x];
+  FOR(i, 0, 1) cmin(val[x], val[ch[x][i]]);
+}
+V rot(int x) {
+  int y = fa[x], z = fa[y], p = id(x), w = ch[x][p ^ 1];
+  if (nrt(y))
+    ch[z][id(y)] = x;
+  if (w)
+    fa[w] = y;
+  fa[y] = x, fa[x] = z, ch[x][p ^ 1] = y, ch[y][p] = w, upd(y), upd(x);
+}
+V add(int x, int w) { last[x] = tag[x] = w; }
+V psd(int x) {
+  if (tag[x])
+    FOR(i, 0, 1) add(ch[x][i], tag[x]);
+  tag[x] = 0;
+}
+V psa(int x) {
+  if (nrt(x))
+    psa(fa[x]);
+  psd(x);
+}
+V spl(int x) {
+  for (psa(x); nrt(x); rot(x))
+    if (nrt(fa[x]))
+      rot(id(x) == id(fa[x]) ? fa[x] : x);
+}
+V acc(int x, int now) {
+  for (int p = x, y = 0; p; p = fa[y = p]) {
+    spl(p), ch[p][1] = y, upd(p);
+    if (last[p])
+      seg::add(last[p] - SAM::len[p] + 1, last[p] - val[p] + 1, -1);
+  }
+  spl(x), add(x, now), seg::add(now - SAM::len[x] + 1, now, 1);
+}
+V init() {
+  val[0] = INF;
+  FOR(i, 1, SAM::tot) {
+    val[i] = len[i] = SAM::len[fa[i] = SAM::fa[i]] + 1;
+    tag[i] = ch[i][0] = ch[i][1] = last[i] = 0;
   }
 }
-struct Line {
-  int v, next;
-} e[MAX << 1];
-int h[MAX], cnt = 1;
-inline void Add(int u, int v) {
-  e[cnt] = (Line){v, h[u]};
-  h[u] = cnt++;
-}
-void dfs(int u) {
-  dfn[u] = ++tim;
-  for (int i = h[u]; i; i = e[i].next)
-    dfs(e[i].v);
-  low[u] = tim;
-}
-void DFS(int u) {
-  Modify(dfn[u], 1);
-  if (t[u].lt)
-    for (int i = ql[t[u].lt]; i <= qr[t[u].lt]; ++i)
-      q[i].ans = getsum(low[nd[q[i].x]]) - getsum(dfn[nd[q[i].x]] - 1);
-  for (int i = 0; i < 26; ++i)
-    if (t[u].Vis[i])
-      DFS(t[u].Vis[i]);
-  Modify(dfn[u], -1);
-}
+} // namespace LCT
+char a[N];
+ll ans[N];
+vector<P> q[N];
+int T, n, m, l, r, pos[N];
 int main() {
-  scanf("%s", ss + 1);
-  int now = 0;
-  for (int i = 1, l = strlen(ss + 1); i <= l; ++i) {
-    if (ss[i] >= 'a' && ss[i] <= 'z') {
-      if (!t[now].vis[ss[i] - 'a'])
-        t[now].vis[ss[i] - 'a'] = ++tot, t[tot].fa = now;
-      now = t[now].vis[ss[i] - 'a'];
-    }
-    if (ss[i] == 'B')
-      now = t[now].fa;
-    if (ss[i] == 'P') {
-      nd[++n] = now;
-      t[now].lt = n;
-    }
+  scanf("%s%d", a + 1, &m), n = strlen(a + 1);
+  FOR(i, 1, m) scanf("%d%d", &l, &r), q[r].push_back(P(i, l));
+  FOR(i, 1, n) pos[i] = SAM::ins(a[i] - 'a');
+  LCT::init();
+  FOR(i, 1, n) {
+    LCT::acc(pos[i], i);
+    for (P x : q[i])
+      ans[x.first] = seg::ask(x.second, i);
   }
-  for (int i = 0; i <= tot; ++i)
-    for (int j = 0; j < 26; ++j)
-      t[i].Vis[j] = t[i].vis[j];
-  int Q = read();
-  GetFail();
-  for (int i = 1; i <= tot; ++i)
-    Add(t[i].fail, i);
-  dfs(0);
-  for (int i = 1; i <= Q; ++i) {
-    q[i].x = read(), q[i].y = read();
-    q[i].id = i;
-  }
-  sort(&q[1], &q[Q + 1]);
-  for (int i = 1, pos = 1; i <= Q; i = pos) {
-    ql[q[i].y] = i;
-    while (q[pos].y == q[i].y)
-      pos++;
-    qr[q[i].y] = pos - 1;
-  }
-  DFS(0);
-  for (int i = 1; i <= Q; ++i)
-    ans[q[i].id] = q[i].ans;
-  for (int i = 1; i <= Q; ++i)
-    printf("%d\n", ans[i]);
+  FOR(i, 1, m) cout << ans[i] << '\n';
   return 0;
 }

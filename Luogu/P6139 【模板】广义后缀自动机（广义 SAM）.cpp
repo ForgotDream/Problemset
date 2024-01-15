@@ -1,19 +1,15 @@
 /*
- * @file    
+ * @file    P6139 【模板】广义后缀自动机（广义 SAM）.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   GSAM
  * @date    2024-01-14
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
+using pii = std::pair<int, int>;
 
-constexpr int N = 2e5 + 50;
-
-int n;
-std::string s;
-
-int siz[N];
+constexpr int N = 2e6 + 50;
 
 struct GSAM {
   int ch[N][26], link[N], len[N], cnt = 1;
@@ -39,7 +35,7 @@ struct GSAM {
         link[cur] = q;
       } else {
         int tmp = ++cnt;
-        len[tmp] = len[p] + 1, link[tmp] = link[q];
+        link[tmp] = link[q], len[tmp] = len[p] + 1;
         for (int i = 0; i < 26; i++) ch[tmp][i] = len[ch[q][i]] ? ch[q][i] : 0;
         for (; p && ch[p][d] == q; p = link[p]) ch[p][d] = tmp;
         link[cur] = link[q] = tmp;
@@ -48,26 +44,29 @@ struct GSAM {
     return cur;
   }
   void build() {
-    std::queue<std::pair<int, int>> q;
+    std::queue<pii> q;
     for (int i = 0; i < 26; i++) if (ch[1][i]) q.emplace(1, i);
     while (!q.empty()) {
       auto [u, d] = q.front();
+      // std::cerr << u << " " << d << "\n";
       q.pop(), u = expand(u, d);
       for (int i = 0; i < 26; i++) if (ch[u][i]) q.emplace(u, i);
     }
   }
 } gsam;
 
-std::vector<int> adj[N];
+int n;
+std::string s;
 
 void solve() {
   std::cin >> n;
-  for (int i = 1; i <= n; i++) {
-    std::cin >> s, gsam.insert(s);
-  }
+  while (n--) std::cin >> s, gsam.insert(s);
   gsam.build();
 
-  for (int i = 2; i <= gsam.cnt; i++) adj[gsam.link[i]].push_back(i);
+  i64 ans = 0;
+  for (int i = 1; i <= gsam.cnt; i++) ans += gsam.len[i] - gsam.len[gsam.link[i]];
+  // for (int i = 1; i <= gsam.cnt; i++) std::cerr << gsam.link[i] << "\n";
+  std::cout << ans << "\n" << gsam.cnt << "\n";
 }
 
 signed main() {
