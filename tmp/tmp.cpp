@@ -2,22 +2,20 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-01-15
+ * @date    2024-01-16
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
-constexpr int N = 2e5 + 50;
+constexpr int N = 1e6 + 50;
 
-int n, m, q;
-char s[N], t[N];
-
-int la[N], ra[N], lb[N], rb[N];
+int n, m, k;
+char s[N];
 
 struct SAM {
   int ch[N][26], len[N], link[N], cnt = 1, lst = 1;
-  void expand(char c) {
+  int expand(char c) {
     int cur = ++cnt, d = c - 'a';
     len[cur] = len[lst] + 1;
     int p = lst;
@@ -32,22 +30,46 @@ struct SAM {
         int tmp = ++cnt;
         len[tmp] = len[p] + 1, link[tmp] = link[q];
         memcpy(ch[tmp], ch[q], sizeof(ch[tmp]));
-        for (; p && ch[p][d] == q; p = link[p]) ch[p][d] = tmp;
+        for (; p && ch[p][d] == q; q = link[q]) ch[p][d] = tmp;
         link[cur] = link[q] = tmp;
       }
     }
+    return lst = cur;
   }
 } sam;
 
-void solve() {
-  std::cin >> (s + 1) >> n;
-  for (int i = 1; i <= n; i++) std::cin >> la[i] >> ra[i];
-  std::cin >> (t + 1) >> m;
-  for (int i = 1; i <= m; i++) std::cin >> lb[i] >> rb[i];
+int pos[N];
+std::vector<int> adj[N];
 
-  std::cin >> q;
-  for (int i = 1, u, v; i <= q; i++) {
-    std::cin >> u >> v;
+int st[21][N], dfn[N], clk;
+inline int cmp(int u, int v) { return dfn[u] < dfn[v] ? u : v; }
+void dfs(int u, int frm) {
+  st[0][dfn[u] = ++clk] = frm;
+  for (auto v : adj[u]) dfs(v, u);
+}
+void init() {
+  for (int i = 1; i <= std::__lg(sam.cnt); i++) {
+    for (int j = 1; j <= sam.cnt - (1 << i) + 1; j++) {
+      st[i][j] = cmp(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+    }
+  }
+}
+inline int getLCA(int u, int v) {
+  if (u == v) return u;
+  u = dfn[u], v = dfn[v];
+  if (u > v) std::swap(u, v);
+  int d = std::__lg(v - u++);
+  return cmp(st[d][u], st[d][v - (1 << d) + 1]);
+}
+
+void solve() {
+  std::cin >> n >> m >> k >> (s + 1);
+
+  for (int i = 1; i <= n; i++) pos[i] = sam.expand(s[i]);
+  for (int i = 2; i <= sam.cnt; i++) adj[sam.link[i]].push_back(i);
+  
+  for (int l, r, i = 1; i <= m; i++) {
+    std::cin >> l >> r;
   }
 }
 
