@@ -1,67 +1,102 @@
-#include <bits/stdc++.h>
-using namespace std;
-const int maxn = 300000 + 5;
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#define debug(...) fprintf(stderr, __VA_ARGS__)
 
-namespace pam {
-int sz, tot, last;
-int cnt[maxn], ch[maxn][26], len[maxn], fail[maxn];
-char s[maxn];
-
-int node(int l) {  // 建立一个新节点，长度为 l
-  sz++;
-  memset(ch[sz], 0, sizeof(ch[sz]));
-  len[sz] = l;
-  fail[sz] = cnt[sz] = 0;
-  return sz;
+inline int rd() {
+  int x = 0, f = 1, c = getchar();
+  while (((c - '0') | ('9' - c)) < 0) f = c != '-', c = getchar();
+  while (((c - '0') | ('9' - c)) > 0) x = x * 10 + c - '0', c = getchar();
+  return f ? x : -x;
 }
 
-void clear() {  // 初始化
-  sz = -1;
-  last = 0;
-  s[tot = 0] = '$';
-  node(0);
-  node(-1);
-  fail[0] = 1;
-}
+const int N = 1e6;
+const int SIGMA = 2;
 
-int getfail(int x) {  // 找后缀回文
-  while (s[tot - len[x] - 1] != s[tot]) x = fail[x];
-  return x;
-}
+int n, m;
 
-void insert(char c) {  // 建树
-  s[++tot] = c;
-  int now = getfail(last);
-  if (!ch[now][c - 'a']) {
-    int x = node(len[now] + 2);
-    fail[x] = ch[getfail(fail[now])][c - 'a'];
-    ch[now][c - 'a'] = x;
+struct node {
+  int ch[SIGMA], lnk;
+  int len;
+} t[2 * N + 5];
+int alct = 1;
+int ins(int p, int c) {
+  if (t[p].ch[c]) {
+    int q = t[p].ch[c];
+    if (t[p].len + 1 != t[q].len) {
+      int v = ++alct;
+      t[v] = t[q], t[v].len = t[p].len + 1;
+      t[q].lnk = v;
+      for (; p && t[p].ch[c] == q; p = t[p].lnk) t[p].ch[c] = v;
+      return v;
+    } else
+      return q;
   }
-  last = ch[now][c - 'a'];
-  cnt[last]++;
+  int u = ++alct;
+  t[u].len = t[p].len + 1;
+  for (; p && !t[p].ch[c]; p = t[p].lnk) t[p].ch[c] = u;
+  if (p) {
+    int q = t[p].ch[c];
+    if (t[p].len + 1 != t[q].len) {
+      int v = ++alct;
+      t[v] = t[q], t[v].len = t[p].len + 1;
+      t[q].lnk = t[u].lnk = v;
+      for (; p && t[p].ch[c] == q; p = t[p].lnk) t[p].ch[c] = v;
+    } else
+      t[u].lnk = q;
+  } else
+    t[u].lnk = 1;
+  return u;
 }
 
-long long solve() {
-  long long ans = 0;
-  for (int i = sz; i >= 0; i--) {
-    cnt[fail[i]] += cnt[i];
+int L[N + 5], f[N + 5];
+bool check(int x, int len) {
+  static int q[N + 5];
+  int hd = 1, tl = 0;
+  q[++tl] = 0;
+  for (int i = 0; i < x; i++) f[i] = 0;
+  for (int i = x; i <= len; i++) {
+    f[i] = f[i - 1];
+    while (hd <= tl && f[q[tl]] - q[tl] <= f[i - x] - (i - x)) tl--;
+    q[++tl] = i - x;
+    while (hd <= tl && q[hd] < i - L[i]) hd++;
+    if (hd <= tl) f[i] = std::max(f[i], f[q[hd]] + i - q[hd]);
   }
-  for (int i = 1; i <= sz; i++) {  // 更新答案
-    ans = max(ans, 1ll * len[i] * cnt[i]);
-  }
-  return ans;
+  return 9 * len <= 10 * f[len];
 }
-}  // namespace pam
 
-char s[maxn];
+void solve(char *s, int len) {
+  int p = 1;
+  for (int i = 0, mxl = 0; i < len; i++) {
+    while (p != 1 && !t[p].ch[s[i] - '0']) p = t[p].lnk, mxl = t[p].len;
+    if (t[p].ch[s[i] - '0'])
+      p = t[p].ch[s[i] - '0'], mxl = std::min(mxl + 1, t[p].len);
+    L[i + 1] = mxl;
+  }
+  int l = 1, r = len, ans;
+  while (l <= r) {
+    int mid = (l + r) / 2;
+    if (check(mid, len))
+      l = mid + 1, ans = mid;
+    else
+      r = mid - 1;
+  }
+  printf("%d\n", ans);
+}
 
+char buf[N + 5];
 int main() {
-  pam::clear();
-  scanf("%s", s + 1);
-  for (int i = 1; s[i]; i++) {
-    pam::insert(s[i]);
-    std::cerr << pam::last << " " << pam::cnt[pam::last] << "\n";
+  n = rd(), m = rd();
+  for (int i = 1; i <= m; i++) {
+    scanf("%s", buf);
+    int len = strlen(buf);
+    int lst = 1;
+    for (int i = 0; i < len; i++) {
+      lst = ins(lst, buf[i] - '0');
+    }
   }
-  printf("%lld\n", pam::solve());
+  for (int i = 1; i <= n; i++) {
+    scanf("%s", buf), solve(buf, strlen(buf));
+  }
   return 0;
 }
