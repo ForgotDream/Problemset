@@ -1,1 +1,5 @@
-dfccgs
+4
+aabbbb
+cccccc
+aabaabaabaa
+bbaabaababaaba

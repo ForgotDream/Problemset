@@ -2,34 +2,23 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-01-14
+ * @date    2024-01-16
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 
-constexpr int N = 2e5 + 50;
+constexpr int N = 1e6 + 50;
 
-int n;
-std::string s;
+int n, m, k;
+char s[N];
 
-int siz[N];
-
-struct GSAM {
-  int ch[N][26], link[N], len[N], cnt = 1;
-  void insert(std::string_view s) {
-    int p = 1;
-    for (auto c : s) {
-      int d = c - 'a';
-      if (!ch[p][d]) ch[p][d] = ++cnt;
-      p = ch[p][d];
-    }
-  }
-  int expand(int lst, int d) {
-    int cur = ch[lst][d];
-    if (len[cur]) return cur;
+struct SAM {
+  int ch[N][26], len[N], link[N], cnt = 1, lst = 1;
+  int expand(char c) {
+    int cur = ++cnt, d = c - 'a';
     len[cur] = len[lst] + 1;
-    int p = link[lst];
+    int p = lst;
     for (; p && !ch[p][d]; p = link[p]) ch[p][d] = cur;
     if (!p) {
       link[cur] = 1;
@@ -40,34 +29,48 @@ struct GSAM {
       } else {
         int tmp = ++cnt;
         len[tmp] = len[p] + 1, link[tmp] = link[q];
-        for (int i = 0; i < 26; i++) ch[tmp][i] = len[ch[q][i]] ? ch[q][i] : 0;
-        for (; p && ch[p][d] == q; p = link[p]) ch[p][d] = tmp;
+        memcpy(ch[tmp], ch[q], sizeof(ch[tmp]));
+        for (; p && ch[p][d] == q; q = link[q]) ch[p][d] = tmp;
         link[cur] = link[q] = tmp;
       }
     }
-    return cur;
+    return lst = cur;
   }
-  void build() {
-    std::queue<std::pair<int, int>> q;
-    for (int i = 0; i < 26; i++) if (ch[1][i]) q.emplace(1, i);
-    while (!q.empty()) {
-      auto [u, d] = q.front();
-      q.pop(), u = expand(u, d);
-      for (int i = 0; i < 26; i++) if (ch[u][i]) q.emplace(u, i);
-    }
-  }
-} gsam;
+} sam;
 
+int pos[N];
 std::vector<int> adj[N];
 
-void solve() {
-  std::cin >> n;
-  for (int i = 1; i <= n; i++) {
-    std::cin >> s, gsam.insert(s);
+int st[21][N], dfn[N], clk;
+inline int cmp(int u, int v) { return dfn[u] < dfn[v] ? u : v; }
+void dfs(int u, int frm) {
+  st[0][dfn[u] = ++clk] = frm;
+  for (auto v : adj[u]) dfs(v, u);
+}
+void init() {
+  for (int i = 1; i <= std::__lg(sam.cnt); i++) {
+    for (int j = 1; j <= sam.cnt - (1 << i) + 1; j++) {
+      st[i][j] = cmp(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+    }
   }
-  gsam.build();
+}
+inline int getLCA(int u, int v) {
+  if (u == v) return u;
+  u = dfn[u], v = dfn[v];
+  if (u > v) std::swap(u, v);
+  int d = std::__lg(v - u++);
+  return cmp(st[d][u], st[d][v - (1 << d) + 1]);
+}
 
-  for (int i = 2; i <= gsam.cnt; i++) adj[gsam.link[i]].push_back(i);
+void solve() {
+  std::cin >> n >> m >> k >> (s + 1);
+
+  for (int i = 1; i <= n; i++) pos[i] = sam.expand(s[i]);
+  for (int i = 2; i <= sam.cnt; i++) adj[sam.link[i]].push_back(i);
+  
+  for (int l, r, i = 1; i <= m; i++) {
+    std::cin >> l >> r;
+  }
 }
 
 signed main() {
@@ -76,6 +79,6 @@ signed main() {
   int t = 1;
   // std::cin >> t;
   while (t--) solve();
-
+  
   return 0;
 }
