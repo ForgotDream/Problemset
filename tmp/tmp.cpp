@@ -2,21 +2,22 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-01-20
+ * @date    2024-01-21
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
+using u32 = unsigned;
 
 void solve() {
 }
 
-signed main() {
+int main() {
   std::cin.tie(nullptr)->sync_with_stdio(false);
 
   int t = 1;
   // std::cin >> t;
   while (t--) solve();
-  
+
   return 0;
 }
