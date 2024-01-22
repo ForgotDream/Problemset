@@ -37,15 +37,39 @@ struct SAM {
     }
     return lst = cur;
   }
-} sam;
 
-std::vector<int> adj[N];
+  std::vector<int> adj[N];
+  i64 sum[N];
+
+  void dfs(int u) {
+    for (auto v : adj[u]) dfs(v), siz[u] += siz[v], sum[u] += sum[v];
+    sum[u] += 1ll * len[u] * siz[u];
+  }
+
+  void init() {
+    for (int i = 2; i <= cnt; i++) adj[link[i]].push_back(i);
+    dfs(1);
+  }
+
+  i64 calc(std::string_view s) {
+    int p = 1, cur = 0, res = 0;
+    for (auto c : s) {
+      int d = c - 'a';
+      while (p != 1 && !ch[p][d]) p = link[p], cur = len[p];
+      if (ch[p][d]) {
+        p = ch[p][d], cur = std::min(cur + 1, len[p]);
+        res += sum[p] - siz[p] * (len[p] - cur);
+      }
+    }
+    return res;
+  }
+} sam;
 
 void solve() {
   std::cin >> s >> t;
   for (auto c : s) sam.expand(c - 'a');
-
-  for (int i = 2; i <= sam.cnt; i++) adj[sam.link[i]].push_back(i);
+  sam.init();
+  std::cout << sam.calc(t) << "\n";
 }
 
 int main() {
