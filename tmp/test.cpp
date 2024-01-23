@@ -1,97 +1,113 @@
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <queue>
-#define space putchar(' ')
-#define enter putchar('\n')
-using namespace std;
-typedef long long ll;
-template <class T>
-void read(T &x) {
-  char c;
-  bool op = 0;
-  while (c = getchar(), c < '0' || c > '9')
-    if (c == '-') op = 1;
-  x = c - '0';
-  while (c = getchar(), c >= '0' && c <= '9') x = x * 10 + c - '0';
-  if (op) x = -x;
-}
-template <class T>
-void write(T x) {
-  if (x < 0) putchar('-'), x = -x;
-  if (x >= 10) write(x / 10);
-  putchar('0' + x % 10);
-}
-
-const int INF = 0x3f3f3f3f;
-int n, m, K, root, f[101][1111], a[101], ans[11][11];
-bool inq[101];
-typedef pair<int, int> par;
-typedef pair<par, int> rec;
-#define fi first
-#define se second
-#define mp make_pair
-#define num(u) (u.fi * m + u.se)
-rec pre[101][1111];
-const int dx[] = {0, 0, -1, 1};
-const int dy[] = {1, -1, 0, 0};
-queue<par> que;
-
-bool legal(par u) { return u.fi >= 0 && u.se >= 0 && u.fi < n && u.se < m; }
-void spfa(int now) {
-  while (!que.empty()) {
-    par u = que.front();
-    que.pop();
-    inq[num(u)] = 0;
-    for (int d = 0; d < 4; d++) {
-      par v = mp(u.fi + dx[d], u.se + dy[d]);
-      int nu = num(u), nv = num(v);
-      if (legal(v) && f[nv][now] > f[nu][now] + a[nv]) {
-        f[nv][now] = f[nu][now] + a[nv];
-        if (!inq[nv]) inq[nv] = 1, que.push(v);
-        pre[nv][now] = mp(u, now);
-      }
+// luogu-judger-enable-o2
+#include <cassert>
+#include<cstdio>
+#include<algorithm>
+#include <iostream>
+using namespace std;const int N=1e6+10;typedef long long ll;char mde[N];int n;int nl;int nr;int m;
+struct suffixautomaton//简易后缀自动机板子 
+{
+    int mp[N][27];int ct;int fa[N];int len[N];int n;
+    inline int& operator [](const int& x){return len[x];}
+    inline void ih(int x){n=x;for(int i=1;i<=n;i++)len[i]=i;ct=n+1;}
+    inline void clr()
+    {
+        for(int i=1;i<=ct;i++)for(int j=1;j<=26;j++)mp[i][j]=0;
+        for(int i=1;i<=ct;i++)fa[i]=0;for(int i=1;i<=ct;i++)len[i]=0;
     }
-  }
-}
-void dfs(par u, int now) {
-  if (!pre[num(u)][now].se) return;
-  ans[u.fi][u.se] = 1;
-  int nu = num(u);
-  if (pre[nu][now].fi == u) dfs(u, now ^ pre[nu][now].se);
-  dfs(pre[nu][now].fi, pre[nu][now].se);
-}
-
-int main() {
-  read(n), read(m);
-  memset(f, 0x3f, sizeof(f));
-  for (int i = 0, tot = 0; i < n; i++)
-    for (int j = 0; j < m; j++) {
-      read(a[tot]);
-      if (!a[tot]) f[tot][1 << (K++)] = 0, root = tot;
-      tot++;
+    inline void ins(int x,int c)
+    {
+        int p=(x==1)?n+1:x-1;for(;p&&mp[p][c]==0;p=fa[p])mp[p][c]=x;
+        if(p==0){fa[x]=n+1;return;}int q=mp[p][c];
+        if(len[q]==len[p]+1){fa[x]=q;return;}len[++ct]=len[p]+1;
+        for(int i=1;i<=26;i++)mp[ct][i]=mp[q][i];
+        for(;p&&mp[p][c]==q;p=fa[p])mp[p][c]=ct;fa[ct]=fa[q];fa[q]=fa[x]=ct;
     }
-  for (int now = 1; now < (1 << K); now++) {
-    for (int i = 0; i < n * m; i++) {
-      for (int s = now & (now - 1); s; s = now & (s - 1))
-        if (f[i][now] > f[i][s] + f[i][now ^ s] - a[i]) {
-          f[i][now] = f[i][s] + f[i][now ^ s] - a[i];
-          pre[i][now] = mp(mp(i / m, i % m), s);
-        }
-      if (f[i][now] < INF) que.push(mp(i / m, i % m)), inq[i] = 1;
+};
+namespace SM
+{
+    suffixautomaton sam;int s[40*N][2];int va[40*N];int cnt;
+    int v[N];int x[N];int al[N];int ct;
+    inline void add(int u,int V){v[++ct]=V;x[ct]=al[u];al[u]=ct;}
+    # define mov(p,c) (p=sam.mp[p][c])
+    # define jup(p) (p=sam.fa[p])
+    inline void ins(int p,int l,int r,int pos) 
+    {
+        va[p]=pos;if(r-l==1){return;}int mid=(l+r)/2;
+        if(pos<=mid)ins(s[p][0]=++cnt,l,mid,pos);else ins(s[p][1]=++cnt,mid,r,pos);
     }
-    spfa(now);
-  }
-  write(f[root][(1 << K) - 1]), enter;
-  dfs(mp(root / m, root % m), (1 << K) - 1);
-  for (int i = 0, tot = 0; i < n; i++) {
-    for (int j = 0; j < m; j++)
-      if (!a[tot++])
-        putchar('x');
-      else
-        putchar(ans[i][j] ? 'o' : '_');
-    enter;
-  }
-
-  return 0;
+    inline int mg(int p1,int p2,int isr)//这里的合并是可持久化的，不会销毁任意一颗线段树 
+    {
+        int nw=(isr)?p1:++cnt;
+        if(s[p1][0]&&s[p2][0])s[nw][0]=mg(s[p1][0],s[p2][0],0);
+            else s[nw][0]=(s[p2][0])?s[p2][0]:s[p1][0];
+        if(s[p1][1]&&s[p2][1])s[nw][1]=mg(s[p1][1],s[p2][1],0);
+            else s[nw][1]=(s[p2][1])?s[p2][1]:s[p1][1];
+        va[nw]=max(va[s[nw][0]],va[s[nw][1]]);return nw;
+    }
+    inline int qry(int p,int l,int r,int dl,int dr)//查询区间最大值 
+    {
+        if((p==0)||(dl==l&&r==dr))return va[p];int mid=(l+r)/2;int res=0;
+        if(dl<mid)res=max(res,qry(s[p][0],l,mid,dl,min(dr,mid)));
+        if(mid<dr)res=max(res,qry(s[p][1],mid,r,max(dl,mid),dr));
+        return res;
+    }
+    inline void dfs(int u){for(int i=al[u];i;i=x[i])dfs(v[i]),mg(u,v[i],1);}
+    inline void build()
+    {
+        sam.ih(n);for(int i=1;i<=n;i++)sam.ins(i,mde[i]-'a'+1);
+        cnt=sam.ct;for(int i=1;i<=sam.ct;i++)add(sam.fa[i],i);
+        for(int i=1;i<=n;i++)ins(i,0,n,i);dfs(n+1);
+    }
+    inline void trs(int& p,const int& c,int& len)//暴力跳fail树进行转移 
+    {
+        for(;p!=n+1;jup(p),len=sam[p])
+            if(sam.mp[p][c])
+            {
+                int mle=qry(sam.mp[p][c],0,n,0,nr)-nl+1;
+                if(sam[sam.fa[p]]<mle){len=min(len+1,mle);mov(p,c);return;}
+            }
+        if(p==n+1&&(sam.mp[p][c]==0||qry(sam.mp[p][c],0,n,0,nr)<nl)){len=0;return;}
+        assert(p == n + 1);
+        mov(p,c);len++;
+    }
+    # undef mov
+    # undef jup
+}
+namespace SM2
+{
+    suffixautomaton sam;char mde[N];int le;
+    int v[N];int x[N];int al[N];int ct;int mx[N];
+    inline void add(int u,int V){v[++ct]=V;x[ct]=al[u];al[u]=ct;}
+    # define mov(p,c) (p=sam.mp[p][c])
+    # define jup(p) (p=sam.fa[p])
+    inline void build()
+    {
+        for(int i=1;i<=sam.ct;i++)al[i]=0;ct=0;sam.clr();scanf("%s",mde+1);
+        scanf("%d%d",&nl,&nr);le=1;for(;mde[le+1]!='\0';le++);sam.ih(le);
+        for(int i=1;i<=le;i++)sam.ins(i,mde[i]-'a'+1);
+        for(int i=1;i<=sam.ct;i++)add(sam.fa[i],i),mx[i]=sam[sam.fa[i]];
+    }
+    inline void aju(int p,const int& lim)//打标记 
+    {
+        for(;p!=le+1&&sam[sam.fa[p]]>=lim;jup(p));
+        for(;p!=le+1&&sam[p]>mx[p];jup(p))mx[p]=max(mx[p],min(sam[p],lim));
+    }
+    inline ll dfs(int u)
+    {ll ret=0;for(int i=al[u];i;i=x[i])ret+=mx[v[i]]-sam[u]+dfs(v[i]);return ret;}
+    inline ll dfs2(int u)
+    {ll ret=0;for(int i=al[u];i;i=x[i])ret+=sam[v[i]]-sam[u]+dfs2(v[i]);return ret;}
+    inline void solve(int z)
+    {
+        for(int i=1,p1=n+1,p2=le+1,nle=0;i<=le;i++)
+            mov(p2,mde[i]-'a'+1),SM::trs(p1,mde[i]-'a'+1,nle),aju(p2,nle);
+        printf("%lld\n",dfs2(le+1)-dfs(le+1));
+        std::cerr << dfs(le + 1) << "\n";
+    }
+    # undef mov
+    # undef jup
+}
+int main()
+{
+    scanf("%s",mde+1);for(n=1;mde[n+1]!='\0';n++);SM::build();scanf("%d",&m);
+    for(int i=1;i<=m;i++)SM2::build(),SM2::solve(i);return 0;//拜拜程序~ 
 }
