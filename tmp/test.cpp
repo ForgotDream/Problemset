@@ -1,149 +1,136 @@
-#include <algorithm>
-#include <cctype>
 #include <cstdio>
-#include <cstring>
 #include <iostream>
-#include <queue>
-#include <vector>
+#define N 100010
+#define kar k[i].ar
+#define trar tr[i].ar
+#define min(a, b) (a < b ? a : b)
 using namespace std;
-int read() {
-  int x = 0, f = 1;
-  char ch = getchar();
-  while (!isdigit(ch)) {
-    if (ch == '-') f = -1;
-    ch = getchar();
-  }
-  while (isdigit(ch)) {
-    x = x * 10 + ch - '0';
-    ch = getchar();
-  }
-  return x * f;
+int a, b, t, n, m, f[N], ans, trl;
+struct node {
+  int next, ar, flow;
+} k[N * 20], tr[N * 20];
+int trf[N], ss;
+int first[N], dis[N], len;
+int x[N], y[N], v[N], e[N];
+int t1[N], t2[N], tl1, tl2;
+void add(int a, int b, int t) {
+  len++;
+  k[len].ar = b;
+  k[len].next = first[a];
+  first[a] = len;
+  k[len].flow = t;
 }
-const int MAX = 233;
-const int MAXN = 466;
-const int inf = 100000000;
-int n, m, s, t;
-int b[MAX], p[MAX], ans[MAX], ans2[MAX];
-vector<int> a[MAX][MAX];
-struct edge {
-  int to, cap, rev;
-  edge() {}
-  edge(int a, int b, int c) { to = a, cap = b, rev = c; }
-};
-struct Graph {
-  vector<edge> e[MAXN];
-  queue<int> que;
-  int dis[MAXN];
-  void addedge(int u, int v, int cap) {
-    e[u].push_back(edge(v, cap, e[v].size()));
-    e[v].push_back(edge(u, 0, e[u].size() - 1));
-  }
-  void deledge(int x) { e[x].pop_back(); }
-  bool bfs() {
-    memset(dis, -1, sizeof dis);
-    que.push(s);
-    dis[s] = 0;
-    while (!que.empty()) {
-      int u = que.front();
-      que.pop();
-      for (vector<edge>::iterator i = e[u].begin(); i != e[u].end(); i++)
-        if (i->cap && dis[i->to] < 0) {
-          dis[i->to] = dis[u] + 1;
-          que.push(i->to);
-        }
-    }
-    return dis[t] != -1;
-  }
-  int dfs(int u, int f) {
-    if (u == t) return f;
-    for (vector<edge>::iterator i = e[u].begin(); i != e[u].end(); i++)
-      if (i->cap && dis[i->to] > dis[u]) {
-        int d = dfs(i->to, min(f, i->cap));
-        if (d) {
-          i->cap -= d;
-          e[i->to][i->rev].cap += d;
-          return d;
-        }
+void adtr(int a, int b, int t) {
+  trl++;
+  tr[trl].ar = b;
+  tr[trl].next = trf[a];
+  trf[a] = trl;
+  tr[trl].flow = t;
+}
+int head, tail, d[N];
+bool bfs() {
+  head = 0, tail = 1;
+  d[0] = a;
+  for (int i = 0; i <= n; i++) dis[i] = 0;
+  dis[a] = 1;
+  while (head < tail) {
+    t = d[head];
+    head++;
+    for (int i = first[t]; i; i = k[i].next) {
+      if (dis[kar] == 0 && k[i].flow > 0) {
+        dis[kar] = dis[t] + 1;
+        if (kar == b) return true;
+        d[tail] = kar;
+        tail++;
       }
-    return 0;
+    }
   }
-  void clear() {
-    for (int i = 1; i <= n + m + 2; i++) e[i].clear();
+  return false;
+}
+int dfs(int xx, int flow) {
+  if (xx == b) return flow;
+  if (flow == 0) return 0;
+  if (dis[xx] >= dis[b]) return 0;
+  int h, s = 0;
+  for (int i = first[xx]; i > 1; i = k[i].next) {
+    if (flow == 0) {
+      dis[xx] = 0;
+      break;
+    }
+    if (dis[kar] == dis[xx] + 1 && k[i].flow > 0) {
+      h = dfs(kar, min(flow, k[i].flow));
+      s += h;
+      flow -= h;
+      k[i].flow -= h;
+      k[i ^ 1].flow += h;
+      if (h == 0) dis[kar] = 0;
+    }
   }
-} G[233], tG;
-void solveq1() {
-  for (int i = 1; i <= m; i++) G[0].addedge(i + n, t, b[i]);
-  for (int i = 1; i <= n; i++) {
-    G[i] = G[i - 1];
-    G[i].addedge(s, i, 1);
-    for (int j = 1; j <= m; j++) {
-      for (vector<int>::iterator k = a[i][j].begin(); k != a[i][j].end(); k++)
-        G[i].addedge(i, *k + n, 1);
-      if (G[i].bfs()) {
-        G[i].dfs(s, inf);
-        ans[i] = j;
-        break;
+  return s;
+}
+void dinic() {
+  for (int i = 0; i <= n; i++) {
+    dis[i] = 0;
+    first[i] = 0;
+  }
+  len = 1, ans = 0;
+  for (int i = 1; i <= m; i++)
+    add(x[i], y[i], f[i]), add(y[i], x[i], f[i]);
+  while (bfs()) ans += dfs(a, 0x7ffffff);
+}
+void build(int l, int r) {
+  if (l >= r) return;
+  a = v[l];
+  b = v[l + 1];
+  dinic();
+  adtr(a, b, ans);
+  adtr(b, a, ans);
+  int tl1 = 0, tl2 = 0;
+  for (int i = l; i <= r; i++) {
+    if (dis[v[i]])
+      tl1++, t1[tl1] = v[i];
+    else
+      tl2++, t2[tl2] = v[i];
+  }
+  std::cerr << a << " " << b << " " << ans << "\n";
+  for (int i = 1; i <= tl1; i++) v[i + l - 1] = t1[i];
+  for (int i = 1; i <= tl2; i++) v[l + tl1 + i - 1] = t2[i];
+  build(l, tl1 + l - 1);
+  build(l + tl1, r);
+}
+int findans() {
+  head = 0, tail = 1;
+  d[head] = a;
+  for (int i = 0; i <= n; i++) dis[i] = 0;
+  dis[a] = 0x7ffffff;
+  while (head < tail) {
+    t = d[head];
+    head++;
+    for (int i = trf[t]; i; i = tr[i].next) {
+      if (dis[trar] == 0) {
+        dis[trar] = min(dis[t], tr[i].flow + 1);
+        if (trar == b) return dis[b] - 1;
+        d[tail] = trar;
+        tail++;
       }
-      for (vector<int>::iterator k = a[i][j].begin(); k != a[i][j].end(); k++)
-        G[i].deledge(i), G[i].deledge(*k + n);
     }
   }
-  for (int i = 1; i <= n; i++) {
-    if (!ans[i]) ans[i] = m + 1;
-    printf("%d ", ans[i]);
-  }
-  putchar('\n');
-}
-bool check(int u, int x) {
-  tG = G[x - 1];
-  tG.addedge(s, u, 1);
-  for (int i = 1; i <= p[u]; i++)
-    for (vector<int>::iterator j = a[u][i].begin(); j != a[u][i].end(); j++)
-      tG.addedge(u, *j + n, 1);
-  if (tG.bfs())
-    return 1;
-  else
-    return 0;
-}
-void solveq2() {
-  for (int i = 1; i <= n; i++) {
-    if (ans[i] <= p[i]) continue;
-    ans2[i] = 1000;
-    int l = 1, r = i - 1;
-    while (r >= l) {
-      int mid = (l + r) >> 1;
-      if (check(i, mid))
-        ans2[i] = mid, l = mid + 1;
-      else
-        r = mid - 1;
-    }
-    if (ans2[i] && ans2[i] != 1000) ans2[i] = i - ans2[i];
-  }
-  for (int i = 1; i <= n; i++) printf("%d ", ans2[i] == 1000 ? i : ans2[i]);
-  putchar('\n');
-}
-void init() {
-  for (int i = 1; i <= n; i++)
-    for (int j = 1; j <= m; j++) a[i][j].clear();
-  for (int i = 1; i <= n; i++) ans[i] = ans2[i] = 0;
-  G[0].clear();
-}
-void solve() {
-  n = read(), m = read();
-  init();
-  for (int i = 1; i <= m; i++) b[i] = read();
-  for (int i = 1; i <= n; i++)
-    for (int j = 1; j <= m; j++) {
-      int x = read();
-      if (x) a[i][x].push_back(j);
-    }
-  for (int i = 1; i <= n; i++) p[i] = read();
-  s = n + m + 1, t = s + 1;
-  solveq1();
-  solveq2();
+  return dis[b] - 1;
 }
 int main() {
-  int T = read(), C = read();
-  while (T--) solve();
+  int T;
+  len = 1;
+  scanf("%d%d", &n, &m);
+  for (int i = 1; i <= m; i++) {
+    scanf("%d%d%d", &a, &b, &t);
+    x[i] = a, y[i] = b, f[i] = t;
+  }
+  for (int i = 0; i <= n; i++) v[i] = i;
+  build(0, n);
+  scanf("%d", &T);
+  while (T--) {
+    scanf("%d%d", &a, &b);
+    printf("%d\n", findans());
+  }
   return 0;
 }
