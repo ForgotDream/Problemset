@@ -1,64 +1,61 @@
 #include <bits/stdc++.h>
-#define rap(i, s, n) for (int i = s; i <= n; i++)
-#define drap(i, n, s) for (int i = n; i >= s; i--)
-#define N 5111
-#define Q 100000000
-#define ll long long
-#define m(s, k) memset(s, k, sizeof s)
-char xA[1 << 16], xZ[20];
-int xC = -1, xzz = 0;
-inline void wt_z() { fwrite(xA, 1, xC + 1, stdout), xC = -1; }
-template <class T>
-inline void wt(T x, int t) {
-  if (xC > (1 << 15)) wt_z();
-  while (xZ[++xzz] = (char)(x % 10 + '0'), (x /= 10) || (t > 0)) --t;
-  while (xA[++xC] = xZ[xzz], --xzz);
-}
-// 得益于luogu的代码公开计划我可以愉快地抄大佬的快输板子了（不算抄袭吧QAQ）
 using namespace std;
-ll res[N], a[N], d[N];
-int sz1, sz2;
-int cheng(ll *a, int n, ll *b, int m) {
-  m(d, 0);
-  rap(i, 0, n) rap(j, 0, m) d[i + j] += a[i] * b[j];
-  rap(i, 0, n + m) d[i + 1] += d[i] / Q, d[i] %= Q;
-  int t = n + m + 1;
-  while (d[t]) d[t + 1] += d[t] / Q, d[t] %= Q, t++;
-  t--;
-  rap(i, 0, t) a[i] = d[i];
-  return t;
-}
-// 非常暴力又写的不是一般难看的乘
-int main() {
-  int n, m;
-  scanf("%d", &m);
-  rap(i, 1, m) {
-    scanf("%d", &n);
-    int t = n + 1;
-    m(res, 0);
-    res[0] = 1;
-    m(a, 0);
-    a[0] = 2;
-    sz1 = sz2 = 0;
-    while (t) {
-      if (t & 1) sz1 = cheng(res, sz1, a, sz2);
-      t >>= 1;
-      if (t) sz2 = cheng(a, sz2, a, sz2);
-    }
-    if (n & 1) res[0]++;
-    res[0] -= 2;
-    if (res[0] < 0) res[0] += Q, res[1]--;
-    ll k = 0;
-    drap(i, sz1, 0) {
-      k = k * Q + res[i];
-      res[i] = k / 3;
-      k %= 3;
-    }
-    while (res[sz1] == 0) sz1--;
-    wt(res[sz1], 0);
-    drap(i, sz1 - 1, 0) wt(res[i], 7);
-    xA[++xC] = '\n';
-    wt_z();
+const int N = 4.2e6;
+const double PI = acos(-1);
+int n, r[N];
+struct Complex {
+  double r, i;
+  inline Complex operator+(Complex &x) { return {r + x.r, i + x.i}; }
+  inline Complex operator-(Complex &x) { return {r - x.r, i - x.i}; }
+  inline Complex operator*(Complex &x) {
+    return {r * x.r - i * x.i, r * x.i + i * x.r};
   }
+  inline void operator+=(Complex &x) {
+    r += x.r;
+    i += x.i;
+  }
+  inline void operator*=(Complex &x) {
+    double t = r;
+    r = r * x.r - i * x.i;
+    i = t * x.i + i * x.r;
+  }
+} f[N], g[N];
+inline void FFT(Complex a[], int op) {
+  for (int i = 0; i < n; i++)  // 根据映射关系交换元素
+    if (i < r[i]) {
+      auto t = a[i];
+      a[i] = a[r[i]];
+      a[r[i]] = t;
+    }
+  for (int i = 1; i < n; i <<= 1) {
+    Complex W = {cos(PI / i), sin(PI / i) * op};
+    for (int j = 0; j < n; j += i << 1)  // 控制一层中的子问题个数
+    {
+      Complex w = {1, 0};
+      for (int k = 0; k < i; k++, w *= W) {
+        auto t = a[i + j + k] * w;
+        a[i + j + k] = a[j + k] - t;
+        a[j + k] += t;
+        // 蝴蝶操作
+      }
+    }
+  }
+}
+int main() {
+  std::ios_base::sync_with_stdio(0);
+  std::cin.tie(0);
+  std::cout.tie(0);
+  int m, l = 0;
+  std::cin >> n >> m;
+  for (int i = 0; i <= n; i++) std::cin >> f[i].r;
+  for (int i = 0; i <= m; i++) std::cin >> g[i].r;
+  for (m += n, n = 1; n <= m; n <<= 1, l++);
+  for (int i = 0; i < n; i++) r[i] = (r[i >> 1] >> 1) | ((i & 1) << (l - 1));
+  FFT(f, 1);
+  FFT(g, 1);
+  for (int i = 0; i < n; i++) f[i] *= g[i];
+  FFT(f, -1);
+  std::cout << std::fixed << std::setprecision(0);
+  for (int i = 0; i <= m; i++) std::cout << (fabs(f[i].r) / n) << ' ';
   return 0;
 }
