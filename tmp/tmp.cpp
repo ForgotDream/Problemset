@@ -26,6 +26,10 @@ void solve() {
 
   i64 ans = (1ll << (__builtin_popcount(C) - 1)) % M * (1ll << p) % M;
   std::cout << ans << "\n";
+
+  for (int i = 1; i <= n; i++) {
+    
+  }
 }
 
 int main() {
