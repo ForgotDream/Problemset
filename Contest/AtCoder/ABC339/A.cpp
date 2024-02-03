@@ -1,17 +1,14 @@
-/*
- * @file    
- * @author  ForgotDream
- * @brief   
- * @date    2024-02-03
- */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 using u32 = unsigned;
 
-constexpr int N = 1e5 + 50;
+std::string s;
 
 void solve() {
+  std::cin >> s;
+  auto it = std::find(s.rbegin(), s.rend(), '.');
+  std::cout << std::string(it.base(), s.end()) << "\n";
 }
 
 int main() {

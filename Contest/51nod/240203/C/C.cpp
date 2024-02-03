@@ -1,17 +1,12 @@
-/*
- * @file    
- * @author  ForgotDream
- * @brief   
- * @date    2024-02-03
- */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 using u32 = unsigned;
 
-constexpr int N = 1e5 + 50;
+int n, m, k;
 
 void solve() {
+  std::cin >> n >> m >> k;
 }
 
 int main() {
