@@ -1,7 +1,7 @@
 /*
- * @file    
+ * @file    P4725 【模板】多项式对数函数（多项式 ln）.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   Math + NTT
  * @date    2024-02-05
  */
 #include <bits/stdc++.h>
@@ -10,8 +10,8 @@ using i64 = long long;
 using u32 = unsigned;
 using iter = std::vector<i64>::iterator;
 
-constexpr int N = 5e5 + 50;
-constexpr int mod = 1004535809, g0 = 3;
+constexpr int N = 4e5 + 50;
+constexpr int mod = 998244353, g0 = 3;
 
 inline i64 fast_pow(i64 base, i64 exp, i64 mod) {
   i64 res = 1;
@@ -118,27 +118,17 @@ std::vector<i64> ln(iter beg, iter end) {
 
 int n;
 
-i64 fac[N], ifc[N];
-
 void solve() {
   std::cin >> n;
 
-  fac[0] = ifc[0] = 1;
-  for (int i = 1; i <= n + 1; i++) fac[i] = i * fac[i - 1] % mod;
-  ifc[n + 1] = fast_pow(fac[n + 1], mod - 2, mod);
-  for (int i = n; i; i--) ifc[i] = (i + 1) * ifc[i + 1] % mod;
+  std::vector<i64> f(n);
+  for (auto &i : f) std::cin >> i;
 
-  int len = expand(n + 1);
-  init(len);
+  int len = expand(n);
+  init(len), f.resize(len);
 
-  std::vector<i64> f(len);
-  for (int i = 0; i <= n; i++) {
-    i64 d = i * (i + 1) / 2 % (mod - 1);
-    f[i] = fast_pow(2, d, mod) * ifc[i] % mod;
-  }
-
-  f = ln(f.begin(), f.end());
-  std::cout << f[n] << "\n";
+  auto l = ln(f.begin(), f.end());
+  for (int i = 0; i < n; i++) std::cout << l[i] << " \n"[i == n - 1];
 }
 
 int main() {

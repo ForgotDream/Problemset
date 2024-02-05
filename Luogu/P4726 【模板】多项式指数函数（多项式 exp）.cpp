@@ -1,7 +1,7 @@
 /*
- * @file    
+ * @file    P4726 【模板】多项式指数函数（多项式 exp）.cpp
  * @author  ForgotDream
- * @brief   
+ * @brief   Math + NTT
  * @date    2024-02-05
  */
 #include <bits/stdc++.h>
@@ -10,8 +10,8 @@ using i64 = long long;
 using u32 = unsigned;
 using iter = std::vector<i64>::iterator;
 
-constexpr int N = 5e5 + 50;
-constexpr int mod = 1004535809, g0 = 3;
+constexpr int N = 4e5 + 50;
+constexpr int mod = 998244353, g0 = 3;
 
 inline i64 fast_pow(i64 base, i64 exp, i64 mod) {
   i64 res = 1;
@@ -116,29 +116,45 @@ std::vector<i64> ln(iter beg, iter end) {
   return integrate(d.begin(), d.begin() + len);
 }
 
-int n;
+std::vector<i64> exp(iter beg, iter end) {
+  int len = end - beg;
 
-i64 fac[N], ifc[N];
+  std::vector<i64> g(len << 1), h(len << 1);
+  g[0] = 1;
+
+  for (int j = 2; j <= len; j <<= 1) {
+    int k = j << 1;
+    std::copy(beg, beg + j, h.begin());
+    std::fill(h.begin() + j, h.begin() + k, 0);
+
+    auto l = ln(g.begin(), g.begin() + j);
+    for (int i = 0; i < j; i++) l[i] = (h[i] - l[i] + mod) % mod;
+    l[0] = (l[0] + 1) % mod, l.resize(k);
+
+    ntt(g.begin(), g.begin() + k, 1);
+    ntt(l.begin(), l.begin() + k, 1);
+    for (int i = 0; i < k; i++) g[i] = g[i] * l[i] % mod;
+    ntt(g.begin(), g.begin() + k, -1);
+
+    std::fill(g.begin() + j, g.begin() + k, 0);
+  }
+
+  return g;
+}
+
+int n;
 
 void solve() {
   std::cin >> n;
 
-  fac[0] = ifc[0] = 1;
-  for (int i = 1; i <= n + 1; i++) fac[i] = i * fac[i - 1] % mod;
-  ifc[n + 1] = fast_pow(fac[n + 1], mod - 2, mod);
-  for (int i = n; i; i--) ifc[i] = (i + 1) * ifc[i + 1] % mod;
+  std::vector<i64> f(n);
+  for (auto &i : f) std::cin >> i;
 
-  int len = expand(n + 1);
-  init(len);
+  int len = expand(n);
+  init(len), f.resize(len);
 
-  std::vector<i64> f(len);
-  for (int i = 0; i <= n; i++) {
-    i64 d = i * (i + 1) / 2 % (mod - 1);
-    f[i] = fast_pow(2, d, mod) * ifc[i] % mod;
-  }
-
-  f = ln(f.begin(), f.end());
-  std::cout << f[n] << "\n";
+  auto l = exp(f.begin(), f.end());
+  for (int i = 0; i < n; i++) std::cout << l[i] << " \n"[i == n - 1];
 }
 
 int main() {
