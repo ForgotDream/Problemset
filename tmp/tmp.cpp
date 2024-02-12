@@ -2,24 +2,24 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-02-07
+ * @date    2024-02-11
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 using u32 = unsigned;
 
-constexpr int N = 21, mod = 998244353;
+constexpr int N = 1e5 + 50;
 
-int n, m, p;
-std::vector<int> adj[N];
+int f[N];
+
+void manacher(char *s, int len) {
+  for (int i = 1; i <= len; i++) {
+    
+  }
+}
 
 void solve() {
-  std::cin >> n >> m >> p;
-  for (int i = 1, u, v; i <= m; i++) {
-    std::cin >> u >> v, u--, v--;
-    adj[u].push_back(v), adj[v].push_back(u);
-  }
 }
 
 int main() {
