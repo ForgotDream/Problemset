@@ -2,37 +2,33 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-02-12
+ * @date    2024-02-13
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 using u32 = unsigned;
 
-constexpr int N = 305;
+constexpr int N = 5050;
 
-int n, m, p;
+int n;
+bool typ[N];
+std::vector<int> adj[N];
 
-i64 c[N][N], f[N][N];
+void dfs(int u, int frm) {
 
-void init(int _n) {
-  for (int i = 0; i <= _n; i++) {
-    c[i][0] = 1;
-    for (int j = 1; j <= i; j++) {
-      c[i][j] = (c[i - 1][j - 1] + c[i - 1][j]) % p;
-    }
-  }
 }
 
 void solve() {
-  std::cin >> n >> m >> p;
-
+  std::cin >> n;
   for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      for (int k = 0; k < j; k++) {
-        f[i][j] += f[k][j - 1] * f[]
-      }
-    }
+    char c;
+    std::cin >> c;
+    typ[i] = c - '0';
+  }
+  for (int i = 1, u, v; i < n; i++) {
+    std::cin >> u >> v;
+    adj[u].push_back(v), adj[v].push_back(u);
   }
 }
 
