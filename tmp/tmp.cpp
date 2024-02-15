@@ -2,7 +2,7 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-02-13
+ * @date    2024-02-14
  */
 #include <bits/stdc++.h>
 
@@ -16,7 +16,10 @@ bool typ[N];
 std::vector<int> adj[N];
 
 void dfs(int u, int frm) {
-
+  for (auto v : adj[u]) {
+    if (v == frm) continue;
+    dfs(v, u);
+  }
 }
 
 void solve() {
