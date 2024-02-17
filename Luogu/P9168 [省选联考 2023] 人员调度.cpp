@@ -1,8 +1,8 @@
 /*
- * @file    
+ * @file    P9168 [省选联考 2023] 人员调度.cpp
  * @author  ForgotDream
- * @brief   
- * @date    2024-02-16
+ * @brief   Segment Tree + HLD + Divide and Conquer
+ * @date    2024-02-15
  */
 #include <bits/stdc++.h>
 
