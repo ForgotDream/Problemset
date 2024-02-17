@@ -253,6 +253,8 @@ void traverse(int s, int t, int u) {
   while (ins_cnt--) rollback();
 }
 
+constexpr int N = 1e5 + 50;
+
 void solve() {
   a[0].v = 1e9;
 
