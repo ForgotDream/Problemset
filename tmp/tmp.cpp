@@ -2,12 +2,16 @@
  * @file    
  * @author  ForgotDream
  * @brief   
- * @date    2024-02-22
+ * @date    2024-02-23
  */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 using u32 = unsigned;
+
+struct SegTree {
+  
+};
 
 void solve() {
 }

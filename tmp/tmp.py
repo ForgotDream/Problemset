@@ -1,15 +1,15 @@
-import sys
+import math
 
-sys.set_int_max_str_digits(35000)
+n = int(input())
 
-t = int(input())
+ans = 0
 
-for _ in range(0, t):
-    n = int(input())
-    ans = 0
-    for i in range(0, n, 2):
-        ans += 2 ** i
-    if n % 2 == 0:
-        ans *= 2
-    print(ans)
-    
+for i in range(0, n):
+    ans += 2 * math.factorial(i)
+
+ans -= 1
+
+for i in range(2, n + 1):
+    ans -= (i - 1) * math.factorial(n - i)
+
+print(math.factorial(n) - ans)
