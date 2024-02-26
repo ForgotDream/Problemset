@@ -1,21 +1,18 @@
-/*
- * @file    
- * @author  ForgotDream
- * @brief   
- * @date    2024-02-26
- */
 #include <bits/stdc++.h>
 
 using i64 = long long;
 using u32 = unsigned;
 
-constexpr int N = 550;
-
-int n;
-i64 p;
+std::string s;
 
 void solve() {
-  std::cin >> n >> p;
+  std::cin >> s;
+  for (char c = 'a'; c <= 'z'; c++) {
+    if (std::count(s.begin(), s.end(), c) == 1) {
+      std::cout << std::find(s.begin(), s.end(), c) - s.begin() + 1 << "\n";
+      return;
+    }
+  }
 }
 
 int main() {
