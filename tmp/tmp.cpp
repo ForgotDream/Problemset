@@ -9,7 +9,15 @@
 using i64 = long long;
 using u32 = unsigned;
 
+constexpr int N = 1e5 + 50;
+
+int n, m;
+
 void solve() {
+  std::cin >> n >> m;
+  for (int i = 1; i <= n; i++) {
+
+  }
 }
 
 int main() {
