@@ -9,6 +9,23 @@
 using i64 = long long;
 using u32 = unsigned;
 
+constexpr int N = 2e5 + 50;
+
+struct PAM {
+  int ch[N][26], len[N], nxt[N], cnt, lst, tot;
+  char s[N];
+
+  void init() {
+    tot = lst = 0;
+  }
+
+  int get_nxt() {
+    int u = lst;
+    while (s[tot] != s[tot - len[u] - 1]) u = nxt[u];
+    return u;
+  }
+} pam;
+
 void solve() {
 }
 
