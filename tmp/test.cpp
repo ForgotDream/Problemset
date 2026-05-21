@@ -1,104 +1,62 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long LL;
-const int N = 2.5e5 + 5, INF = 1e9;
-
-int n, m;
-int h[N], to[N << 1], nxt[N << 1], val[N << 1], cnt;
-void add(int u, int v, int w) {
-  to[++cnt] = v, val[cnt] = w, nxt[cnt] = h[u], h[u] = cnt;
-}
-int minv[N];
-int dep[N], dfn[N], tim;
-int st[20][N];
-int a[N];
-int p[N];
-bool key[N];
-
-void dfs(int u, int fath) {
-  dfn[u] = ++tim, dep[u] = dep[fath] + 1;
-  st[0][dfn[u]] = fath;
-  for (int i = h[u]; i; i = nxt[i]) {
-    int v = to[i], w = val[i];
-    if (v == fath) continue;
-    minv[v] = min(minv[u], w);
-    dfs(v, u);
-  }
-}
-
-inline int calc(int u, int v) { return dfn[u] < dfn[v] ? u : v; }
-
-void init() {
-  for (int i = 1; i <= std::__lg(n); i++) {
-    for (int j = 1; j <= n - (1 << i) + 1; j++) {
-      st[i][j] = calc(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
-    }
-  }
-}
-
-inline int lca(int u, int v) {
-  if (u == v) return u;
-  u = dfn[u], v = dfn[v];
-  if (u > v) std::swap(u, v);
-  int d = std::__lg(v - u++);
-  return calc(st[d][u], st[d][v - (1 << d) + 1]);
-}
-
-vector<int> e[N];
-
-LL dp(int u) {
-  LL ans = 0;
-  for (auto v : e[u]) {
-    if (key[v]) ans += minv[v];
-    else ans += std::min(dp(v), 1ll * minv[v]);
-  }
-  return ans;
-}
-
-bool cmp(int u, int v) { return dfn[u] < dfn[v]; }
-
+int n, m, x, y[3333], z[3333];
+long long f[3333][3333][2], inf = 6666666666666;
+struct node {
+  int x, y;
+  bool operator<(node b) { return x < b.x; }
+} a[3333];
 int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr), cout.tie(nullptr);
-  cin >> n;
-  for (int i = 1; i < n; i++) {
-    int u, v, w;
-    cin >> u >> v >> w;
-    add(u, v, w);
-    add(v, u, w);
+  scanf("%d%d", &n, &x);
+  for (int i = 1; i <= n; i++) scanf("%d", &y[i]), a[++m] = {y[i], i};
+  for (int i = 1; i <= n; i++) scanf("%d", &z[i]), a[++m] = (node){z[i], 0};
+  a[++m] = {x, 0};
+  a[++m] = (node){0, 0};
+  sort(a + 1, a + m + 1);
+  int wei = 0, chu = 0;
+  for (int i = 1; i <= m; i++) {
+    if (a[i].x == x) wei = i;
   }
-
-  minv[1] = INF;
-  dfs(1, 0), init();
-
-  cin >> m;
-  while (m--) {
-    int c;
-    cin >> c;
-    int tot = 0;
-    for (int i = 1; i <= c; i++) {
-      cin >> p[i];
-      a[++tot] = p[i];
-      key[p[i]] = true;
-    }
-    a[++tot] = 1;
-    sort(p + 1, p + 1 + c, cmp);
-    for (int i = 1; i < c; i++) {
-      a[++tot] = lca(p[i], p[i + 1]);
-    }
-    sort(a + 1, a + 1 + tot, cmp);
-    tot = unique(a + 1, a + 1 + tot) - a - 1;
-    for (int i = 1; i < tot; i++) {
-      e[lca(a[i], a[i + 1])].push_back(a[i + 1]);
-    }
-    cout << dp(1) << '\n';
-    for (int i = 1; i <= c; i++) {
-      key[p[i]] = false;
-    }
-    for (int i = 1; i <= tot; i++) {
-      e[a[i]].clear();
+  for (int i = 1; i <= m; i++)
+    if (!a[i].x) chu = i;
+  for (int i = 0; i < 3333; i++) {
+    for (int j = 0; j < 3333; j++) {
+      f[i][j][0] = f[i][j][1] = inf;
     }
   }
-
+  f[chu][chu][0] = f[chu][chu][1] = 0;
+  for (int len = 1; len < m; len++)
+    for (int l = 1; l <= m - len + 1; l++) {
+      int r = l + len - 1;
+      if (l > 1) {
+        if (a[l - 1].y > 0 &&
+            (z[a[l - 1].y] < a[l].x || z[a[l - 1].y] > a[r].x)) {
+        } else {
+          f[l - 1][r][0] =
+              min(f[l - 1][r][0], f[l][r][0] + a[l].x - a[l - 1].x);
+          f[l - 1][r][0] =
+              min(f[l - 1][r][0], f[l][r][1] + a[r].x - a[l - 1].x);
+        }
+      }
+      if (r < m) {
+        if (a[r + 1].y > 0 &&
+            (z[a[r + 1].y] < a[l].x || z[a[r + 1].y] > a[r].x))
+          ;
+        else {
+          f[l][r + 1][1] =
+              min(f[l][r + 1][1], f[l][r][0] + a[r + 1].x - a[l].x);
+          f[l][r + 1][1] =
+              min(f[l][r + 1][1], f[l][r][1] + a[r + 1].x - a[r].x);
+        }
+      }
+    }
+  long long ans = inf;
+  for (int i = 1; i <= wei; i++) {
+    for (int j = wei; j <= m; j++) {
+      ans = min(ans, min(f[i][j][0], f[i][j][1]));
+    }
+  }
+  if (ans == inf) cout << -1;
+  else cout << ans;
   return 0;
 }

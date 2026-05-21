@@ -27,7 +27,6 @@ void solve() {
   bool flg = true;
 
   for (int i = 1; i < N && numerator && rst; i++) {
-    if 
   }
 
   if (!flg) {
