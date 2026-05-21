@@ -29,7 +29,7 @@ void solve() {
   for (int i = 1; i < N && numerator && rst; i++) {
   }
 
-  if (!flg) {
+  if (!flg || numerator != 0 || rst != 0) {
     std::cout << "No\n";
   } else {
     std::cout << "Yes\n";
