@@ -1,62 +1,88 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
 using namespace std;
-int n, m, x, y[3333], z[3333];
-long long f[3333][3333][2], inf = 6666666666666;
-struct node {
-  int x, y;
-  bool operator<(node b) { return x < b.x; }
-} a[3333];
+
+void solve() {
+    int n, k;
+    if (!(cin >> n >> k)) return;
+    string s;
+    cin >> s;
+
+    // If we can delete all characters or more, just output all 1s (capped at n).
+    if (k >= n) {
+        cout << string(n, '1') << "\n";
+        return;
+    }
+
+    // P[i] = count of '(' in s[0...i-1]
+    vector<int> P(n + 1, 0);
+    for (int i = 0; i < n; ++i) {
+        P[i + 1] = P[i] + (s[i] == '(' ? 1 : 0);
+    }
+
+    // S[i] = count of ')' in s[i...n-1]
+    vector<int> S(n + 1, 0);
+    for (int i = n - 1; i >= 0; --i) {
+        S[i] = S[i + 1] + (s[i] == ')' ? 1 : 0);
+    }
+
+    int min_x = max(0, k - S[0]);
+    int max_x = min(k, P[n]);
+
+    int min_val = 2e9;
+    int best_x = min_x;
+
+    // Find the absolute minimum in the 2D search space in O(n)
+    for (int i = 0; i <= n; ++i) {
+        int cands[] = {min_x, max_x, P[i], k - S[i]};
+        for (int x : cands) {
+            if (x >= min_x && x <= max_x) {
+                int val = max(0, P[i] - x) + max(0, S[i] - (k - x));
+                if (val < min_val) {
+                    min_val = val;
+                    best_x = x;
+                }
+            }
+        }
+    }
+
+    int x = best_x;
+    int y = k - best_x;
+
+    // Greedily mark the first 'x' open brackets and the last 'y' close brackets
+    string ans(n, '0');
+    int marked_x = 0;
+    for (int i = 0; i < n; ++i) {
+        if (s[i] == '(' && marked_x < x) {
+            ans[i] = '1';
+            marked_x++;
+        }
+    }
+
+    int marked_y = 0;
+    for (int i = n - 1; i >= 0; --i) {
+        if (s[i] == ')' && marked_y < y) {
+            ans[i] = '1';
+            marked_y++;
+        }
+    }
+
+    cout << ans << "\n";
+}
+
 int main() {
-  scanf("%d%d", &n, &x);
-  for (int i = 1; i <= n; i++) scanf("%d", &y[i]), a[++m] = {y[i], i};
-  for (int i = 1; i <= n; i++) scanf("%d", &z[i]), a[++m] = (node){z[i], 0};
-  a[++m] = {x, 0};
-  a[++m] = (node){0, 0};
-  sort(a + 1, a + m + 1);
-  int wei = 0, chu = 0;
-  for (int i = 1; i <= m; i++) {
-    if (a[i].x == x) wei = i;
-  }
-  for (int i = 1; i <= m; i++)
-    if (!a[i].x) chu = i;
-  for (int i = 0; i < 3333; i++) {
-    for (int j = 0; j < 3333; j++) {
-      f[i][j][0] = f[i][j][1] = inf;
-    }
-  }
-  f[chu][chu][0] = f[chu][chu][1] = 0;
-  for (int len = 1; len < m; len++)
-    for (int l = 1; l <= m - len + 1; l++) {
-      int r = l + len - 1;
-      if (l > 1) {
-        if (a[l - 1].y > 0 &&
-            (z[a[l - 1].y] < a[l].x || z[a[l - 1].y] > a[r].x)) {
-        } else {
-          f[l - 1][r][0] =
-              min(f[l - 1][r][0], f[l][r][0] + a[l].x - a[l - 1].x);
-          f[l - 1][r][0] =
-              min(f[l - 1][r][0], f[l][r][1] + a[r].x - a[l - 1].x);
+    // Fast I/O
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    if (cin >> t) {
+        while (t--) {
+            solve();
         }
-      }
-      if (r < m) {
-        if (a[r + 1].y > 0 &&
-            (z[a[r + 1].y] < a[l].x || z[a[r + 1].y] > a[r].x))
-          ;
-        else {
-          f[l][r + 1][1] =
-              min(f[l][r + 1][1], f[l][r][0] + a[r + 1].x - a[l].x);
-          f[l][r + 1][1] =
-              min(f[l][r + 1][1], f[l][r][1] + a[r + 1].x - a[r].x);
-        }
-      }
     }
-  long long ans = inf;
-  for (int i = 1; i <= wei; i++) {
-    for (int j = wei; j <= m; j++) {
-      ans = min(ans, min(f[i][j][0], f[i][j][1]));
-    }
-  }
-  if (ans == inf) cout << -1;
-  else cout << ans;
-  return 0;
+    return 0;
 }
