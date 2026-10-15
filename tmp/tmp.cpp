@@ -5,7 +5,6 @@
  * @date    2025-09-08
  */
 #include <iostream>
-#include <vector>
 
 using i64 = long long;
 

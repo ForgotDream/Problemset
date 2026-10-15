@@ -1,1 +1,0 @@
-{"name":"Local: test","url":"/mnt/hgfs/Problemset/tmp/test.cpp","tests":[{"id":1703669398210,"input":"5 2\n2 3 1 2 4","output":"43"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/mnt/hgfs/Problemset/tmp/test.cpp","group":"local","local":true}
