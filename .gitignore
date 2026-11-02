@@ -1,2 +1,26 @@
+# Ignore extensionless compiled binaries by default
+*
+!*/
+!*.*
+!LICENSE
+!/Contest/AtCoder/ac-library/atcoder/*
+!/Contest/Codeforces/1930/tmp
+
+# Compiled binary artifacts & OS metadata
+*.bin
+*.exe
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+*.gch
+*.pch
+a.out
+.DS_Store
+
+# Local tool caches
 .cpcache/
 .testcases/
