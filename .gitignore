@@ -23,4 +23,5 @@ a.out
 
 # Local tool caches
 .cpcache/
+.cph/
 .testcases/
